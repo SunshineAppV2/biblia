@@ -263,25 +263,46 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                     <motion.div
                                         initial={{ opacity: 0, y: 8 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="flex items-center justify-between pt-1"
+                                        className="space-y-3 pt-1"
                                     >
-                                        <div className={cn(
-                                            "flex items-center gap-2 text-sm font-bold",
-                                            answerState === "correct" ? "text-accent" : "text-red-400"
-                                        )}>
-                                            {answerState === "correct"
-                                                ? <><CheckCircle className="w-4 h-4" /> Correto! +{XP_CORRECT} XP</>
-                                                : <><XCircle className="w-4 h-4" /> Errado! {XP_WRONG} XP</>
-                                            }
+                                        <div className="flex items-center justify-between">
+                                            <div className={cn(
+                                                "flex items-center gap-2 text-sm font-bold",
+                                                answerState === "correct" ? "text-accent" : "text-red-400"
+                                            )}>
+                                                {answerState === "correct"
+                                                    ? <><CheckCircle className="w-4 h-4" /> Correto! +{XP_CORRECT} XP</>
+                                                    : <><XCircle className="w-4 h-4" /> {selectedOption === null ? "Tempo esgotado!" : "Errado!"} {XP_WRONG} XP</>
+                                                }
+                                            </div>
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={handleNext}
+                                                className="flex items-center gap-1 px-4 py-2 bg-primary text-primary-foreground rounded-full text-xs font-bold hover:opacity-90 transition-colors"
+                                            >
+                                                {currentIndex + 1 >= questions.length ? "Resultado" : "Próxima"}
+                                                <ChevronRight className="w-3 h-3" />
+                                            </motion.button>
                                         </div>
-                                        <motion.button
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={handleNext}
-                                            className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-full text-xs font-bold hover:bg-primary/80 transition-colors"
-                                        >
-                                            {currentIndex + 1 >= questions.length ? "Resultado" : "Próxima"}
-                                            <ChevronRight className="w-3 h-3" />
-                                        </motion.button>
+
+                                        {/* Correct answer hint when wrong */}
+                                        {answerState === "wrong" && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                className="flex items-start gap-2 bg-accent/10 border border-accent/25 rounded-xl px-3 py-2.5"
+                                            >
+                                                <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                                                <div>
+                                                    <p className="text-[11px] font-black text-accent uppercase tracking-wider mb-0.5">
+                                                        Resposta correta
+                                                    </p>
+                                                    <p className="text-xs text-foreground leading-snug">
+                                                        {currentQuestion.options[currentQuestion.correctIndex]}
+                                                    </p>
+                                                </div>
+                                            </motion.div>
+                                        )}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
