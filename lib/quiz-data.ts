@@ -32,6 +32,30 @@ export function getQuizBank(bookId: string, chapter: number): BankQuestion[] | n
     return QUIZ_BANK[bookId]?.[chapter] ?? null;
 }
 
+/** Returns { totalQuestions, chaptersCovered } across all static quiz bank entries. */
+export function getQuizBankStats(): { totalQuestions: number; chaptersCovered: number } {
+    let totalQuestions = 0;
+    let chaptersCovered = 0;
+    for (const book of Object.values(QUIZ_BANK)) {
+        for (const questions of Object.values(book)) {
+            chaptersCovered++;
+            totalQuestions += questions.length;
+        }
+    }
+    return { totalQuestions, chaptersCovered };
+}
+
+/** Returns all bookId/chapter pairs that have static questions. */
+export function getQuizBankKeys(): Array<{ bookId: string; chapter: number }> {
+    const keys: Array<{ bookId: string; chapter: number }> = [];
+    for (const [bookId, chapters] of Object.entries(QUIZ_BANK)) {
+        for (const chapter of Object.keys(chapters)) {
+            keys.push({ bookId, chapter: Number(chapter) });
+        }
+    }
+    return keys;
+}
+
 // ---------------------------------------------------------------------------
 // Question bank — add more books/chapters over time
 // ---------------------------------------------------------------------------

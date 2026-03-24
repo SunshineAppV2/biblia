@@ -17,6 +17,7 @@ export interface UserProfile {
     preferredVersion?: string;
     achievements?: string[];
     wisdomPoints?: number;
+    isAdmin?: boolean;
 }
 
 export async function createOrUpdateUser(user: User): Promise<UserProfile> {
