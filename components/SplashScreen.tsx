@@ -7,155 +7,170 @@ const TOTAL_SECONDS = 10;
 const PAGE_FLIP_INTERVAL = 1400; // ms between flips
 
 function BookAnimation() {
-    const [flipPhase, setFlipPhase] = useState(0); // 0=rest, 1=lifting, 2=landing
+    const [flipPhase, setFlipPhase] = useState(0); // 0=rest, 1=mid, 2=landed
 
     useEffect(() => {
         const cycle = () => {
             setFlipPhase(1);
-            setTimeout(() => setFlipPhase(2), 500);
-            setTimeout(() => setFlipPhase(0), 1000);
+            setTimeout(() => setFlipPhase(2), 520);
+            setTimeout(() => setFlipPhase(0), 1050);
         };
+        const t = setTimeout(cycle, 600);
         const interval = setInterval(cycle, PAGE_FLIP_INTERVAL);
-        cycle();
-        return () => clearInterval(interval);
+        return () => { clearTimeout(t); clearInterval(interval); };
     }, []);
 
-    // Page layer offsets (bottom fan effect)
-    const layers = [0, 1, 2, 3, 4];
+    // Each layer offset for the page-stack fan
+    const stackLayers = [5, 4, 3, 2, 1];
 
     return (
         <svg
-            viewBox="0 0 280 160"
-            width="300"
-            height="170"
-            style={{ filter: "drop-shadow(0 12px 24px rgba(26,35,126,0.25))", overflow: "visible" }}
+            viewBox="0 0 340 220"
+            width="320"
+            height="207"
+            style={{ overflow: "visible", filter: "drop-shadow(0 16px 32px rgba(26,35,126,0.3))" }}
         >
             <defs>
-                <linearGradient id="pageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FDFBF7" />
-                    <stop offset="100%" stopColor="#E8EDF5" />
+                <linearGradient id="lPageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#F5F3EE" />
+                    <stop offset="100%" stopColor="#E8E4D8" />
                 </linearGradient>
-                <linearGradient id="spineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#C5A059" />
-                    <stop offset="50%" stopColor="#8B6914" />
-                    <stop offset="100%" stopColor="#C5A059" />
+                <linearGradient id="rPageGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#F5F3EE" />
+                    <stop offset="100%" stopColor="#E8E4D8" />
                 </linearGradient>
-                <linearGradient id="coverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#1A237E" />
-                    <stop offset="100%" stopColor="#283593" />
+                <linearGradient id="spineGold" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#8B6914" />
+                    <stop offset="50%" stopColor="#C5A059" />
+                    <stop offset="100%" stopColor="#8B6914" />
                 </linearGradient>
-                <clipPath id="leftClip">
-                    <rect x="0" y="0" width="140" height="160" />
-                </clipPath>
-                <clipPath id="rightClip">
-                    <rect x="140" y="0" width="140" height="160" />
-                </clipPath>
             </defs>
 
-            {/* ── PAGE LAYERS (bottom fan) ── */}
-            {layers.map((l) => {
-                const offset = l * 4;
-                return (
-                    <g key={l} opacity={1 - l * 0.12}>
-                        {/* Left layer */}
-                        <path
-                            d={`M 140,${90 + offset} C 100,${72 + offset} 50,${60 + offset} 8,${62 + offset} L 8,${68 + offset} C 50,${66 + offset} 100,${78 + offset} 140,${96 + offset}`}
-                            fill="none"
-                            stroke={l === 0 ? "#1A237E" : "#455A80"}
-                            strokeWidth={l === 0 ? 2.5 : 1.5}
-                            strokeLinecap="round"
-                            opacity={0.3 + l * 0.1}
-                        />
-                        {/* Right layer */}
-                        <path
-                            d={`M 140,${90 + offset} C 180,${72 + offset} 230,${60 + offset} 272,${62 + offset} L 272,${68 + offset} C 230,${66 + offset} 180,${78 + offset} 140,${96 + offset}`}
-                            fill="none"
-                            stroke={l === 0 ? "#1A237E" : "#455A80"}
-                            strokeWidth={l === 0 ? 2.5 : 1.5}
-                            strokeLinecap="round"
-                            opacity={0.3 + l * 0.1}
-                        />
-                    </g>
-                );
-            })}
+            {/* ── COVER BACK (left) ── */}
+            <path
+                d="M 170,170 C 120,152 60,140 14,142 L 10,148 C 58,146 118,158 168,176 Z"
+                fill="#0D1754" stroke="#0D1754" strokeWidth="1"
+            />
+            {/* ── COVER BACK (right) ── */}
+            <path
+                d="M 170,170 C 220,152 280,140 326,142 L 330,148 C 282,146 222,158 172,176 Z"
+                fill="#0D1754" stroke="#0D1754" strokeWidth="1"
+            />
+
+            {/* ── PAGE STACK LAYERS (left side) ── */}
+            {stackLayers.map((l, i) => (
+                <path
+                    key={`ls${i}`}
+                    d={`M 168,${162 + l} C 118,${144 + l} 58,${132 + l} 12,${134 + l} L 12,${138 + l} C 60,${136 + l} 120,${148 + l} 170,${166 + l}`}
+                    fill="none"
+                    stroke={`rgba(232,228,216,${0.6 + i * 0.08})`}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                />
+            ))}
+            {/* ── PAGE STACK LAYERS (right side) ── */}
+            {stackLayers.map((l, i) => (
+                <path
+                    key={`rs${i}`}
+                    d={`M 172,${162 + l} C 222,${144 + l} 282,${132 + l} 328,${134 + l} L 328,${138 + l} C 280,${136 + l} 220,${148 + l} 170,${166 + l}`}
+                    fill="none"
+                    stroke={`rgba(232,228,216,${0.6 + i * 0.08})`}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                />
+            ))}
 
             {/* ── LEFT PAGE SURFACE ── */}
             <path
-                d="M 140,20 C 100,8 50,12 8,18 L 8,62 C 50,56 100,68 140,90 Z"
-                fill="url(#pageGrad)"
+                d="M 168,38 C 118,22 56,28 12,36 L 12,138 C 60,130 120,144 168,162 Z"
+                fill="url(#lPageGrad)"
                 stroke="#1A237E"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
             />
-            {/* Left page text lines */}
-            {[28, 36, 44, 52, 60, 68].map((y, i) => (
-                <line
-                    key={i}
-                    x1={20 + i * 2} y1={y}
-                    x2={118 - i * 3} y2={y - 4}
-                    stroke="#455A80" strokeWidth="1" opacity="0.2"
-                    strokeLinecap="round"
+            {/* Left page inner highlight */}
+            <path
+                d="M 162,46 C 118,32 62,38 18,44 L 18,130 C 64,122 120,136 164,152 Z"
+                fill="none"
+                stroke="rgba(255,255,255,0.6)"
+                strokeWidth="1"
+            />
+            {/* Left text lines */}
+            {[65, 80, 95, 110, 125].map((y, i) => (
+                <path
+                    key={`ll${i}`}
+                    d={`M ${30 + i} ${y - i * 0.5} L ${148 - i} ${y + i * 0.5}`}
+                    stroke="#1A237E" strokeWidth="1" opacity="0.12" strokeLinecap="round"
                 />
             ))}
+            {/* Cross */}
+            <text x="82" y="105" textAnchor="middle" fontSize="22" fill="#C5A059" opacity="0.25" fontWeight="bold">✝</text>
 
             {/* ── RIGHT PAGE SURFACE (static base) ── */}
             <path
-                d="M 140,20 C 180,8 230,12 272,18 L 272,62 C 230,56 180,68 140,90 Z"
-                fill="url(#pageGrad)"
+                d="M 172,38 C 222,22 284,28 328,36 L 328,138 C 280,130 220,144 172,162 Z"
+                fill="url(#rPageGrad)"
                 stroke="#1A237E"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinejoin="round"
             />
-            {/* Right page text lines */}
-            {[28, 36, 44, 52, 60, 68].map((y, i) => (
-                <line
-                    key={i}
-                    x1={162 + i * 3} y1={y - 4}
-                    x2={258 - i * 2} y2={y}
-                    stroke="#455A80" strokeWidth="1" opacity="0.2"
-                    strokeLinecap="round"
+            {/* Right page inner highlight */}
+            <path
+                d="M 178,46 C 222,32 278,38 322,44 L 322,130 C 276,122 220,136 176,152 Z"
+                fill="none"
+                stroke="rgba(255,255,255,0.6)"
+                strokeWidth="1"
+            />
+            {/* Right text lines */}
+            {[65, 80, 95, 110, 125].map((y, i) => (
+                <path
+                    key={`rl${i}`}
+                    d={`M ${192 + i} ${y + i * 0.5} L ${312 - i} ${y - i * 0.5}`}
+                    stroke="#1A237E" strokeWidth="1" opacity="0.12" strokeLinecap="round"
                 />
             ))}
 
-            {/* ── ANIMATED FLIPPING PAGE ── */}
+            {/* ── ANIMATED FLIP PAGE ── */}
             <motion.path
-                d="M 140,20 C 180,8 230,12 272,18 L 272,62 C 230,56 180,68 140,90 Z"
-                fill="#EEF0F8"
+                fill="#EDEAE0"
                 stroke="#1A237E"
                 strokeWidth="1.5"
                 animate={
-                    flipPhase === 1
-                        ? { d: "M 140,20 C 140,14 140,14 140,20 L 140,90 C 140,84 140,84 140,90 Z", opacity: 0.9 }
-                        : flipPhase === 2
-                        ? { d: "M 140,20 C 100,8 50,12 8,18 L 8,62 C 50,56 100,68 140,90 Z", opacity: 0.7 }
-                        : { d: "M 140,20 C 180,8 230,12 272,18 L 272,62 C 230,56 180,68 140,90 Z", opacity: 0 }
+                    flipPhase === 0
+                        ? { d: "M 172,38 C 222,22 284,28 328,36 L 328,138 C 280,130 220,144 172,162 Z", opacity: 0 }
+                        : flipPhase === 1
+                        ? { d: "M 170,38 C 170,30 170,30 170,38 L 170,162 C 170,154 170,154 170,162 Z", opacity: 0.85 }
+                        : { d: "M 168,38 C 118,22 56,28 12,36 L 12,138 C 60,130 120,144 168,162 Z", opacity: 0.55 }
                 }
-                transition={{ duration: 0.48, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
             />
 
             {/* ── SPINE ── */}
             <path
-                d="M 140,18 C 136,50 136,70 140,92 C 144,70 144,50 140,18 Z"
-                fill="url(#spineGrad)"
-                stroke="#C5A059"
-                strokeWidth="0.5"
+                d="M 168,36 C 164,90 164,120 168,164 C 172,120 172,90 168,36 Z"
+                fill="url(#spineGold)"
             />
 
-            {/* ── BOTTOM SPINE CURVE ── */}
+            {/* ── BOTTOM GUTTER (concave curve) ── */}
             <path
-                d="M 8,62 C 50,58 100,74 140,92 C 180,74 230,58 272,62"
+                d="M 12,138 C 60,128 120,144 168,164 C 216,144 276,128 328,138"
                 fill="none"
                 stroke="#1A237E"
-                strokeWidth="2.5"
+                strokeWidth="3"
                 strokeLinecap="round"
             />
 
-            {/* ── COVER EDGES (left & right) ── */}
-            <path d="M 8,18 L 8,66" stroke="#1A237E" strokeWidth="3" strokeLinecap="round" />
-            <path d="M 272,18 L 272,66" stroke="#1A237E" strokeWidth="3" strokeLinecap="round" />
+            {/* ── COVER BOTTOM EDGE ── */}
+            <path
+                d="M 10,140 C 58,130 120,146 168,166 C 216,146 278,130 330,140 L 330,148 C 280,138 218,154 168,174 C 118,154 56,138 10,148 Z"
+                fill="#0D1754"
+                stroke="#1A237E"
+                strokeWidth="1"
+            />
 
-            {/* ── CROSS SYMBOL on left page ── */}
-            <text x="58" y="55" textAnchor="middle" fontSize="14" fill="#C5A059" opacity="0.35" fontWeight="bold">✝</text>
+            {/* ── OUTER COVER EDGES ── */}
+            <path d="M 10,36 L 10,148" stroke="#1A237E" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M 330,36 L 330,148" stroke="#1A237E" strokeWidth="3.5" strokeLinecap="round" />
         </svg>
     );
 }
