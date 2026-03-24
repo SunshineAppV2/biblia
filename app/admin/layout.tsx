@@ -5,9 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-    { href: "/admin", label: "Dashboard", icon: "⊞" },
-    { href: "/admin/usuarios", label: "Usuários", icon: "👥" },
-    { href: "/admin/quiz", label: "Banco de Quiz", icon: "📋" },
+  { href: "/admin", label: "Dashboard", icon: "⊞" },
+  { href: "/admin/usuarios", label: "Usuários", icon: "👥" },
+  { href: "/admin/quiz", label: "Banco de Quiz", icon: "📋" },
+  { href: "/admin/stats", label: "Estatísticas", icon: "📊" },
+  { href: "/admin/versiculo", label: "Versículo do Dia", icon: "📅" },
+  { href: "/admin/conquistas", label: "Conquistas", icon: "🏆" },
+  { href: "/admin/notificacoes", label: "Notificações", icon: "📣" },
+  { href: "/admin/exportar", label: "Exportar", icon: "📤" },
+  { href: "/admin/logs", label: "Logs", icon: "🔍" },
+  { href: "/admin/config", label: "Configurações", icon: "⚙️" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
