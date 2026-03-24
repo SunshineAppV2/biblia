@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc } from "firebase/firestore";
 import { UserProfile } from "./firestore";
 
 export type LeagueTier =
@@ -240,4 +240,52 @@ export function getPromotionZone(tier: LeagueTier): number {
 export function getDemotionZone(tier: LeagueTier): number {
     if (tier === "AGATA") return 0;
     return 25;
+}
+
+/**
+ * Checks if the current week is different from the user's last processed week.
+ * If so: applies promotion/demotion based on weekly rank, resets weeklyXp.
+ * Called on login/session start.
+ */
+export async function checkAndProcessLeagueWeek(user: UserProfile): Promise<{
+    promoted: boolean;
+    demoted: boolean;
+    newLeague: string;
+} | null> {
+    const weekId = getCurrentWeekId();
+    if (user.leagueWeekId === weekId) return null; // Already processed this week
+
+    const currentTier = migrateLegacyLeague(user.currentLeague || "AGATA");
+    const currentIdx = LEAGUE_ORDER.indexOf(currentTier);
+
+    // Get user's rank in their league
+    const leaderboard = await getLeagueLeaderboard(user);
+    const rank = leaderboard.findIndex(p => p.uid === user.uid) + 1;
+    const total = leaderboard.length;
+
+    let newIdx = currentIdx;
+    let promoted = false;
+    let demoted = false;
+
+    if (rank > 0 && rank <= 5 && currentIdx < LEAGUE_ORDER.length - 1) {
+        newIdx = currentIdx + 1;
+        promoted = true;
+    } else if (total >= 10 && rank > total - 5 && currentIdx > 0) {
+        newIdx = currentIdx - 1;
+        demoted = true;
+    } else if (user.weeklyXp === 0 && currentIdx > 0) {
+        // Inactive — demote
+        newIdx = currentIdx - 1;
+        demoted = true;
+    }
+
+    const newLeague = LEAGUE_ORDER[newIdx];
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+        currentLeague: newLeague,
+        weeklyXp: 0,
+        leagueWeekId: weekId,
+    });
+
+    return { promoted, demoted, newLeague };
 }

@@ -10,6 +10,7 @@ export interface UserProfile {
     xp: number;
     weeklyXp: number;
     currentLeague: string;
+    leagueWeekId?: string; // week when league was last processed, e.g. "2026-W13"
     streak: number;
     totalChapters: number;
     lastActive: Timestamp | null;

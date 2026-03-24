@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -12,12 +12,25 @@ import { LevelProgressBar } from "@/components/LevelProgressBar";
 import { ACHIEVEMENTS, Achievement } from "@/lib/achievements";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
 
 export default function ProfilePage() {
     const { user, profile, logout } = useAuth();
     const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
+    const [notifyEnabled, setNotifyEnabled] = useState(false);
+    useEffect(() => { setNotifyEnabled(isNotificationsEnabled()); }, []);
+
+    const toggleNotifications = async () => {
+        if (notifyEnabled) {
+            disableNotifications();
+            setNotifyEnabled(false);
+        } else {
+            const granted = await requestNotificationPermission();
+            setNotifyEnabled(granted);
+        }
+    };
 
     useEffect(() => {
         if (profile?.achievements) {
@@ -177,6 +190,25 @@ export default function ProfilePage() {
 
                 {/* Reading Heatmap */}
                 <ReadingHeatmap userId={user.uid} />
+
+                {/* Notifications */}
+                <section className="glass-card p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border", notifyEnabled ? "bg-accent/15 border-accent/25" : "bg-muted/50 border-muted")}>
+                            {notifyEnabled ? <Bell className="w-4 h-4 text-accent" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-primary uppercase tracking-wider">Lembretes Diários</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{notifyEnabled ? "Ativo — você receberá lembretes" : "Desativado"}</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={toggleNotifications}
+                        className={cn("px-3 py-1.5 rounded-full text-xs font-bold transition-all border", notifyEnabled ? "bg-red-400/10 border-red-400/25 text-red-400 hover:bg-red-400/20" : "bg-accent/10 border-accent/25 text-accent hover:bg-accent/20")}
+                    >
+                        {notifyEnabled ? "Desativar" : "Ativar"}
+                    </button>
+                </section>
 
                 {/* Share Level */}
                 <section className="glass-card p-4 flex items-center justify-between">

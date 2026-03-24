@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ReadingTimer } from "@/components/ReadingTimer";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark } from "lucide-react";
+import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { completeChapter, isChapterCompleted } from "@/lib/progress";
 import { Leaderboard } from "@/components/Leaderboard";
@@ -25,6 +25,11 @@ import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { useToast } from "@/components/Toast";
 import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
 import { DailyVerse } from "@/components/DailyVerse";
+import { Biblio } from "@/components/Biblio";
+import { StreakWeek } from "@/components/StreakWeek";
+import { VerseSearch } from "@/components/VerseSearch";
+import { checkAndSendReminder, markReadToday } from "@/lib/notifications";
+import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 
 export default function Home() {
     const { user, profile, loginWithGoogle, refreshProfile } = useAuth();
@@ -117,6 +122,23 @@ export default function Home() {
         if (pressTimerRef.current) { clearTimeout(pressTimerRef.current); pressTimerRef.current = null; }
     };
 
+    // Verse search
+    const [showSearch, setShowSearch] = useState(false);
+
+    // On mount: check notification reminder
+    useEffect(() => {
+        checkAndSendReminder();
+    }, []);
+
+    // On login: check league week promotion/demotion
+    useEffect(() => {
+        if (!user || !profile) return;
+        checkAndProcessLeagueWeek(profile).then(result => {
+            if (result?.promoted) showToast(`🎉 Promovido para a Liga ${result.newLeague}!`, "achievement");
+            else if (result?.demoted) showToast(`📉 Rebaixado para a Liga ${result.newLeague}`, "info");
+        }).catch(() => {});
+    }, [user?.uid]);
+
     useEffect(() => {
         if (user) loadProgression();
     }, [user]);
@@ -165,7 +187,8 @@ export default function Home() {
         const xpAmount = 50;
         const wasAtMaxLevel = calculateLevel(xpBeforeCompletion) >= 66;
 
-        // Track daily missions for reading
+        // Track daily missions and notifications
+        markReadToday();
         const missionBonus = trackDailyRead();
         const totalQuizDelta = quizXpDelta + missionBonus;
 
@@ -300,6 +323,25 @@ export default function Home() {
 
     const handleBack = () => setIsReading(false);
 
+    const handleNavigate = async (bookId: string, chapter: number) => {
+        setNextChapter({ bookId, chapter });
+        setIsReading(true);
+        setLoadingContent(true);
+        setIsCompletedNow(false);
+        setWasAlreadyRead(false);
+        try {
+            const content = await getChapterContent(bookId, chapter, currentVersion);
+            setChapterContent(content);
+            if (user) {
+                const alreadyRead = await isChapterCompleted(user.uid, bookId, chapter.toString()).catch(() => false);
+                setWasAlreadyRead(alreadyRead);
+                if (alreadyRead) setIsCompletedNow(true);
+            }
+        } finally {
+            setLoadingContent(false);
+        }
+    };
+
     const chaptersCompleted = Math.max(0, (nextChapter.chapter - 1));
 
     return (
@@ -327,6 +369,13 @@ export default function Home() {
                     )}
                 </div>
                 <div className="flex items-center gap-4 text-sm font-bold">
+                    <button
+                        onClick={() => setShowSearch(true)}
+                        className="p-1.5 rounded-full hover:bg-primary/10 transition-colors"
+                        title="Buscar capítulo"
+                    >
+                        <Search className="w-4 h-4 text-muted-foreground" />
+                    </button>
                     <button
                         onClick={() => setIsDark(d => !d)}
                         className="p-1.5 rounded-full hover:bg-primary/10 transition-colors"
@@ -395,8 +444,13 @@ export default function Home() {
                             transition={{ duration: 0.4, ease: "easeOut" }}
                             className="space-y-6"
                         >
+                            {/* Mascote Biblio */}
+                            <div className="flex justify-center pt-4">
+                                <Biblio mood={profile?.streak && profile.streak > 2 ? "excited" : "happy"} size={90} />
+                            </div>
+
                             {/* Greeting */}
-                            <div className="text-center space-y-1 pt-4">
+                            <div className="text-center space-y-1">
                                 <p className="text-xs font-bold text-secondary uppercase tracking-[0.25em]">
                                     {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
                                 </p>
@@ -539,6 +593,9 @@ export default function Home() {
 
                             {/* Daily Verse */}
                             <DailyVerse />
+
+                            {/* Streak Week */}
+                            {user && profile && <StreakWeek streak={profile.streak} />}
 
                             {/* Daily Missions */}
                             {user && <DailyMissions />}
@@ -703,6 +760,12 @@ export default function Home() {
             />
 
             <OnboardingModal />
+
+            <VerseSearch
+                isOpen={showSearch}
+                onClose={() => setShowSearch(false)}
+                onNavigate={handleNavigate}
+            />
 
             {/* Footer */}
             {!isReading && (
