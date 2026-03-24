@@ -95,6 +95,31 @@ body {
   color: var(--reading-text);
 }
 
+/* Dark mode — Cinza Carvão */
+.dark {
+  --background: #111827;
+  --foreground: #E8EDF5;
+  --primary: #93A8DC;
+  --primary-foreground: #07091C;
+  --secondary: #C5A059;
+  --accent: #60A5FA;
+  --accent-foreground: #07091C;
+  --card: rgba(30, 40, 60, 0.90);
+  --card-foreground: #E8EDF5;
+  --muted: #1E2A40;
+  --muted-foreground: #8CA0C0;
+  --glass: rgba(15, 20, 35, 0.92);
+  --glass-border: rgba(197, 160, 89, 0.20);
+  --reading-bg: #1A1F2E;
+  --reading-text: #D4D8E2;
+  --reading-muted: #8CA0C0;
+}
+
+/* Dark mode: header and white-bg cards adapt */
+.dark header {
+  background: rgba(15, 20, 35, 0.88) !important;
+}
+
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;

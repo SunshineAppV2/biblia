@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -12,6 +12,8 @@ import { LevelProgressBar } from "@/components/LevelProgressBar";
 import { ACHIEVEMENTS, Achievement } from "@/lib/achievements";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { ReadingHeatmap } from "@/components/ReadingHeatmap";
+import { ShareButton } from "@/components/ShareButton";
 
 export default function ProfilePage() {
     const { user, profile, logout } = useAuth();
@@ -118,6 +120,7 @@ export default function ProfilePage() {
                             <span className="text-xs uppercase font-black">Ofensiva</span>
                         </div>
                         <div className="text-2xl font-black text-primary">{profile.streak} dias</div>
+                        <ShareButton type="streak" value={profile.streak} />
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-accent/50">
                         <div className="text-accent flex items-center gap-2">
@@ -142,6 +145,46 @@ export default function ProfilePage() {
                             {unlockedCount}/{totalAchievements}
                         </div>
                     </div>
+                </section>
+
+                {/* Quick links */}
+                <section className="grid grid-cols-2 gap-3">
+                    <Link
+                        href="/favoritos"
+                        className="glass-card p-4 flex items-center gap-3 hover:border-secondary/40 transition-colors"
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-secondary/15 border border-secondary/25 flex items-center justify-center shrink-0">
+                            <Bookmark className="w-4 h-4 text-secondary fill-secondary" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-primary uppercase tracking-wider leading-none">Favoritos</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">Versículos salvos</p>
+                        </div>
+                    </Link>
+                    <Link
+                        href="/conquistas"
+                        className="glass-card p-4 flex items-center gap-3 hover:border-secondary/40 transition-colors"
+                    >
+                        <div className="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
+                            <Award className="w-4 h-4 text-accent" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-primary uppercase tracking-wider leading-none">Conquistas</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{unlockedCount}/{totalAchievements} desbloqueadas</p>
+                        </div>
+                    </Link>
+                </section>
+
+                {/* Reading Heatmap */}
+                <ReadingHeatmap userId={user.uid} />
+
+                {/* Share Level */}
+                <section className="glass-card p-4 flex items-center justify-between">
+                    <div>
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Compartilhar</p>
+                        <p className="text-sm font-bold text-primary">Nível {levelInfo.currentLevel} — {levelInfo.title}</p>
+                    </div>
+                    <ShareButton type="level" value={levelInfo.currentLevel} />
                 </section>
 
                 {/* Wisdom Points — only shown when user reached level 66 */}

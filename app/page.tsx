@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ReadingTimer } from "@/components/ReadingTimer";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap } from "lucide-react";
+import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { completeChapter, isChapterCompleted } from "@/lib/progress";
 import { Leaderboard } from "@/components/Leaderboard";
@@ -23,6 +23,7 @@ import { VersionSelector } from "@/components/VersionSelector";
 import { updateUserVersion, getUserProfile, applyXpDelta } from "@/lib/firestore";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { useToast } from "@/components/Toast";
+import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
 
 export default function Home() {
     const { user, profile, loginWithGoogle, refreshProfile } = useAuth();
@@ -51,6 +52,69 @@ export default function Home() {
     useEffect(() => {
         if (profile?.preferredVersion) setCurrentVersion(profile.preferredVersion);
     }, [profile?.preferredVersion]);
+
+    // Font size (feature 8)
+    const [fontSize, setFontSize] = useState(16);
+    useEffect(() => {
+        const stored = localStorage.getItem("biblequest_fontsize");
+        if (stored) setFontSize(parseInt(stored));
+    }, []);
+    const changeFontSize = (delta: number) => {
+        setFontSize(prev => {
+            const next = Math.min(22, Math.max(14, prev + delta));
+            localStorage.setItem("biblequest_fontsize", String(next));
+            return next;
+        });
+    };
+
+    // Dark mode (feature 10)
+    const [isDark, setIsDark] = useState(false);
+    useEffect(() => {
+        const stored = localStorage.getItem("biblequest_theme");
+        if (stored === "dark") {
+            setIsDark(true);
+            document.documentElement.classList.add("dark");
+        }
+    }, []);
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("biblequest_theme", "dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("biblequest_theme", "light");
+        }
+    }, [isDark]);
+
+    // Verse bookmarks (feature 11)
+    const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
+    const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    useEffect(() => {
+        const key = `biblequest_bookmarks_${nextChapter.bookId}_${nextChapter.chapter}`;
+        const stored = localStorage.getItem(key);
+        setBookmarks(stored ? new Set(JSON.parse(stored)) : new Set());
+    }, [nextChapter.bookId, nextChapter.chapter]);
+    const toggleBookmark = (verseIndex: number) => {
+        const next = new Set(bookmarks);
+        if (next.has(verseIndex)) {
+            next.delete(verseIndex);
+            showToast("Marcador removido", "info");
+        } else {
+            next.add(verseIndex);
+            showToast("📖 Versículo salvo nos favoritos", "achievement");
+        }
+        setBookmarks(next);
+        localStorage.setItem(
+            `biblequest_bookmarks_${nextChapter.bookId}_${nextChapter.chapter}`,
+            JSON.stringify([...next])
+        );
+    };
+    const handleVersePointerDown = (verseIndex: number) => {
+        pressTimerRef.current = setTimeout(() => toggleBookmark(verseIndex), 600);
+    };
+    const handleVersePointerUp = () => {
+        if (pressTimerRef.current) { clearTimeout(pressTimerRef.current); pressTimerRef.current = null; }
+    };
 
     useEffect(() => {
         if (user) loadProgression();
@@ -100,10 +164,14 @@ export default function Home() {
         const xpAmount = 50;
         const wasAtMaxLevel = calculateLevel(xpBeforeCompletion) >= 66;
 
+        // Track daily missions for reading
+        const missionBonus = trackDailyRead();
+        const totalQuizDelta = quizXpDelta + missionBonus;
+
         try {
-            // Apply quiz XP delta (positive or negative)
-            if (quizXpDelta !== 0) {
-                await applyXpDelta(user.uid, quizXpDelta);
+            // Apply quiz XP delta (positive or negative) plus any mission bonus
+            if (totalQuizDelta !== 0) {
+                await applyXpDelta(user.uid, totalQuizDelta);
             }
 
             // Notify about wisdom point if already at max level
@@ -113,7 +181,7 @@ export default function Home() {
 
             // Check level up
             const oldLevel = calculateLevel(xpBeforeCompletion);
-            const newLevel = calculateLevel(xpBeforeCompletion + xpAmount + quizXpDelta);
+            const newLevel = calculateLevel(xpBeforeCompletion + xpAmount + totalQuizDelta);
             if (newLevel > oldLevel) {
                 setNewLevelReached(newLevel);
                 setTimeout(() => setShowLevelUp(true), 800);
@@ -199,6 +267,7 @@ export default function Home() {
 
     const handleQuizComplete = async (quizXpDelta: number) => {
         setShowQuiz(false);
+        trackDailyQuiz();
         await finishChapter(quizXpDelta);
     };
 
@@ -257,6 +326,13 @@ export default function Home() {
                     )}
                 </div>
                 <div className="flex items-center gap-4 text-sm font-bold">
+                    <button
+                        onClick={() => setIsDark(d => !d)}
+                        className="p-1.5 rounded-full hover:bg-primary/10 transition-colors"
+                        title={isDark ? "Modo claro" : "Modo noturno"}
+                    >
+                        {isDark ? <Sun className="w-4 h-4 text-secondary" /> : <Moon className="w-4 h-4 text-muted-foreground" />}
+                    </button>
                     <VersionSelector
                         currentVersion={currentVersion}
                         onVersionChange={handleVersionChange}
@@ -348,6 +424,7 @@ export default function Home() {
                             })()}
 
                             {/* Main Card: Next Chapter */}
+                            <div className="space-y-2">
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
@@ -375,7 +452,7 @@ export default function Home() {
                                         </h3>
                                         <div className="flex items-center gap-3 mt-2">
                                             <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full border border-primary/10">
-                                                ~5 min
+                                                {chapterContent ? `~${Math.round(chapterContent.estimatedSeconds / 60)} min` : "~5 min"}
                                             </span>
                                             <span className="text-xs font-bold text-accent flex items-center gap-1">
                                                 <Trophy className="w-3 h-3" /> +50 XP
@@ -388,6 +465,25 @@ export default function Home() {
                                     </div>
                                 </div>
                             </motion.div>
+
+                            {/* Quick links */}
+                            <div className="flex justify-between px-1">
+                                <Link
+                                    href="/favoritos"
+                                    className="text-xs font-bold text-secondary hover:underline flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity"
+                                >
+                                    <Bookmark className="w-3 h-3" />
+                                    Favoritos
+                                </Link>
+                                <Link
+                                    href="/planos"
+                                    className="text-xs font-bold text-secondary hover:underline flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity"
+                                >
+                                    <BookOpen className="w-3 h-3" />
+                                    Planos de Leitura
+                                </Link>
+                            </div>
+                            </div>
 
                             {/* Stats grid */}
                             <div className="grid grid-cols-2 gap-3">
@@ -440,6 +536,9 @@ export default function Home() {
                                 </div>
                             </div>
 
+                            {/* Daily Missions */}
+                            {user && <DailyMissions />}
+
                             {user && (
                                 <div>
                                     <div className="flex items-center justify-between px-1 mb-3">
@@ -470,21 +569,53 @@ export default function Home() {
                             ) : chapterContent ? (
                                 <>
                                     <article className="reading-surface rounded-2xl shadow-2xl px-6 py-10 max-w-none mb-32 border border-[#C5A059]/20">
-                                        <h2 className="text-center text-4xl font-serif mb-3 tracking-tight" style={{ color: "#1A237E" }}>
+                                        <h2 className="text-center text-4xl font-serif mb-3 tracking-tight text-primary">
                                             {chapterContent.bookName} {chapterContent.chapter}
                                         </h2>
-                                        <p className="text-center text-xs mb-10 uppercase tracking-widest font-semibold" style={{ color: "#607D8B" }}>
-                                            {chapterContent.version} • {chapterContent.totalVerses} versículos
+                                        <p className="text-center text-xs mb-4 uppercase tracking-widest font-semibold text-muted-foreground">
+                                            {chapterContent.version} • {chapterContent.totalVerses} versículos • ~{Math.round(chapterContent.estimatedSeconds / 60)} min
                                         </p>
 
+                                        {/* Font size controls */}
+                                        <div className="flex items-center justify-center gap-3 mb-8 opacity-50 hover:opacity-100 transition-opacity">
+                                            <button
+                                                onClick={() => changeFontSize(-2)}
+                                                disabled={fontSize <= 14}
+                                                className="w-7 h-7 rounded-full border border-secondary/30 flex items-center justify-center hover:bg-secondary/10 disabled:opacity-30 transition-colors"
+                                            >
+                                                <Minus className="w-3 h-3 text-secondary" />
+                                            </button>
+                                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest w-10 text-center">{fontSize}px</span>
+                                            <button
+                                                onClick={() => changeFontSize(2)}
+                                                disabled={fontSize >= 22}
+                                                className="w-7 h-7 rounded-full border border-secondary/30 flex items-center justify-center hover:bg-secondary/10 disabled:opacity-30 transition-colors"
+                                            >
+                                                <Plus className="w-3 h-3 text-secondary" />
+                                            </button>
+                                        </div>
+
                                         {chapterContent.text.map((paragraph: string, i: number) => (
-                                            <p key={i} className="mb-5 leading-relaxed relative pl-7 text-base" style={{ color: "#263238" }}>
+                                            <p
+                                                key={i}
+                                                className={`mb-5 leading-relaxed relative pl-7 pr-5 rounded-lg transition-colors select-none cursor-pointer ${bookmarks.has(i) ? "bg-secondary/10" : ""}`}
+                                                style={{ fontSize: `${fontSize}px` }}
+                                                onPointerDown={() => handleVersePointerDown(i)}
+                                                onPointerUp={handleVersePointerUp}
+                                                onPointerLeave={handleVersePointerUp}
+                                            >
                                                 <span className="text-xs font-bold select-none absolute left-0 mt-1" style={{ color: "#C5A059" }}>
                                                     {i + 1}
                                                 </span>
+                                                {bookmarks.has(i) && (
+                                                    <Bookmark className="w-3 h-3 text-secondary fill-secondary absolute right-1 top-1.5" />
+                                                )}
                                                 {paragraph}
                                             </p>
                                         ))}
+                                        <p className="text-center text-[10px] text-muted-foreground/50 mt-6 uppercase tracking-widest">
+                                            Pressione e segure um versículo para marcar
+                                        </p>
                                     </article>
 
                                     {!isCompletedNow ? (
