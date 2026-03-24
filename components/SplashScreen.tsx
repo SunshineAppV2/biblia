@@ -8,10 +8,10 @@ const PAGE_FLIP_INTERVAL = 1600;
 
 const VERSIONS = [
     { id: "ARC", name: "Almeida Revista e Corrigida", abbr: "ARC" },
-    { id: "NVI", name: "Nova Versão Internacional", abbr: "NVI" },
-    { id: "NVT", name: "Nova Versão Transformadora", abbr: "NVT" },
-    { id: "NAA", name: "Nova Almeida Atualizada", abbr: "NAA" },
+    { id: "ARA", name: "Almeida Revista e Atualizada", abbr: "ARA" },
     { id: "NTLH", name: "Linguagem de Hoje", abbr: "NTLH" },
+    { id: "NVI", name: "Nova Versão Internacional", abbr: "NVI" },
+    { id: "NAA", name: "Nova Almeida Atualizada", abbr: "NAA" },
 ];
 
 function OpenBook() {

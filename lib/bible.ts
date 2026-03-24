@@ -20,10 +20,10 @@ export interface ChapterContent {
 // bolls.life Portuguese translations: ARC, ARA, NTPT
 export const VERSIONS = [
     { id: "ARC", name: "Almeida Revista e Corrigida", apiCode: "ARC" },
-    { id: "NVI", name: "Nova Versão Internacional", apiCode: "ARA" },
-    { id: "NVT", name: "Nova Versão Transformadora", apiCode: "NVT" },
-    { id: "NAA", name: "Nova Almeida Atualizada", apiCode: "ARA" },
-    { id: "NTLH", name: "Linguagem de Hoje", apiCode: "NTPT" },
+    { id: "ARA", name: "Almeida Revista e Atualizada", apiCode: "ARA" },
+    { id: "NTLH", name: "Linguagem de Hoje", apiCode: "NTLH" },
+    { id: "NVI", name: "Nova Versão Internacional", apiCode: "NVI" },
+    { id: "NAA", name: "Nova Almeida Atualizada", apiCode: "NAA" },
 ];
 
 interface BollsVerse {
