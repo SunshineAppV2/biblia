@@ -46,6 +46,12 @@ export default function Home() {
     const [showQuizOffer, setShowQuizOffer] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
 
+    // Version State — local so it updates immediately without waiting for Firebase
+    const [currentVersion, setCurrentVersion] = useState("ARC");
+    useEffect(() => {
+        if (profile?.preferredVersion) setCurrentVersion(profile.preferredVersion);
+    }, [profile?.preferredVersion]);
+
     useEffect(() => {
         if (user) loadProgression();
     }, [user]);
@@ -64,7 +70,7 @@ export default function Home() {
 
         try {
             // Load Bible content first — never blocked by Firebase
-            const content = await getChapterContent(nextChapter.bookId, nextChapter.chapter, profile?.preferredVersion || "ARC");
+            const content = await getChapterContent(nextChapter.bookId, nextChapter.chapter, currentVersion);
             setChapterContent(content);
 
             // Check completion status separately — failure is non-fatal
@@ -207,18 +213,17 @@ export default function Home() {
     };
 
     const handleVersionChange = async (versionId: string) => {
-        if (user) {
-            await updateUserVersion(user.uid, versionId);
-            if (isReading) {
-                setLoadingContent(true);
-                try {
-                    const content = await getChapterContent(nextChapter.bookId, nextChapter.chapter, versionId);
-                    setChapterContent(content);
-                } catch (e) {
-                    console.error(e);
-                } finally {
-                    setLoadingContent(false);
-                }
+        setCurrentVersion(versionId); // atualiza imediatamente no estado local
+        if (user) updateUserVersion(user.uid, versionId); // salva no Firebase em background
+        if (isReading) {
+            setLoadingContent(true);
+            try {
+                const content = await getChapterContent(nextChapter.bookId, nextChapter.chapter, versionId);
+                setChapterContent(content);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoadingContent(false);
             }
         }
     };
@@ -253,7 +258,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-4 text-sm font-bold">
                     <VersionSelector
-                        currentVersion={profile?.preferredVersion || "ARC"}
+                        currentVersion={currentVersion}
                         onVersionChange={handleVersionChange}
                         className="mr-2"
                     />
