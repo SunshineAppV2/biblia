@@ -4,173 +4,156 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TOTAL_SECONDS = 10;
-const PAGE_FLIP_INTERVAL = 1400; // ms between flips
+const PAGE_FLIP_INTERVAL = 1600;
 
-function BookAnimation() {
-    const [flipPhase, setFlipPhase] = useState(0); // 0=rest, 1=mid, 2=landed
+const VERSIONS = [
+    { id: "ARC", name: "Almeida Revista e Corrigida", abbr: "ARC" },
+    { id: "NVI", name: "Nova Versão Internacional", abbr: "NVI" },
+    { id: "NVT", name: "Nova Versão Transformadora", abbr: "NVT" },
+    { id: "NAA", name: "Nova Almeida Atualizada", abbr: "NAA" },
+    { id: "NTLH", name: "Linguagem de Hoje", abbr: "NTLH" },
+];
+
+function OpenBook() {
+    const [flip, setFlip] = useState(0); // 0=idle 1=going 2=landing
 
     useEffect(() => {
-        const cycle = () => {
-            setFlipPhase(1);
-            setTimeout(() => setFlipPhase(2), 520);
-            setTimeout(() => setFlipPhase(0), 1050);
+        const run = () => {
+            setFlip(1);
+            setTimeout(() => setFlip(2), 550);
+            setTimeout(() => setFlip(0), 1150);
         };
-        const t = setTimeout(cycle, 600);
-        const interval = setInterval(cycle, PAGE_FLIP_INTERVAL);
-        return () => { clearTimeout(t); clearInterval(interval); };
+        const t = setTimeout(run, 800);
+        const iv = setInterval(run, PAGE_FLIP_INTERVAL);
+        return () => { clearTimeout(t); clearInterval(iv); };
     }, []);
 
-    // Each layer offset for the page-stack fan
-    const stackLayers = [5, 4, 3, 2, 1];
+    const N = "#1A237E";   // navy
+    const D = "#0D1754";   // dark navy
+    const G = "#C5A059";   // gold
+    const P = "#F2EFE6";   // page cream
 
     return (
-        <svg
-            viewBox="0 0 340 220"
-            width="320"
-            height="207"
-            style={{ overflow: "visible", filter: "drop-shadow(0 16px 32px rgba(26,35,126,0.3))" }}
-        >
+        <svg viewBox="0 0 360 230" width="340" height="217"
+            style={{ overflow: "visible", filter: "drop-shadow(0 20px 40px rgba(26,35,126,0.35))" }}>
             <defs>
-                <linearGradient id="lPageGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#F5F3EE" />
-                    <stop offset="100%" stopColor="#E8E4D8" />
+                {/* Page gradients */}
+                <linearGradient id="lp" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#F8F5EE" />
+                    <stop offset="100%" stopColor="#E8E3D5" />
                 </linearGradient>
-                <linearGradient id="rPageGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#F5F3EE" />
-                    <stop offset="100%" stopColor="#E8E4D8" />
+                <linearGradient id="rp" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#F8F5EE" />
+                    <stop offset="100%" stopColor="#E8E3D5" />
                 </linearGradient>
-                <linearGradient id="spineGold" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#8B6914" />
-                    <stop offset="50%" stopColor="#C5A059" />
-                    <stop offset="100%" stopColor="#8B6914" />
+                {/* Spine gradient */}
+                <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#6B4F0A" />
+                    <stop offset="40%" stopColor="#C5A059" />
+                    <stop offset="60%" stopColor="#E8C97A" />
+                    <stop offset="100%" stopColor="#6B4F0A" />
+                </linearGradient>
+                {/* Cover gradient */}
+                <linearGradient id="cg" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#1A237E" />
+                    <stop offset="100%" stopColor="#0D1754" />
+                </linearGradient>
+                {/* Page shadow under left page */}
+                <linearGradient id="lsh" x1="100%" y1="0%" x2="0%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(26,35,126,0.15)" />
+                    <stop offset="100%" stopColor="rgba(26,35,126,0)" />
+                </linearGradient>
+                {/* Page shadow under right page */}
+                <linearGradient id="rsh" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(26,35,126,0.15)" />
+                    <stop offset="100%" stopColor="rgba(26,35,126,0)" />
                 </linearGradient>
             </defs>
 
-            {/* ── COVER BACK (left) ── */}
-            <path
-                d="M 170,170 C 120,152 60,140 14,142 L 10,148 C 58,146 118,158 168,176 Z"
-                fill="#0D1754" stroke="#0D1754" strokeWidth="1"
-            />
-            {/* ── COVER BACK (right) ── */}
-            <path
-                d="M 170,170 C 220,152 280,140 326,142 L 330,148 C 282,146 222,158 172,176 Z"
-                fill="#0D1754" stroke="#0D1754" strokeWidth="1"
-            />
+            {/* ── COVER BOTTOM (left) ── */}
+            <path d="M 180,172 C 128,154 64,142 14,145 L 10,152 C 62,149 128,161 178,179 Z"
+                fill={D} />
+            {/* ── COVER BOTTOM (right) ── */}
+            <path d="M 180,172 C 232,154 296,142 346,145 L 350,152 C 298,149 232,161 182,179 Z"
+                fill={D} />
 
-            {/* ── PAGE STACK LAYERS (left side) ── */}
-            {stackLayers.map((l, i) => (
-                <path
-                    key={`ls${i}`}
-                    d={`M 168,${162 + l} C 118,${144 + l} 58,${132 + l} 12,${134 + l} L 12,${138 + l} C 60,${136 + l} 120,${148 + l} 170,${166 + l}`}
-                    fill="none"
-                    stroke={`rgba(232,228,216,${0.6 + i * 0.08})`}
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                />
+            {/* ── PAGE STACK left ── */}
+            {[6,5,4,3,2,1].map((l, i) => (
+                <path key={`ls${i}`}
+                    d={`M 178,${164+l} C 128,${146+l} 64,${134+l} 14,${137+l} L 14,${141+l} C 66,${138+l} 128,${150+l} 180,${168+l}`}
+                    fill="none" stroke={`rgba(248,245,238,${0.45+i*0.09})`} strokeWidth="1.6" strokeLinecap="round" />
             ))}
-            {/* ── PAGE STACK LAYERS (right side) ── */}
-            {stackLayers.map((l, i) => (
-                <path
-                    key={`rs${i}`}
-                    d={`M 172,${162 + l} C 222,${144 + l} 282,${132 + l} 328,${134 + l} L 328,${138 + l} C 280,${136 + l} 220,${148 + l} 170,${166 + l}`}
-                    fill="none"
-                    stroke={`rgba(232,228,216,${0.6 + i * 0.08})`}
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                />
+            {/* ── PAGE STACK right ── */}
+            {[6,5,4,3,2,1].map((l, i) => (
+                <path key={`rs${i}`}
+                    d={`M 182,${164+l} C 232,${146+l} 296,${134+l} 346,${137+l} L 346,${141+l} C 294,${138+l} 232,${150+l} 180,${168+l}`}
+                    fill="none" stroke={`rgba(248,245,238,${0.45+i*0.09})`} strokeWidth="1.6" strokeLinecap="round" />
             ))}
 
-            {/* ── LEFT PAGE SURFACE ── */}
-            <path
-                d="M 168,38 C 118,22 56,28 12,36 L 12,138 C 60,130 120,144 168,162 Z"
-                fill="url(#lPageGrad)"
-                stroke="#1A237E"
-                strokeWidth="2.5"
-                strokeLinejoin="round"
-            />
-            {/* Left page inner highlight */}
-            <path
-                d="M 162,46 C 118,32 62,38 18,44 L 18,130 C 64,122 120,136 164,152 Z"
-                fill="none"
-                stroke="rgba(255,255,255,0.6)"
-                strokeWidth="1"
-            />
-            {/* Left text lines */}
-            {[65, 80, 95, 110, 125].map((y, i) => (
-                <path
-                    key={`ll${i}`}
-                    d={`M ${30 + i} ${y - i * 0.5} L ${148 - i} ${y + i * 0.5}`}
-                    stroke="#1A237E" strokeWidth="1" opacity="0.12" strokeLinecap="round"
-                />
+            {/* ── LEFT PAGE ── */}
+            <path d="M 178,36 C 124,20 60,26 12,34 L 12,142 C 62,134 126,148 178,166 Z"
+                fill="url(#lp)" stroke={N} strokeWidth="2.5" strokeLinejoin="round" />
+            {/* left page inner border */}
+            <path d="M 170,46 C 122,32 64,38 20,44 L 20,134 C 66,126 124,140 172,156 Z"
+                fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+            {/* left shadow near spine */}
+            <path d="M 178,36 C 158,50 148,90 148,100 C 148,120 158,148 178,166 Z"
+                fill="url(#lsh)" />
+            {/* left text lines */}
+            {[62,76,90,104,118,132].map((y,i)=>(
+                <line key={i} x1={28+i} y1={y-i*0.4} x2={154-i*2} y2={y+i*0.4}
+                    stroke={N} strokeWidth="0.9" opacity="0.11" strokeLinecap="round"/>
             ))}
             {/* Cross */}
-            <text x="82" y="105" textAnchor="middle" fontSize="22" fill="#C5A059" opacity="0.25" fontWeight="bold">✝</text>
+            <text x="88" y="108" textAnchor="middle" fontSize="28" fill={G} opacity="0.22" fontWeight="bold">✝</text>
 
-            {/* ── RIGHT PAGE SURFACE (static base) ── */}
-            <path
-                d="M 172,38 C 222,22 284,28 328,36 L 328,138 C 280,130 220,144 172,162 Z"
-                fill="url(#rPageGrad)"
-                stroke="#1A237E"
-                strokeWidth="2.5"
-                strokeLinejoin="round"
-            />
-            {/* Right page inner highlight */}
-            <path
-                d="M 178,46 C 222,32 278,38 322,44 L 322,130 C 276,122 220,136 176,152 Z"
-                fill="none"
-                stroke="rgba(255,255,255,0.6)"
-                strokeWidth="1"
-            />
-            {/* Right text lines */}
-            {[65, 80, 95, 110, 125].map((y, i) => (
-                <path
-                    key={`rl${i}`}
-                    d={`M ${192 + i} ${y + i * 0.5} L ${312 - i} ${y - i * 0.5}`}
-                    stroke="#1A237E" strokeWidth="1" opacity="0.12" strokeLinecap="round"
-                />
+            {/* ── RIGHT PAGE (base) ── */}
+            <path d="M 182,36 C 236,20 300,26 348,34 L 348,142 C 298,134 234,148 182,166 Z"
+                fill="url(#rp)" stroke={N} strokeWidth="2.5" strokeLinejoin="round" />
+            {/* right page inner border */}
+            <path d="M 190,46 C 238,32 296,38 340,44 L 340,134 C 294,126 236,140 188,156 Z"
+                fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+            {/* right shadow near spine */}
+            <path d="M 182,36 C 202,50 212,90 212,100 C 212,120 202,148 182,166 Z"
+                fill="url(#rsh)" />
+            {/* right text lines */}
+            {[62,76,90,104,118,132].map((y,i)=>(
+                <line key={i} x1={206+i*2} y1={y+i*0.4} x2={332-i} y2={y-i*0.4}
+                    stroke={N} strokeWidth="0.9" opacity="0.11" strokeLinecap="round"/>
             ))}
 
             {/* ── ANIMATED FLIP PAGE ── */}
             <motion.path
-                fill="#EDEAE0"
-                stroke="#1A237E"
-                strokeWidth="1.5"
+                fill="#EDEAE0" stroke={N} strokeWidth="1.5"
                 animate={
-                    flipPhase === 0
-                        ? { d: "M 172,38 C 222,22 284,28 328,36 L 328,138 C 280,130 220,144 172,162 Z", opacity: 0 }
-                        : flipPhase === 1
-                        ? { d: "M 170,38 C 170,30 170,30 170,38 L 170,162 C 170,154 170,154 170,162 Z", opacity: 0.85 }
-                        : { d: "M 168,38 C 118,22 56,28 12,36 L 12,138 C 60,130 120,144 168,162 Z", opacity: 0.55 }
+                    flip === 0
+                        ? { d:"M 182,36 C 236,20 300,26 348,34 L 348,142 C 298,134 234,148 182,166 Z", opacity:0 }
+                    : flip === 1
+                        ? { d:"M 180,36 C 180,28 180,28 180,36 L 180,166 C 180,158 180,158 180,166 Z", opacity:0.9 }
+                        : { d:"M 178,36 C 124,20 60,26 12,34 L 12,142 C 62,134 126,148 178,166 Z", opacity:0.5 }
                 }
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{ duration: 0.52, ease:"easeInOut" }}
             />
 
             {/* ── SPINE ── */}
-            <path
-                d="M 168,36 C 164,90 164,120 168,164 C 172,120 172,90 168,36 Z"
-                fill="url(#spineGold)"
-            />
+            <path d="M 177,34 C 173,88 173,118 177,168 C 183,118 183,88 177,34 Z"
+                fill="url(#sg)" />
 
-            {/* ── BOTTOM GUTTER (concave curve) ── */}
-            <path
-                d="M 12,138 C 60,128 120,144 168,164 C 216,144 276,128 328,138"
-                fill="none"
-                stroke="#1A237E"
-                strokeWidth="3"
-                strokeLinecap="round"
-            />
+            {/* ── GUTTER (bottom concave curve) ── */}
+            <path d="M 12,142 C 64,132 126,148 180,168 C 234,148 296,132 348,142"
+                fill="none" stroke={N} strokeWidth="3" strokeLinecap="round" />
 
-            {/* ── COVER BOTTOM EDGE ── */}
-            <path
-                d="M 10,140 C 58,130 120,146 168,166 C 216,146 278,130 330,140 L 330,148 C 280,138 218,154 168,174 C 118,154 56,138 10,148 Z"
-                fill="#0D1754"
-                stroke="#1A237E"
-                strokeWidth="1"
-            />
+            {/* ── COVER BOTTOM THICK EDGE ── */}
+            <path d="M 10,144 C 62,134 126,150 180,170 C 234,150 298,134 350,144 L 350,154 C 298,144 234,160 180,180 C 126,160 62,144 10,154 Z"
+                fill="url(#cg)" stroke={D} strokeWidth="0.5" />
 
-            {/* ── OUTER COVER EDGES ── */}
-            <path d="M 10,36 L 10,148" stroke="#1A237E" strokeWidth="3.5" strokeLinecap="round" />
-            <path d="M 330,36 L 330,148" stroke="#1A237E" strokeWidth="3.5" strokeLinecap="round" />
+            {/* ── OUTER EDGES ── */}
+            <line x1="10" y1="34" x2="10" y2="154" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+            <line x1="350" y1="34" x2="350" y2="154" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+
+            {/* ── TOP EDGES (cover) ── */}
+            <path d="M 10,34 C 64,22 124,28 178,36" fill="none" stroke={N} strokeWidth="2" strokeLinecap="round"/>
+            <path d="M 182,36 C 236,28 296,22 350,34" fill="none" stroke={N} strokeWidth="2" strokeLinecap="round"/>
         </svg>
     );
 }
@@ -178,21 +161,23 @@ function BookAnimation() {
 export function SplashScreen() {
     const [visible, setVisible] = useState(true);
     const [progress, setProgress] = useState(0);
+    const [activeVersion, setActiveVersion] = useState(0);
 
     useEffect(() => {
         const start = Date.now();
-        const interval = setInterval(() => {
+        const iv = setInterval(() => {
             const elapsed = (Date.now() - start) / (TOTAL_SECONDS * 1000);
             setProgress(Math.min(elapsed, 1));
-            if (elapsed >= 1) {
-                clearInterval(interval);
-                setTimeout(() => setVisible(false), 400);
-            }
+            if (elapsed >= 1) { clearInterval(iv); setTimeout(() => setVisible(false), 400); }
         }, 50);
-        return () => clearInterval(interval);
+        return () => clearInterval(iv);
     }, []);
 
-    const handleSkip = () => setVisible(false);
+    // Cycle through version highlights
+    useEffect(() => {
+        const iv = setInterval(() => setActiveVersion(v => (v + 1) % VERSIONS.length), 1800);
+        return () => clearInterval(iv);
+    }, []);
 
     return (
         <AnimatePresence>
@@ -200,85 +185,105 @@ export function SplashScreen() {
                 <motion.div
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-                    style={{ background: "linear-gradient(160deg, #E8EDF5 0%, #D0D8E8 50%, #E8EDF5 100%)" }}
+                    transition={{ duration: 0.7 }}
+                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none"
+                    style={{ background: "linear-gradient(160deg, #E8EDF5 0%, #D4DCF0 45%, #E8EDF5 100%)" }}
+                    onClick={() => setVisible(false)}
                 >
-                    {/* Ambient glow */}
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: "#1A237E" }} />
-                        <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-1/2 w-64 h-64 rounded-full opacity-15 blur-3xl" style={{ background: "#C5A059" }} />
+                    {/* Ambient glows */}
+                    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-[0.12] blur-[80px]"
+                            style={{ background: "#1A237E" }} />
+                        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-72 h-72 rounded-full opacity-[0.10] blur-[60px]"
+                            style={{ background: "#C5A059" }} />
                     </div>
 
-                    {/* Content */}
-                    <div className="relative flex flex-col items-center gap-10">
+                    <div className="relative flex flex-col items-center gap-7 px-6">
 
-                        {/* Bible animation */}
+                        {/* Bible */}
                         <motion.div
-                            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                            initial={{ scale: 0.75, opacity: 0, y: 24 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, ease: "easeOut" }}
+                            transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
                         >
-                            <BookAnimation />
+                            <OpenBook />
                         </motion.div>
 
                         {/* Title */}
-                        <motion.div
-                            className="text-center space-y-2"
-                            initial={{ opacity: 0, y: 16 }}
+                        <motion.div className="text-center space-y-1.5"
+                            initial={{ opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, delay: 0.4 }}
-                        >
-                            <h1
-                                className="text-5xl font-black tracking-tight"
+                            transition={{ duration: 0.7, delay: 0.35 }}>
+                            <h1 className="text-5xl font-black tracking-tight leading-none"
                                 style={{
-                                    background: "linear-gradient(135deg, #C5A059 0%, #1A237E 50%, #C5A059 100%)",
-                                    WebkitBackgroundClip: "text",
-                                    WebkitTextFillColor: "transparent",
-                                    backgroundClip: "text",
-                                }}
-                            >
+                                    background: "linear-gradient(135deg, #C5A059 0%, #1A237E 45%, #42A5F5 100%)",
+                                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+                                }}>
                                 BibleQuest
                             </h1>
-                            <p className="text-sm font-semibold tracking-[0.3em] uppercase" style={{ color: "#455A80" }}>
-                                Sua jornada bíblica começa aqui
+                            <p className="text-sm font-semibold tracking-[0.28em] uppercase"
+                                style={{ color: "#455A80" }}>
+                                Sua jornada bíblica
+                            </p>
+                        </motion.div>
+
+                        {/* Available versions */}
+                        <motion.div className="flex flex-col items-center gap-2.5 w-full max-w-xs"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.6 }}>
+                            <p className="text-[10px] font-black uppercase tracking-[0.25em]"
+                                style={{ color: "#455A80" }}>
+                                Versões disponíveis
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {VERSIONS.map((v, i) => (
+                                    <motion.div
+                                        key={v.id}
+                                        animate={{
+                                            backgroundColor: activeVersion === i
+                                                ? "rgba(26,35,126,0.12)"
+                                                : "rgba(255,255,255,0.5)",
+                                            borderColor: activeVersion === i
+                                                ? "rgba(197,160,89,0.7)"
+                                                : "rgba(26,35,126,0.12)",
+                                            color: activeVersion === i ? "#1A237E" : "#455A80",
+                                            scale: activeVersion === i ? 1.08 : 1,
+                                        }}
+                                        transition={{ duration: 0.4 }}
+                                        className="px-3 py-1.5 rounded-full border text-[11px] font-black backdrop-blur"
+                                        title={v.name}
+                                    >
+                                        {v.abbr}
+                                    </motion.div>
+                                ))}
+                            </div>
+                            <p className="text-[10px] text-center leading-relaxed"
+                                style={{ color: "#6B80A8" }}>
+                                {VERSIONS[activeVersion].name}
                             </p>
                         </motion.div>
 
                         {/* Progress bar */}
-                        <motion.div
-                            className="w-48 space-y-2"
+                        <motion.div className="w-52 space-y-2.5"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.6 }}
-                        >
-                            <div className="h-1 rounded-full overflow-hidden" style={{ background: "rgba(26,35,126,0.15)" }}>
+                            transition={{ delay: 0.7 }}>
+                            <div className="h-[3px] rounded-full overflow-hidden"
+                                style={{ background: "rgba(26,35,126,0.12)" }}>
                                 <motion.div
                                     className="h-full rounded-full"
                                     style={{
-                                        background: "linear-gradient(to right, #C5A059, #1A237E)",
+                                        background: "linear-gradient(to right, #C5A059, #1A237E, #42A5F5)",
                                         width: `${progress * 100}%`,
                                     }}
-                                    transition={{ duration: 0.05 }}
                                 />
                             </div>
+                            <p className="text-center text-[10px] font-semibold"
+                                style={{ color: "#6B80A8" }}>
+                                Toque para continuar
+                            </p>
                         </motion.div>
-
-                        {/* Skip button */}
-                        <motion.button
-                            onClick={handleSkip}
-                            className="text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full border transition-all"
-                            style={{
-                                color: "#455A80",
-                                borderColor: "rgba(69,90,128,0.3)",
-                            }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 1.5 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            Pular
-                        </motion.button>
                     </div>
                 </motion.div>
             )}
