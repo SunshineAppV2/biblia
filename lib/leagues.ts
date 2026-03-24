@@ -1,14 +1,18 @@
 import { db } from "./firebase";
-import { collection, query, where, getDocs, orderBy, limit, doc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
 import { UserProfile } from "./firestore";
 
 export type LeagueTier =
-    | "BRONZE" | "PRATA" | "OURO" | "SAFIRA" | "RUBI"
-    | "ESMERALDA" | "AMETISTA" | "PEROLA" | "OBSIDIANA" | "DIAMANTE";
+    | "AGATA" | "JASPE" | "ONIX" | "AMETISTA" | "CALCEDONIA"
+    | "SARDIO" | "LAPIS" | "CRISOLITO" | "AMBAR" | "JACINTO"
+    | "TURQUESA" | "BERILO" | "SARDONICA" | "TOPAZIO" | "CRISOPRASO"
+    | "PEROLA" | "SAFIRA" | "ESMERALDA" | "RUBI" | "DIAMANTE";
 
 export const LEAGUE_ORDER: LeagueTier[] = [
-    "BRONZE", "PRATA", "OURO", "SAFIRA", "RUBI",
-    "ESMERALDA", "AMETISTA", "PEROLA", "OBSIDIANA", "DIAMANTE"
+    "AGATA", "JASPE", "ONIX", "AMETISTA", "CALCEDONIA",
+    "SARDIO", "LAPIS", "CRISOLITO", "AMBAR", "JACINTO",
+    "TURQUESA", "BERILO", "SARDONICA", "TOPAZIO", "CRISOPRASO",
+    "PEROLA", "SAFIRA", "ESMERALDA", "RUBI", "DIAMANTE",
 ];
 
 export interface LeagueConfig {
@@ -16,68 +20,149 @@ export interface LeagueConfig {
     gradient: string;
     description: string;
     label: string;
+    reference: string; // Referência bíblica
 }
 
 export const LEAGUE_CONFIGS: Record<LeagueTier, LeagueConfig> = {
-    BRONZE: {
-        color: "#cd7f32",
-        gradient: "from-[#cd7f32] to-[#8b4513]",
-        label: "Bronze",
-        description: "O início da sua jornada épica."
+    AGATA: {
+        color: "#8B7355",
+        gradient: "from-[#A0876A] to-[#5C4A2A]",
+        label: "Ágata",
+        description: "O início da sua jornada — abundante como a graça.",
+        reference: "Êxodo 28:19",
     },
-    PRATA: {
-        color: "#c0c0c0",
-        gradient: "from-[#c0c0c0] to-[#708090]",
-        label: "Prata",
-        description: "Você está ganhando ritmo!"
+    JASPE: {
+        color: "#C65D3C",
+        gradient: "from-[#C65D3C] to-[#6B2D1E]",
+        label: "Jaspe",
+        description: "Pedra fundamental, sólida como a fé.",
+        reference: "Apocalipse 21:18",
     },
-    OURO: {
-        color: "#ffd700",
-        gradient: "from-[#ffd700] to-[#b8860b]",
-        label: "Ouro",
-        description: "Brilhando como o sol da manhã."
-    },
-    SAFIRA: {
-        color: "#0f52ba",
-        gradient: "from-[#0f52ba] to-[#000080]",
-        label: "Safira",
-        description: "Profundidade e sabedoria."
-    },
-    RUBI: {
-        color: "#e0115f",
-        gradient: "from-[#e0115f] to-[#800000]",
-        label: "Rubi",
-        description: "Paixão ardente pela Palavra."
-    },
-    ESMERALDA: {
-        color: "#50c878",
-        gradient: "from-[#50c878] to-[#006400]",
-        label: "Esmeralda",
-        description: "Crescimento constante e vigor."
+    ONIX: {
+        color: "#5A5A5A",
+        gradient: "from-[#6E6E6E] to-[#1A1A1A]",
+        label: "Ônix",
+        description: "Força nas trevas, luz no coração.",
+        reference: "Gênesis 2:12",
     },
     AMETISTA: {
-        color: "#9966cc",
-        gradient: "from-[#9966cc] to-[#4b0082]",
+        color: "#9966CC",
+        gradient: "from-[#9966CC] to-[#4B0082]",
         label: "Ametista",
-        description: "Espiritualidade e foco."
+        description: "Espiritualidade e foco na Palavra.",
+        reference: "Apocalipse 21:20",
+    },
+    CALCEDONIA: {
+        color: "#7B9EB9",
+        gradient: "from-[#7B9EB9] to-[#3A5F7A]",
+        label: "Calcedônia",
+        description: "Brilho suave de uma fé crescente.",
+        reference: "Apocalipse 21:19",
+    },
+    SARDIO: {
+        color: "#CC4E1A",
+        gradient: "from-[#E05A20] to-[#8B2500]",
+        label: "Sárdio",
+        description: "Fervor ardente como brasa de altar.",
+        reference: "Êxodo 28:17",
+    },
+    LAPIS: {
+        color: "#1F4D8C",
+        gradient: "from-[#2A5FA8] to-[#0D2850]",
+        label: "Lápis-Lazúli",
+        description: "O azul profundo dos céus proclamados.",
+        reference: "Jó 28:6",
+    },
+    CRISOLITO: {
+        color: "#8B9E2C",
+        gradient: "from-[#9BB030] to-[#4A5A10]",
+        label: "Crisólito",
+        description: "Verde-oliva, como oliveiras na terra prometida.",
+        reference: "Apocalipse 21:20",
+    },
+    AMBAR: {
+        color: "#E8A020",
+        gradient: "from-[#F5B830] to-[#A06010]",
+        label: "Âmbar",
+        description: "Cor de fogo — visão e revelação divina.",
+        reference: "Ezequiel 1:4",
+    },
+    JACINTO: {
+        color: "#4472CA",
+        gradient: "from-[#5585E0] to-[#1A3B80]",
+        label: "Jacinto",
+        description: "Brilho que confunde — mistério de Deus.",
+        reference: "Apocalipse 21:20",
+    },
+    TURQUESA: {
+        color: "#40B5AD",
+        gradient: "from-[#4ECDC4] to-[#1A7B73]",
+        label: "Turquesa",
+        description: "Raridade pura — dedicação sem igual.",
+        reference: "Êxodo 28:18",
+    },
+    BERILO: {
+        color: "#5BB8D4",
+        gradient: "from-[#6CCAE8] to-[#1A6E8A]",
+        label: "Berilo",
+        description: "Família da esmeralda — nobre em espírito.",
+        reference: "Apocalipse 21:20",
+    },
+    SARDONICA: {
+        color: "#9B3A2C",
+        gradient: "from-[#B04535] to-[#5C1A10]",
+        label: "Sardônica",
+        description: "Camadas raras de força e perseverança.",
+        reference: "Apocalipse 21:20",
+    },
+    TOPAZIO: {
+        color: "#F5A623",
+        gradient: "from-[#FFB830] to-[#C47A0A]",
+        label: "Topázio",
+        description: "O Topázio Imperial — saedoria de alto valor.",
+        reference: "Jó 28:19",
+    },
+    CRISOPRASO: {
+        color: "#73CC3C",
+        gradient: "from-[#82E040] to-[#3A7A10]",
+        label: "Crisópraso",
+        description: "Verde vivo — crescimento e renovação.",
+        reference: "Apocalipse 21:20",
     },
     PEROLA: {
-        color: "#eae0c8",
-        gradient: "from-[#eae0c8] to-[#c19a6b]",
+        color: "#D4C5A0",
+        gradient: "from-[#EAE0C8] to-[#A07848]",
         label: "Pérola",
-        description: "Raridade e pureza."
+        description: "A pérola de grande valor — tudo foi dado por ela.",
+        reference: "Mateus 13:45",
     },
-    OBSIDIANA: {
-        color: "#444444",
-        gradient: "from-[#444444] to-[#000000]",
-        label: "Obsidiana",
-        description: "Força inabalável."
+    SAFIRA: {
+        color: "#0F52BA",
+        gradient: "from-[#1A65D0] to-[#000080]",
+        label: "Safira",
+        description: "Uma das Quatro Grandes — profundidade e sabedoria.",
+        reference: "Jó 28:16",
+    },
+    ESMERALDA: {
+        color: "#50C878",
+        gradient: "from-[#5EE088] to-[#006400]",
+        label: "Esmeralda",
+        description: "Valor altíssimo — perfeição sem inclusões.",
+        reference: "Apocalipse 4:3",
+    },
+    RUBI: {
+        color: "#E0115F",
+        gradient: "from-[#F01A70] to-[#800000]",
+        label: "Rubi",
+        description: "Mais valioso que o diamante branco.",
+        reference: "Provérbios 3:15",
     },
     DIAMANTE: {
-        color: "#b9f2ff",
-        gradient: "from-[#b9f2ff] to-[#4682b4]",
+        color: "#B9F2FF",
+        gradient: "from-[#D0F8FF] to-[#4682B4]",
         label: "Diamante",
-        description: "A glória máxima do conhecimento."
+        description: "O ápice da dureza e brilho — a liga mestre.",
+        reference: "Jeremias 17:1",
     },
 };
 
@@ -89,16 +174,13 @@ export interface LeagueParticipant {
 }
 
 export interface League {
-    id: string; // e.g., "2024-W01-BRONZE-001"
+    id: string;
     tier: LeagueTier;
-    startDate: string; // ISO Date
-    endDate: string; // ISO Date
+    startDate: string;
+    endDate: string;
     participants: LeagueParticipant[];
 }
 
-/**
- * Generates the current week ID (e.g., "2025-W01")
- */
 export function getCurrentWeekId(): string {
     const now = new Date();
     const oneJan = new Date(now.getFullYear(), 0, 1);
@@ -107,16 +189,7 @@ export function getCurrentWeekId(): string {
     return `${now.getFullYear()}-W${week.toString().padStart(2, '0')}`;
 }
 
-/**
- * Gets or joins a league for the user
- * Simplified logic for MVP: randomly assigns to a bucket if not assigned
- */
 export async function getLeagueLeaderboard(user: UserProfile): Promise<LeagueParticipant[]> {
-    // In a real app, we would look up the specific league ID stored in the user profile.
-    // For this MVP, we will query users in the same tier.
-
-    // This is a simplified "Global Tier" view. 
-    // In a full bucket system, we'd filter by a 'leagueId' field on the user.
     const usersRef = collection(db, "users");
     const q = query(
         usersRef,
@@ -141,12 +214,30 @@ export async function getLeagueLeaderboard(user: UserProfile): Promise<LeaguePar
     return leaderboard;
 }
 
-// Logic helpers for UI
+/** Converte ligas do sistema antigo para o novo (compatibilidade com dados existentes). */
+export function migrateLegacyLeague(tier: string): LeagueTier {
+    const legacy: Record<string, LeagueTier> = {
+        BRONZE: "AGATA",
+        PRATA: "CALCEDONIA",
+        OURO: "TOPAZIO",
+        OBSIDIANA: "LAPIS",
+        // As abaixo existem nos dois sistemas com o mesmo nome
+        SAFIRA: "SAFIRA",
+        RUBI: "RUBI",
+        ESMERALDA: "ESMERALDA",
+        AMETISTA: "AMETISTA",
+        PEROLA: "PEROLA",
+        DIAMANTE: "DIAMANTE",
+    };
+    if (LEAGUE_ORDER.includes(tier as LeagueTier)) return tier as LeagueTier;
+    return legacy[tier] ?? "AGATA";
+}
+
 export function getPromotionZone(tier: LeagueTier): number {
-    return 5; // Top 5 promote
+    return 5;
 }
 
 export function getDemotionZone(tier: LeagueTier): number {
-    if (tier === "BRONZE") return 0; // Can't go below Bronze
-    return 25; // Users from rank 26-30 demote
+    if (tier === "AGATA") return 0;
+    return 25;
 }

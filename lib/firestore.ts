@@ -30,7 +30,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             photoURL: user.photoURL,
             xp: 0,
             weeklyXp: 0,
-            currentLeague: "BRONZE",
+            currentLeague: "AGATA",
             streak: 0,
             totalChapters: 0,
             lastActive: null,

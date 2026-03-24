@@ -1,45 +1,44 @@
 @import "tailwindcss";
 
+/* ============================================================
+   PALETA "SERENIDADE SAGRADA" — Refinada
+   ============================================================ */
+
 :root {
-  /* ===== Paleta "Serenidade Sagrada" ===== */
+  /* Fundo e texto */
+  --background: #E8EDF5;        /* Azul névoa — suave e limpo */
+  --foreground: #0E1B5C;        /* Navy profundo — máximo contraste */
 
-  --background: #E8EDF5;
-  /* Azul névoa — fundo principal */
-  --foreground: #1A237E;
-  /* Azul Noturno — texto principal legível sobre fundo claro */
-
-  --primary: #1A237E;
-  /* Azul Noturno — cor principal, confiança e autoridade */
+  /* Cores primárias */
+  --primary: #1A237E;           /* Azul Real — autoridade e confiança */
   --primary-foreground: #FDFBF7;
 
-  --secondary: #C5A059;
-  /* Dourado Suave — valor espiritual e iluminação */
-  --secondary-foreground: #07091C;
+  /* Dourado bíblico */
+  --secondary: #B8820A;         /* Dourado âmbar — mais rico e saturado */
+  --secondary-foreground: #FDFBF7;
 
-  --accent: #1565C0;
-  /* Azul mais profundo — ações e destaques sobre fundo claro */
+  /* Ação / destaque */
+  --accent: #0D47A1;            /* Azul profundo — CTAs e links */
   --accent-foreground: #FDFBF7;
 
-  --card: rgba(255, 255, 255, 0.60);
-  /* Branco semitransparente — cards legíveis */
-  --card-foreground: #1A237E;
+  /* Cards e superfícies */
+  --card: rgba(255, 255, 255, 0.82);
+  --card-foreground: #0E1B5C;
 
-  --muted: #D0D8E8;
-  /* Azul névoa médio */
-  --muted-foreground: #455A80;
-  /* Azul acinzentado — texto secundário legível */
+  /* Tons neutros */
+  --muted: #CDD5E8;
+  --muted-foreground: #3D5080;
 
-  --glass: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(197, 160, 89, 0.35);
-  /* Borda dourada suave */
+  /* Glassmorphism com borda dourada */
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(184, 130, 10, 0.30);
 
-  /* Área de leitura — papel e tinta */
-  --reading-bg: #FDFBF7;
-  --reading-text: #263238;
-  /* Cinza Carvão */
-  --reading-muted: #607D8B;
+  /* Superfície de leitura — papel antigo quente */
+  --reading-bg: #FEFAF0;
+  --reading-text: #1A1A2E;
+  --reading-muted: #5A6E8A;
 
-  /* Fonts */
+  /* Fontes */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -65,6 +64,53 @@
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* ============================================================
+   MODO NOTURNO — "Abismo Sagrado"
+   ============================================================ */
+
+.dark {
+  --background: #080D1C;        /* Navy-preto — dramático */
+  --foreground: #DCE4F5;        /* Branco azulado suave */
+
+  --primary: #7B9CF4;           /* Periwinkle vivo — legível no escuro */
+  --primary-foreground: #080D1C;
+
+  --secondary: #D4A430;         /* Dourado mais brilhante no escuro */
+  --secondary-foreground: #080D1C;
+
+  --accent: #60A5FA;            /* Azul céu — ações claras */
+  --accent-foreground: #080D1C;
+
+  --card: rgba(12, 22, 55, 0.96);
+  --card-foreground: #DCE4F5;
+
+  --muted: #121E40;
+  --muted-foreground: #7B9BC8;
+
+  --glass: rgba(8, 16, 42, 0.92);
+  --glass-border: rgba(212, 164, 48, 0.18);
+
+  --reading-bg: #0C1428;        /* Navy noturno para leitura */
+  --reading-text: #C8D4F0;      /* Lavanda suave — repousa os olhos */
+  --reading-muted: #7B9BC8;
+}
+
+/* Header adapta ao modo noturno */
+.dark header {
+  background: rgba(8, 16, 42, 0.90) !important;
+  border-color: rgba(212, 164, 48, 0.12) !important;
+}
+
+/* Cards em modo noturno — sobrescrevem bg-white hardcoded */
+.dark .bg-white\/70,
+.dark .bg-white\/80 {
+  background: rgba(12, 22, 55, 0.96) !important;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -73,51 +119,26 @@ body {
   min-height: 100vh;
 }
 
-/* Glassmorphism com toque de ouro */
+/* Glassmorphism com toque dourado */
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
 }
 
 .glass-card {
   background: var(--glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   @apply rounded-2xl p-6 shadow-xl;
 }
 
-/* Área de leitura bíblica — papel antigo */
+/* Área de leitura bíblica */
 .reading-surface {
   background: var(--reading-bg);
   color: var(--reading-text);
-}
-
-/* Dark mode — Cinza Carvão */
-.dark {
-  --background: #111827;
-  --foreground: #E8EDF5;
-  --primary: #93A8DC;
-  --primary-foreground: #07091C;
-  --secondary: #C5A059;
-  --accent: #60A5FA;
-  --accent-foreground: #07091C;
-  --card: rgba(30, 40, 60, 0.90);
-  --card-foreground: #E8EDF5;
-  --muted: #1E2A40;
-  --muted-foreground: #8CA0C0;
-  --glass: rgba(15, 20, 35, 0.92);
-  --glass-border: rgba(197, 160, 89, 0.20);
-  --reading-bg: #1A1F2E;
-  --reading-text: #D4D8E2;
-  --reading-muted: #8CA0C0;
-}
-
-/* Dark mode: header and white-bg cards adapt */
-.dark header {
-  background: rgba(15, 20, 35, 0.88) !important;
 }
 
 /* Smooth Scrolling */

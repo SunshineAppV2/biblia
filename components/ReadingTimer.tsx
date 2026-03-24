@@ -9,8 +9,7 @@ interface ReadingTimerProps {
     className?: string;
 }
 
-// DEV: set to true to disable focus enforcement during testing
-const DISABLE_FOCUS_CHECK = true;
+const DISABLE_FOCUS_CHECK = false;
 
 export function ReadingTimer({ averageTimeSeconds, onComplete, className }: ReadingTimerProps) {
     const [elapsed, setElapsed] = useState(0);

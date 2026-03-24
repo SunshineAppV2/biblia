@@ -1,6 +1,6 @@
 "use client";
 
-import { LeagueTier, LEAGUE_CONFIGS } from "@/lib/leagues";
+import { LeagueTier, LEAGUE_CONFIGS, migrateLegacyLeague } from "@/lib/leagues";
 import { cn } from "@/lib/utils";
 import { Shield, Star, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
@@ -13,7 +13,8 @@ interface LeagueBadgeProps {
 }
 
 export function LeagueBadge({ tier, size = "md", showLabel = true, className }: LeagueBadgeProps) {
-    const config = LEAGUE_CONFIGS[tier];
+    const resolvedTier = migrateLegacyLeague(tier);
+    const config = LEAGUE_CONFIGS[resolvedTier];
 
     const sizeClasses = {
         sm: "w-8 h-8 text-xs",

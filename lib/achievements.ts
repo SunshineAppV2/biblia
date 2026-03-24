@@ -30,9 +30,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     // Nível (extras)
     { id: "level_66", title: "Guardião da Palavra", description: "Atingiu o nível máximo — 66 livros dominados", icon: "🛡️", xpBonus: 1000, category: "nivel" },
     // Liga
-    { id: "league_prata", title: "Prata Polida", description: "Promovido para a Liga Prata", icon: "🥈", xpBonus: 50, category: "liga" },
-    { id: "league_ouro", title: "Toque de Ouro", description: "Promovido para a Liga Ouro", icon: "🥇", xpBonus: 100, category: "liga" },
-    { id: "league_diamante", title: "Diamante", description: "Chegou à Liga Diamante!", icon: "💎", xpBonus: 500, category: "liga" },
+    { id: "league_turquesa", title: "Turquesa", description: "Atingiu a Liga Turquesa — metade da jornada!", icon: "🩵", xpBonus: 100, category: "liga" },
+    { id: "league_safira", title: "Safira", description: "Uma das Quatro Grandes — Liga Safira!", icon: "💙", xpBonus: 300, category: "liga" },
+    { id: "league_diamante", title: "Diamante", description: "O ápice do brilho — Liga Diamante!", icon: "💎", xpBonus: 1000, category: "liga" },
     // Sabedoria (pós nível 66)
     { id: "wisdom_10", title: "Contemplativo", description: "Conquistou 10 Pontos de Sabedoria após o nível máximo", icon: "🕊️", xpBonus: 200, category: "sabedoria" },
     { id: "wisdom_100", title: "Mestre Contemplativo", description: "Conquistou 100 Pontos de Sabedoria", icon: "✨", xpBonus: 1000, category: "sabedoria" },
@@ -40,8 +40,8 @@ export const ACHIEVEMENTS: Achievement[] = [
     { id: "streak_365", title: "Um Ano Fiel", description: "365 dias consecutivos de leitura", icon: "🌟", xpBonus: 2000, category: "streak" },
 ];
 
-const LEAGUES_ABOVE_PRATA = ["PRATA", "OURO", "SAFIRA", "RUBI", "ESMERALDA", "AMETISTA", "PEROLA", "OBSIDIANA", "DIAMANTE"];
-const LEAGUES_ABOVE_OURO = ["OURO", "SAFIRA", "RUBI", "ESMERALDA", "AMETISTA", "PEROLA", "OBSIDIANA", "DIAMANTE"];
+const LEAGUES_ABOVE_TURQUESA = ["TURQUESA","BERILO","SARDONICA","TOPAZIO","CRISOPRASO","PEROLA","SAFIRA","ESMERALDA","RUBI","DIAMANTE"];
+const LEAGUES_ABOVE_SAFIRA = ["SAFIRA","ESMERALDA","RUBI","DIAMANTE"];
 
 export interface AchievementStats {
     totalChapters: number;
@@ -81,8 +81,8 @@ export async function checkAndUnlockAchievements(
                 case "level_10": shouldUnlock = stats.level >= 10; break;
                 case "level_20": shouldUnlock = stats.level >= 20; break;
                 case "level_66": shouldUnlock = stats.level >= 66; break;
-                case "league_prata": shouldUnlock = LEAGUES_ABOVE_PRATA.includes(stats.currentLeague); break;
-                case "league_ouro": shouldUnlock = LEAGUES_ABOVE_OURO.includes(stats.currentLeague); break;
+                case "league_turquesa": shouldUnlock = LEAGUES_ABOVE_TURQUESA.includes(stats.currentLeague); break;
+                case "league_safira": shouldUnlock = LEAGUES_ABOVE_SAFIRA.includes(stats.currentLeague); break;
                 case "league_diamante": shouldUnlock = stats.currentLeague === "DIAMANTE"; break;
                 case "wisdom_10": shouldUnlock = (stats.wisdomPoints || 0) >= 10; break;
                 case "wisdom_100": shouldUnlock = (stats.wisdomPoints || 0) >= 100; break;
