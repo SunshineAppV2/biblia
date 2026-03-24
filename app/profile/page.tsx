@@ -42,13 +42,13 @@ export default function ProfilePage() {
     const totalAchievements = ACHIEVEMENTS.length;
 
     return (
-        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#37474F] via-[#2E3B42] to-[#1C262B] pb-24">
+        <div className="min-h-screen bg-background pb-24">
             {/* Header */}
             <header className="p-4 flex items-center justify-between glass border-b border-white/5 sticky top-0 z-50">
-                <Link href="/" className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                    <ChevronLeft className="w-6 h-6 text-white" />
+                <Link href="/" className="p-2 hover:bg-primary/10 rounded-full transition-colors">
+                    <ChevronLeft className="w-6 h-6 text-primary" />
                 </Link>
-                <h1 className="text-lg font-black text-white uppercase italic tracking-widest">Seu Perfil</h1>
+                <h1 className="text-lg font-black text-primary uppercase italic tracking-widest">Seu Perfil</h1>
                 <button
                     onClick={logout}
                     className="text-xs font-bold text-red-400 p-2 hover:bg-red-400/10 rounded-lg transition-colors"
@@ -73,13 +73,13 @@ export default function ProfilePage() {
                         <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="absolute -bottom-2 -right-2 bg-secondary text-secondary-foreground font-black p-2 rounded-xl shadow-lg border-2 border-[#2E3B42] text-xs"
+                            className="absolute -bottom-2 -right-2 bg-secondary text-secondary-foreground font-black p-2 rounded-xl shadow-lg border-2 border-background text-xs"
                         >
                             NV. {levelInfo.currentLevel}
                         </motion.div>
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black text-white italic truncate max-w-[300px]">
+                        <h2 className="text-3xl font-black text-primary italic truncate max-w-[300px]">
                             {user.displayName}
                         </h2>
                         <p className="text-muted-foreground text-sm flex items-center justify-center gap-2 mt-1">
@@ -117,28 +117,28 @@ export default function ProfilePage() {
                             <Flame className="w-4 h-4 fill-current" />
                             <span className="text-xs uppercase font-black">Ofensiva</span>
                         </div>
-                        <div className="text-2xl font-black text-white">{profile.streak} dias</div>
+                        <div className="text-2xl font-black text-primary">{profile.streak} dias</div>
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-accent/50">
                         <div className="text-accent flex items-center gap-2">
                             <Trophy className="w-4 h-4 fill-current" />
                             <span className="text-xs uppercase font-black">XP Semanal</span>
                         </div>
-                        <div className="text-2xl font-black text-white">{profile.weeklyXp} XP</div>
+                        <div className="text-2xl font-black text-primary">{profile.weeklyXp} XP</div>
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-primary/50">
                         <div className="text-primary flex items-center gap-2">
                             <BookOpen className="w-4 h-4" />
                             <span className="text-xs uppercase font-black">Capítulos</span>
                         </div>
-                        <div className="text-2xl font-black text-white">{profile.totalChapters || 0}</div>
+                        <div className="text-2xl font-black text-primary">{profile.totalChapters || 0}</div>
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-secondary/50">
                         <div className="text-secondary flex items-center gap-2">
                             <Zap className="w-4 h-4 fill-current" />
                             <span className="text-xs uppercase font-black">Conquistas</span>
                         </div>
-                        <div className="text-2xl font-black text-white">
+                        <div className="text-2xl font-black text-primary">
                             {unlockedCount}/{totalAchievements}
                         </div>
                     </div>
@@ -146,12 +146,12 @@ export default function ProfilePage() {
 
                 {/* Wisdom Points — only shown when user reached level 66 */}
                 {(profile.wisdomPoints || 0) > 0 && (
-                    <section className="glass-card p-6 space-y-4 border border-secondary/20 bg-gradient-to-br from-secondary/10 to-black">
+                    <section className="glass-card p-6 space-y-4 border border-secondary/30 bg-gradient-to-br from-secondary/10 to-secondary/5">
                         <div className="flex items-center gap-3">
                             <span className="text-3xl">🕊️</span>
                             <div>
                                 <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">Leitura Contemplativa</span>
-                                <h3 className="text-xl font-black text-white">
+                                <h3 className="text-xl font-black text-primary">
                                     {profile.wisdomPoints} Pontos de Sabedoria
                                 </h3>
                                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -191,11 +191,11 @@ export default function ProfilePage() {
                 )}
 
                 {/* League Status */}
-                <section className="glass-card p-6 flex items-center gap-6 bg-gradient-to-br from-primary/20 to-black border-secondary/20">
+                <section className="glass-card p-6 flex items-center gap-6 bg-gradient-to-br from-primary/10 to-primary/5 border-secondary/30">
                     <LeagueBadge tier={profile.currentLeague as LeagueTier} size="lg" />
                     <div className="flex-1 space-y-1">
                         <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Liga Atual</span>
-                        <h3 className="text-2xl font-black text-white uppercase italic tracking-tight">
+                        <h3 className="text-2xl font-black text-primary uppercase italic tracking-tight">
                             Liga {profile.currentLeague}
                         </h3>
                         <p className="text-xs text-muted-foreground">{leagueConfig.description}</p>
@@ -204,9 +204,14 @@ export default function ProfilePage() {
 
                 {/* Achievements */}
                 <section className="space-y-4">
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest px-2 flex items-center gap-2">
-                        <Award className="w-4 h-4 text-primary" /> Conquistas ({unlockedCount}/{totalAchievements})
-                    </h3>
+                    <div className="flex items-center justify-between px-2">
+                        <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
+                            <Award className="w-4 h-4 text-primary" /> Conquistas ({unlockedCount}/{totalAchievements})
+                        </h3>
+                        <Link href="/conquistas" className="text-xs text-accent font-bold hover:underline">
+                            Ver todas →
+                        </Link>
+                    </div>
                     <div className="space-y-3">
                         {ACHIEVEMENTS.map((achievement: Achievement, i: number) => {
                             const isUnlocked = unlockedIds.includes(achievement.id);
@@ -230,7 +235,7 @@ export default function ProfilePage() {
                                         {achievement.icon}
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-sm font-bold text-white">{achievement.title}</div>
+                                        <div className="text-sm font-bold text-primary">{achievement.title}</div>
                                         <div className="text-xs text-muted-foreground">{achievement.description}</div>
                                         <div className="text-[10px] text-accent font-bold mt-1">+{achievement.xpBonus} XP</div>
                                     </div>

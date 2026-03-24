@@ -18,6 +18,7 @@ import { QuizModal } from "@/components/QuizModal";
 import { QuizOfferModal } from "@/components/QuizOfferModal";
 import { getQuizBank } from "@/lib/quiz-data";
 import { AdBanner } from "@/components/AdBanner";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import { VersionSelector } from "@/components/VersionSelector";
 import { updateUserVersion, getUserProfile, applyXpDelta } from "@/lib/firestore";
 import { checkAndUnlockAchievements } from "@/lib/achievements";
@@ -560,6 +561,8 @@ export default function Home() {
                 level={newLevelReached}
                 onClose={() => setShowLevelUp(false)}
             />
+
+            <OnboardingModal />
 
             {/* Footer */}
             {!isReading && (
