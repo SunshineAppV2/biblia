@@ -19,11 +19,10 @@ export interface ChapterContent {
 // Version mapping to bolls.life API codes
 // bolls.life Portuguese translations: ARC, ARA, NTPT
 export const VERSIONS = [
-    { id: "ARC", name: "Almeida Revista e Corrigida", apiCode: "ARC" },
-    { id: "ARA", name: "Almeida Revista e Atualizada", apiCode: "ARA" },
-    { id: "NTLH", name: "Linguagem de Hoje", apiCode: "NTLH" },
-    { id: "NVI", name: "Nova Versão Internacional", apiCode: "NVI" },
-    { id: "NAA", name: "Nova Almeida Atualizada", apiCode: "NAA" },
+    { id: "ARC",  name: "Almeida Revista e Corrigida",  apiCode: "ARC"  },
+    { id: "ARA",  name: "Almeida Revista e Atualizada",  apiCode: "ARA"  },
+    { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", apiCode: "NTLH" },
+    { id: "NAA",  name: "Nova Almeida Atualizada",       apiCode: "NAA"  },
 ];
 
 interface BollsVerse {
