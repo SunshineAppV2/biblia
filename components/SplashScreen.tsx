@@ -158,10 +158,27 @@ function OpenBook() {
     );
 }
 
+const VERSION_KEY = "biblequest_version";
+
+export function getStoredVersion(): string {
+    if (typeof window === "undefined") return "ARC";
+    return localStorage.getItem(VERSION_KEY) || "ARC";
+}
+
 export function SplashScreen() {
     const [visible, setVisible] = useState(true);
     const [progress, setProgress] = useState(0);
     const [activeVersion, setActiveVersion] = useState(0);
+    const [selectedVersion, setSelectedVersion] = useState<string | null>(null);
+    const [cycling, setCycling] = useState(true);
+
+    useEffect(() => {
+        const stored = localStorage.getItem(VERSION_KEY);
+        if (stored) {
+            const idx = VERSIONS.findIndex(v => v.id === stored);
+            if (idx >= 0) { setActiveVersion(idx); setSelectedVersion(stored); setCycling(false); }
+        }
+    }, []);
 
     useEffect(() => {
         const start = Date.now();
@@ -173,11 +190,19 @@ export function SplashScreen() {
         return () => clearInterval(iv);
     }, []);
 
-    // Cycle through version highlights
+    // Cycle through version highlights only when not manually selected
     useEffect(() => {
+        if (!cycling) return;
         const iv = setInterval(() => setActiveVersion(v => (v + 1) % VERSIONS.length), 1800);
         return () => clearInterval(iv);
-    }, []);
+    }, [cycling]);
+
+    const handleSelectVersion = (id: string, idx: number) => {
+        setSelectedVersion(id);
+        setActiveVersion(idx);
+        setCycling(false);
+        localStorage.setItem(VERSION_KEY, id);
+    };
 
     return (
         <AnimatePresence>
@@ -237,30 +262,42 @@ export function SplashScreen() {
                                 Versões disponíveis
                             </p>
                             <div className="flex flex-wrap justify-center gap-2">
-                                {VERSIONS.map((v, i) => (
-                                    <motion.div
-                                        key={v.id}
-                                        animate={{
-                                            backgroundColor: activeVersion === i
-                                                ? "rgba(26,35,126,0.12)"
-                                                : "rgba(255,255,255,0.5)",
-                                            borderColor: activeVersion === i
-                                                ? "rgba(197,160,89,0.7)"
-                                                : "rgba(26,35,126,0.12)",
-                                            color: activeVersion === i ? "#1A237E" : "#455A80",
-                                            scale: activeVersion === i ? 1.08 : 1,
-                                        }}
-                                        transition={{ duration: 0.4 }}
-                                        className="px-3 py-1.5 rounded-full border text-[11px] font-black backdrop-blur"
-                                        title={v.name}
-                                    >
-                                        {v.abbr}
-                                    </motion.div>
-                                ))}
+                                {VERSIONS.map((v, i) => {
+                                    const isSelected = selectedVersion === v.id;
+                                    const isActive = activeVersion === i;
+                                    return (
+                                        <motion.button
+                                            key={v.id}
+                                            onClick={(e) => { e.stopPropagation(); handleSelectVersion(v.id, i); }}
+                                            animate={{
+                                                backgroundColor: isSelected
+                                                    ? "rgba(197,160,89,0.18)"
+                                                    : isActive
+                                                    ? "rgba(26,35,126,0.10)"
+                                                    : "rgba(255,255,255,0.5)",
+                                                borderColor: isSelected
+                                                    ? "rgba(197,160,89,0.9)"
+                                                    : isActive
+                                                    ? "rgba(26,35,126,0.35)"
+                                                    : "rgba(26,35,126,0.12)",
+                                                color: isSelected ? "#8B6914" : isActive ? "#1A237E" : "#455A80",
+                                                scale: isSelected ? 1.12 : isActive ? 1.06 : 1,
+                                            }}
+                                            transition={{ duration: 0.35 }}
+                                            className="px-3 py-1.5 rounded-full border text-[11px] font-black backdrop-blur cursor-pointer"
+                                            title={v.name}
+                                        >
+                                            {isSelected && <span className="mr-1">✓</span>}{v.abbr}
+                                        </motion.button>
+                                    );
+                                })}
                             </div>
                             <p className="text-[10px] text-center leading-relaxed"
                                 style={{ color: "#6B80A8" }}>
-                                {VERSIONS[activeVersion].name}
+                                {selectedVersion
+                                    ? <><span style={{ color: "#8B6914", fontWeight: 700 }}>✓ Selecionada: </span>{VERSIONS[activeVersion].name}</>
+                                    : VERSIONS[activeVersion].name
+                                }
                             </p>
                         </motion.div>
 

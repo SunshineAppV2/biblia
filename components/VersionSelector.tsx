@@ -40,27 +40,41 @@ export function VersionSelector({ currentVersion, onVersionChange, className }: 
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-56 rounded-xl bg-[#2E3B42] border border-secondary/20 shadow-2xl z-20 overflow-hidden"
+                            className="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-secondary/25 shadow-xl z-20 overflow-hidden"
                         >
-                            <div className="p-2 space-y-1">
-                                {VERSIONS.map((v) => (
-                                    <button
-                                        key={v.id}
-                                        onClick={() => {
-                                            onVersionChange(v.id);
-                                            setIsOpen(false);
-                                        }}
-                                        className={cn(
-                                            "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
-                                            currentVersion === v.id
-                                                ? "bg-primary/20 text-primary font-bold"
-                                                : "text-muted-foreground hover:bg-primary/20 hover:text-foreground"
-                                        )}
-                                    >
-                                        <div className="font-bold">{v.id}</div>
-                                        <div className="text-[10px] opacity-60 uppercase tracking-tighter">{v.name}</div>
-                                    </button>
-                                ))}
+                            <div className="px-3 py-2 border-b border-primary/8">
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Versão da Bíblia</p>
+                            </div>
+                            <div className="p-2 space-y-0.5">
+                                {VERSIONS.map((v) => {
+                                    const isActive = currentVersion === v.id;
+                                    return (
+                                        <button
+                                            key={v.id}
+                                            onClick={() => { onVersionChange(v.id); setIsOpen(false); }}
+                                            className={cn(
+                                                "w-full text-left px-3 py-2.5 rounded-xl text-sm transition-all flex items-center justify-between gap-2",
+                                                isActive
+                                                    ? "bg-secondary/15 border border-secondary/40"
+                                                    : "hover:bg-primary/6 border border-transparent"
+                                            )}
+                                        >
+                                            <div>
+                                                <div className={cn("font-black text-sm", isActive ? "text-secondary" : "text-primary")}>
+                                                    {v.id}
+                                                </div>
+                                                <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">{v.name}</div>
+                                            </div>
+                                            {isActive && (
+                                                <div className="shrink-0 w-5 h-5 rounded-full bg-secondary flex items-center justify-center">
+                                                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </motion.div>
                     </>
