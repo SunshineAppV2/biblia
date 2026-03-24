@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Providers } from "./Providers";
+import { SplashScreen } from "@/components/SplashScreen";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({
                 />
             </head>
             <body className="antialiased">
+                <SplashScreen />
                 <Providers>
                     {children}
                 </Providers>
