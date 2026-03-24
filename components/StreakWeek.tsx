@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 
@@ -10,16 +11,20 @@ interface StreakWeekProps {
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
 export function StreakWeek({ streak }: StreakWeekProps) {
+    const [readDates, setReadDates] = useState<string[]>([]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem("biblequest_read_dates");
+        setReadDates(stored ? JSON.parse(stored) : []);
+    }, []);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Build last 7 days
     const days = Array.from({ length: 7 }, (_, i) => {
         const d = new Date(today);
         d.setDate(today.getDate() - (6 - i));
         const dateStr = d.toISOString().slice(0, 10);
-        const stored = localStorage.getItem("biblequest_read_dates");
-        const readDates: string[] = stored ? JSON.parse(stored) : [];
         const isRead = readDates.includes(dateStr);
         const isToday = i === 6;
         return { label: DAY_LABELS[d.getDay()], isRead, isToday, dateStr };
