@@ -16,6 +16,17 @@ function calcTime(question: PreparedQuestion): number {
 const XP_CORRECT = 30;
 const XP_WRONG = -15;
 
+function getComboMultiplier(combo: number): number {
+    if (combo >= 2) return 2.0;
+    if (combo === 1) return 1.5;
+    return 1.0;
+}
+function getComboLabel(combo: number): string {
+    if (combo >= 2) return "COMBO ×2!";
+    if (combo === 1) return "COMBO ×1.5!";
+    return "";
+}
+
 const CONFETTI_EMOJIS = ["🎉", "✨", "🏆", "⭐", "🎊", "💫", "🌟", "🙌"];
 const SAD_EMOJIS = ["😢", "💧", "😞", "📖", "🙈"];
 
@@ -75,6 +86,8 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
     const [results, setResults] = useState<AnswerState[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [showParticles, setShowParticles] = useState(false);
+    const [combo, setCombo] = useState(0);
+    const [lastXpGained, setLastXpGained] = useState(0);
 
     // Timer
     const [timeLeft, setTimeLeft] = useState(() =>
@@ -127,7 +140,17 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
         const isCorrect = optionIndex === currentQuestion.correctIndex;
         const state: AnswerState = isCorrect ? "correct" : "wrong";
         setAnswerState(state);
-        setXpDelta(prev => prev + (isCorrect ? XP_CORRECT : XP_WRONG));
+        if (isCorrect) {
+            const multiplier = getComboMultiplier(combo);
+            const gained = Math.round(XP_CORRECT * multiplier);
+            setLastXpGained(gained);
+            setXpDelta(prev => prev + gained);
+            setCombo(c => c + 1);
+        } else {
+            setLastXpGained(XP_WRONG);
+            setXpDelta(prev => prev + XP_WRONG);
+            setCombo(0);
+        }
         setResults(prev => [...prev, state]);
     };
 
@@ -191,6 +214,28 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                 ))}
                             </div>
                         </div>
+
+                        {/* Combo indicator */}
+                        <AnimatePresence>
+                            {combo > 0 && (
+                                <motion.div
+                                    key={combo}
+                                    initial={{ opacity: 0, scale: 0.7, y: -8 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex items-center justify-center gap-2 py-1.5 text-xs font-black uppercase tracking-widest"
+                                    style={{ background: combo >= 2 ? "rgba(184,130,10,0.15)" : "rgba(13,71,161,0.12)" }}
+                                >
+                                    <span className="text-base">{combo >= 2 ? "🔥" : "⚡"}</span>
+                                    <span style={{ color: combo >= 2 ? "#B8820A" : "var(--accent)" }}>
+                                        {getComboLabel(combo)}
+                                    </span>
+                                    <span className="text-muted-foreground font-normal normal-case tracking-normal text-[10px]">
+                                        próximo acerto = +{Math.round(XP_CORRECT * getComboMultiplier(combo))} XP
+                                    </span>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         {/* Timer bar */}
                         {answerState === "unanswered" && (() => {
@@ -271,7 +316,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                                 answerState === "correct" ? "text-accent" : "text-red-400"
                                             )}>
                                                 {answerState === "correct"
-                                                    ? <><CheckCircle className="w-4 h-4" /> Correto! +{XP_CORRECT} XP</>
+                                                    ? <><CheckCircle className="w-4 h-4" /> Correto! +{lastXpGained} XP{lastXpGained > XP_CORRECT && <span className="text-secondary text-xs">🔥 combo!</span>}</>
                                                     : <><XCircle className="w-4 h-4" /> {selectedOption === null ? "Tempo esgotado!" : "Errado!"} {XP_WRONG} XP</>
                                                 }
                                             </div>

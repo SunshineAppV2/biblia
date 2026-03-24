@@ -24,6 +24,7 @@ import { updateUserVersion, getUserProfile, applyXpDelta } from "@/lib/firestore
 import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { useToast } from "@/components/Toast";
 import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
+import { DailyVerse } from "@/components/DailyVerse";
 
 export default function Home() {
     const { user, profile, loginWithGoogle, refreshProfile } = useAuth();
@@ -535,6 +536,9 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Daily Verse */}
+                            <DailyVerse />
 
                             {/* Daily Missions */}
                             {user && <DailyMissions />}
