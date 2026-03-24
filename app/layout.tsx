@@ -12,6 +12,9 @@ export const metadata: Metadata = {
         statusBarStyle: "black-translucent",
         title: "BibleQuest",
     },
+    other: {
+        "google-adsense-account": "ca-pub-6990451998593893",
+    },
 };
 
 export const viewport: Viewport = {
