@@ -436,9 +436,14 @@ export default function Home() {
 
                             {user && (
                                 <div>
-                                    <h3 className="text-base font-black text-primary uppercase tracking-widest mb-3 px-1 flex items-center gap-2">
-                                        <Trophy className="w-4 h-4 text-secondary" /> Ranking da Semana
-                                    </h3>
+                                    <div className="flex items-center justify-between px-1 mb-3">
+                                        <h3 className="text-base font-black text-primary uppercase tracking-widest flex items-center gap-2">
+                                            <Trophy className="w-4 h-4 text-secondary" /> Ranking da Semana
+                                        </h3>
+                                        <Link href="/progresso" className="text-xs text-accent font-bold hover:underline flex items-center gap-1">
+                                            <BookOpen className="w-3 h-3" /> Meu Progresso
+                                        </Link>
+                                    </div>
                                     <Leaderboard />
                                 </div>
                             )}
@@ -555,6 +560,15 @@ export default function Home() {
                 level={newLevelReached}
                 onClose={() => setShowLevelUp(false)}
             />
+
+            {/* Footer */}
+            {!isReading && (
+                <div className="pb-20 pt-4 text-center">
+                    <Link href="/politica-de-privacidade" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                        Política de Privacidade
+                    </Link>
+                </div>
+            )}
         </div>
     );
 }
