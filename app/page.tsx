@@ -52,6 +52,7 @@ export default function Home() {
     // Quiz States
     const [showQuizOffer, setShowQuizOffer] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
+    const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number; bookName: string } | null>(null);
 
     // Version State — local so it updates immediately without waiting for Firebase
     const [currentVersion, setCurrentVersion] = useState("ARC");
@@ -265,13 +266,8 @@ export default function Home() {
                 return;
             }
 
-            // Offer quiz only if there's a bank for this chapter
-            const hasBank = !!getQuizBank(nextChapter.bookId, nextChapter.chapter);
-            if (hasBank) {
-                setShowQuizOffer(true);
-            } else {
-                await finishChapter(0);
-            }
+            // Save chapter completed — XP/achievements applied now
+            await finishChapter(0);
         } catch (error) {
             console.error("Failed to complete chapter", error);
             showToast("Erro ao salvar progresso. Tente novamente.", "error");
@@ -286,16 +282,22 @@ export default function Home() {
 
     const handleQuizDecline = async () => {
         setShowQuizOffer(false);
-        await finishChapter(0);
+        await doNavigateNext();
     };
 
     const handleQuizComplete = async (quizXpDelta: number) => {
         setShowQuiz(false);
         trackDailyQuiz();
-        await finishChapter(quizXpDelta);
+        // Apply quiz XP bonus/penalty separately
+        if (quizXpDelta !== 0 && user) {
+            await applyXpDelta(user.uid, quizXpDelta);
+            await refreshProfile();
+        }
+        await doNavigateNext();
     };
 
-    const handleNextChapter = async () => {
+    // Actual navigation to next chapter — called after quiz or directly
+    const doNavigateNext = async () => {
         setIsReading(false);
         setIsCompletedNow(false);
         setShowQuizOffer(false);
@@ -303,6 +305,25 @@ export default function Home() {
         setWasAlreadyRead(false);
         setChapterContent(null);
         await loadProgression();
+    };
+
+    const handleNextChapter = async () => {
+        // If chapter was completed (not already read), offer quiz before navigating
+        if (isCompletedNow && !wasAlreadyRead && user) {
+            const bookId = nextChapter.bookId;
+            const chapter = nextChapter.chapter;
+            const hasBank = !!getQuizBank(bookId, chapter);
+            if (hasBank) {
+                setQuizTarget({
+                    bookId,
+                    chapter,
+                    bookName: chapterContent?.bookName ?? "",
+                });
+                setShowQuizOffer(true);
+                return;
+            }
+        }
+        await doNavigateNext();
     };
 
     const handleVersionChange = async (versionId: string) => {
@@ -726,17 +747,17 @@ export default function Home() {
 
             <QuizOfferModal
                 isOpen={showQuizOffer}
-                bookName={chapterContent?.bookName ?? ""}
-                chapter={chapterContent?.chapter ?? 1}
+                bookName={quizTarget?.bookName ?? ""}
+                chapter={quizTarget?.chapter ?? 1}
                 onAccept={handleQuizAccept}
                 onDecline={handleQuizDecline}
             />
 
             <QuizModal
                 isOpen={showQuiz}
-                bookId={nextChapter.bookId}
-                bookName={chapterContent?.bookName ?? ""}
-                chapter={chapterContent?.chapter ?? 1}
+                bookId={quizTarget?.bookId ?? "genesis"}
+                bookName={quizTarget?.bookName ?? ""}
+                chapter={quizTarget?.chapter ?? 1}
                 onComplete={handleQuizComplete}
             />
 

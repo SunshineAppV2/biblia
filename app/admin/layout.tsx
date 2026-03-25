@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", icon: "⊞" },
   { href: "/admin/usuarios", label: "Usuários", icon: "👥" },
   { href: "/admin/quiz", label: "Banco de Quiz", icon: "📋" },
+  { href: "/admin/conteudo", label: "Conteúdo", icon: "📖" },
   { href: "/admin/stats", label: "Estatísticas", icon: "📊" },
   { href: "/admin/versiculo", label: "Versículo do Dia", icon: "📅" },
   { href: "/admin/conquistas", label: "Conquistas", icon: "🏆" },

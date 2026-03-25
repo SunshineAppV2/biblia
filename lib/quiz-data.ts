@@ -99,6 +99,27 @@ export function getQuizBankKeys(): Array<{ bookId: string; chapter: number }> {
     return keys;
 }
 
+/** Async version — ensures all lazy banks are loaded first. */
+export async function getQuizBankKeysAsync(): Promise<Array<{ bookId: string; chapter: number }>> {
+    await ensureBanksLoaded();
+    return getQuizBankKeys();
+}
+
+/** Async version — ensures all lazy banks are loaded first. */
+export async function getQuizBankStatsAsync(): Promise<{ totalQuestions: number; chaptersCovered: number }> {
+    await ensureBanksLoaded();
+    return getQuizBankStats();
+}
+
+/** Returns question count for a specific bookId/chapter, across all loaded banks. */
+export function getQuizBankChapterCount(bookId: string, chapter: number): number {
+    for (const bank of getAllBanks()) {
+        const result = bank[bookId]?.[chapter];
+        if (result && result.length > 0) return result.length;
+    }
+    return 0;
+}
+
 // ---------------------------------------------------------------------------
 // Question bank — add more books/chapters over time
 // ---------------------------------------------------------------------------

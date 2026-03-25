@@ -185,13 +185,15 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.25 }}
-                        className="glass-card w-full max-w-lg overflow-hidden"
+                        className="w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl"
+                        style={{ background: "var(--card)", border: "1px solid rgba(255,255,255,0.08)" }}
                     >
                         {/* Header */}
-                        <div className="p-4 border-b border-white/10 bg-gradient-to-r from-primary/10 to-accent/10 flex items-center justify-between">
+                        <div className="p-4 border-b border-white/10 flex items-center justify-between"
+                            style={{ background: "linear-gradient(135deg, #1A237E, #0D47A1)" }}>
                             <div className="flex items-center gap-2">
-                                <Brain className="w-4 h-4 text-primary" />
-                                <span className="text-xs font-black text-primary uppercase tracking-widest">
+                                <Brain className="w-4 h-4 text-white" />
+                                <span className="text-xs font-black text-white uppercase tracking-widest">
                                     {bookName} {chapter}
                                 </span>
                             </div>
@@ -261,7 +263,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
 
                         {/* Question */}
                         <div className="p-6 space-y-5">
-                            <p className="text-white font-bold text-base leading-snug">
+                            <p className="text-gray-900 dark:text-white font-bold text-base leading-snug">
                                 {currentIndex + 1}. {currentQuestion.question}
                             </p>
 
@@ -279,19 +281,19 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                             whileTap={!revealed ? { scale: 0.98 } : {}}
                                             className={cn(
                                                 "w-full text-left px-4 py-3 rounded-xl border text-sm font-medium transition-all",
-                                                !revealed && "border-secondary/20 hover:border-accent/40 hover:bg-accent/10 text-foreground/80",
-                                                revealed && isCorrect && "border-accent/60 bg-accent/15 text-accent",
-                                                revealed && isSelected && !isCorrect && "border-red-500/60 bg-red-500/15 text-red-300",
-                                                revealed && !isSelected && !isCorrect && "border-secondary/5 text-muted-foreground opacity-40"
+                                                !revealed && "border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-800 dark:text-gray-100 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-white/10",
+                                                revealed && isCorrect && "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
+                                                revealed && isSelected && !isCorrect && "border-red-400 bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-400",
+                                                revealed && !isSelected && !isCorrect && "border-gray-100 dark:border-white/5 text-gray-400 dark:text-gray-600 opacity-50"
                                             )}
                                         >
                                             <span className="flex items-center gap-3">
                                                 <span className={cn(
                                                     "w-6 h-6 rounded-full border flex items-center justify-center text-[11px] font-black shrink-0",
-                                                    !revealed && "border-secondary/20 text-muted-foreground",
-                                                    revealed && isCorrect && "border-accent bg-accent/20 text-accent",
-                                                    revealed && isSelected && !isCorrect && "border-red-400 bg-red-400/20 text-red-300",
-                                                    revealed && !isSelected && !isCorrect && "border-secondary/5 text-muted-foreground"
+                                                    !revealed && "border-gray-300 dark:border-white/15 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/5",
+                                                    revealed && isCorrect && "border-emerald-500 bg-emerald-500 text-white",
+                                                    revealed && isSelected && !isCorrect && "border-red-400 bg-red-400 text-white",
+                                                    revealed && !isSelected && !isCorrect && "border-gray-200 dark:border-white/10 text-gray-400 dark:text-gray-500"
                                                 )}>
                                                     {["A", "B", "C"][i]}
                                                 </span>
@@ -323,7 +325,8 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                             <motion.button
                                                 whileTap={{ scale: 0.95 }}
                                                 onClick={handleNext}
-                                                className="flex items-center gap-1 px-4 py-2 bg-primary text-primary-foreground rounded-full text-xs font-bold hover:opacity-90 transition-colors"
+                                                className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold"
+                                                style={{ background: "linear-gradient(135deg, #1A237E, #0D47A1)", color: "white" }}
                                             >
                                                 {currentIndex + 1 >= questions.length ? "Resultado" : "Próxima"}
                                                 <ChevronRight className="w-3 h-3" />
@@ -335,7 +338,8 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
-                                                className="flex items-start gap-2 bg-accent/10 border border-accent/25 rounded-xl px-3 py-2.5"
+                                                className="flex items-start gap-2 rounded-xl px-3 py-2.5"
+                                                style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)" }}
                                             >
                                                 <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                                                 <div>
@@ -359,7 +363,8 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                        className="glass-card w-full max-w-sm p-8 text-center space-y-6"
+                        className="w-full max-w-sm p-8 text-center space-y-6 rounded-2xl shadow-2xl"
+                        style={{ background: "var(--card)", border: "1px solid rgba(255,255,255,0.08)" }}
                     >
                         {/* Result emoji + message */}
                         <div className="space-y-3">
@@ -378,7 +383,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
 
                             <h3 className={cn(
                                 "text-2xl font-black",
-                                isPerfect ? "text-yellow-400" : isZero ? "text-red-400" : "text-white"
+                                isPerfect ? "text-yellow-500" : isZero ? "text-red-400" : "text-gray-900 dark:text-white"
                             )}>
                                 {isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 corretas`}
                             </h3>
@@ -402,13 +407,13 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                     className={cn(
                                         "w-10 h-10 rounded-full flex items-center justify-center",
                                         r === "correct"
-                                            ? "bg-accent/20 border border-accent/40"
-                                            : "bg-red-500/20 border border-red-500/40"
+                                            ? "bg-emerald-50 dark:bg-emerald-500/20 border border-emerald-400"
+                                            : "bg-red-50 dark:bg-red-500/20 border border-red-400"
                                     )}
                                 >
                                     {r === "correct"
-                                        ? <CheckCircle className="w-5 h-5 text-accent" />
-                                        : <XCircle className="w-5 h-5 text-red-400" />
+                                        ? <CheckCircle className="w-5 h-5 text-emerald-500" />
+                                        : <XCircle className="w-5 h-5 text-red-500" />
                                     }
                                 </div>
                             ))}
