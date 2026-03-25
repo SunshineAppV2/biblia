@@ -25,6 +25,7 @@ import { checkAndUnlockAchievements } from "@/lib/achievements";
 import { useToast } from "@/components/Toast";
 import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
 import { DailyVerse } from "@/components/DailyVerse";
+import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { Biblio } from "@/components/Biblio";
 import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
@@ -611,6 +612,9 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Reading Plan */}
+                            <ReadingPlanCard onNavigate={handleNavigate} />
 
                             {/* Daily Verse */}
                             <DailyVerse />
