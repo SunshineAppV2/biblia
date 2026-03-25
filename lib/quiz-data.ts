@@ -28,18 +28,59 @@ export function prepareQuiz(bank: BankQuestion[], count = 3): PreparedQuestion[]
     });
 }
 
+// ---------------------------------------------------------------------------
+// Lazy imports — each file is only loaded when needed
+// ---------------------------------------------------------------------------
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EXTRA_BANKS: Array<Record<string, Record<number, BankQuestion[]>>> = [];
+
+let _banksLoaded = false;
+async function ensureBanksLoaded() {
+    if (_banksLoaded) return;
+    _banksLoaded = true;
+    const mods = await Promise.allSettled([
+        import("./quiz-data-nt-general").then(m => m.QUIZ_BANK_NT_GENERAL),
+        import("./quiz-data-pentateuch").then(m => m.QUIZ_BANK_PENTATEUCH).catch(() => null),
+        import("./quiz-data-hist1").then(m => m.QUIZ_BANK_HIST1).catch(() => null),
+        import("./quiz-data-hist2").then(m => m.QUIZ_BANK_HIST2).catch(() => null),
+        import("./quiz-data-wisdom-minor").then(m => m.QUIZ_BANK_WISDOM_MINOR).catch(() => null),
+        import("./quiz-data-salmos").then(m => m.QUIZ_BANK_SALMOS).catch(() => null),
+        import("./quiz-data-prophets").then(m => m.QUIZ_BANK_PROPHETS).catch(() => null),
+        import("./quiz-data-gospels").then(m => m.QUIZ_BANK_GOSPELS).catch(() => null),
+        import("./quiz-data-nt-paul").then(m => m.QUIZ_BANK_NT_PAUL).catch(() => null),
+    ]);
+    for (const r of mods) {
+        if (r.status === "fulfilled" && r.value) EXTRA_BANKS.push(r.value);
+    }
+}
+
+function getAllBanks(): Array<Record<string, Record<number, BankQuestion[]>>> {
+    return [QUIZ_BANK, ...EXTRA_BANKS];
+}
+
 export function getQuizBank(bookId: string, chapter: number): BankQuestion[] | null {
-    return QUIZ_BANK[bookId]?.[chapter] ?? null;
+    for (const bank of getAllBanks()) {
+        const result = bank[bookId]?.[chapter];
+        if (result && result.length > 0) return result;
+    }
+    return null;
+}
+
+export async function getQuizBankAsync(bookId: string, chapter: number): Promise<BankQuestion[] | null> {
+    await ensureBanksLoaded();
+    return getQuizBank(bookId, chapter);
 }
 
 /** Returns { totalQuestions, chaptersCovered } across all static quiz bank entries. */
 export function getQuizBankStats(): { totalQuestions: number; chaptersCovered: number } {
     let totalQuestions = 0;
     let chaptersCovered = 0;
-    for (const book of Object.values(QUIZ_BANK)) {
-        for (const questions of Object.values(book)) {
-            chaptersCovered++;
-            totalQuestions += questions.length;
+    for (const bank of getAllBanks()) {
+        for (const book of Object.values(bank)) {
+            for (const questions of Object.values(book)) {
+                chaptersCovered++;
+                totalQuestions += questions.length;
+            }
         }
     }
     return { totalQuestions, chaptersCovered };
@@ -48,9 +89,11 @@ export function getQuizBankStats(): { totalQuestions: number; chaptersCovered: n
 /** Returns all bookId/chapter pairs that have static questions. */
 export function getQuizBankKeys(): Array<{ bookId: string; chapter: number }> {
     const keys: Array<{ bookId: string; chapter: number }> = [];
-    for (const [bookId, chapters] of Object.entries(QUIZ_BANK)) {
-        for (const chapter of Object.keys(chapters)) {
-            keys.push({ bookId, chapter: Number(chapter) });
+    for (const bank of getAllBanks()) {
+        for (const [bookId, chapters] of Object.entries(bank)) {
+            for (const chapter of Object.keys(chapters)) {
+                keys.push({ bookId, chapter: Number(chapter) });
+            }
         }
     }
     return keys;
