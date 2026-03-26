@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
+import { getLocalDateString, calculateStreak } from "@/lib/utils";
 
 interface StreakWeekProps {
     streak: number;
@@ -25,55 +26,13 @@ export function StreakWeek({ streak, streakFreezes = 0 }: StreakWeekProps) {
     const days = Array.from({ length: 7 }, (_, i) => {
         const d = new Date(today);
         d.setDate(today.getDate() - (6 - i));
-        const dateStr = d.toISOString().slice(0, 10);
+        const dateStr = getLocalDateString(d);
         const isRead = readDates.includes(dateStr);
         const isToday = i === 6;
         return { label: DAY_LABELS[d.getDay()], isRead, isToday, dateStr };
     });
 
-    // Helper calculate visual streak from readDates to ensure consistency with flames
-    // This counts consecutive days counting back from today
-    const calculateVisualStreak = () => {
-        let count = 0;
-        const checkDate = new Date(today);
-        
-        // Check if read today
-        const todayStr = checkDate.toISOString().slice(0, 10);
-        if (readDates.includes(todayStr)) {
-            count++;
-            // Go backwards
-            while (true) {
-                checkDate.setDate(checkDate.getDate() - 1);
-                const dStr = checkDate.toISOString().slice(0, 10);
-                if (readDates.includes(dStr)) {
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        } else {
-            // Check if read yesterday (streak preserved if read today later)
-            checkDate.setDate(checkDate.getDate() - 1);
-            const yesterdayStr = checkDate.toISOString().slice(0, 10);
-            if (readDates.includes(yesterdayStr)) {
-                count++;
-                while (true) {
-                    checkDate.setDate(checkDate.getDate() - 1);
-                    const dStr = checkDate.toISOString().slice(0, 10);
-                    if (readDates.includes(dStr)) {
-                        count++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-        return count;
-    };
-
-    const visualStreak = calculateVisualStreak();
-    // Use the max of visual streak and database streak for safety
-    const displayStreak = Math.max(streak, visualStreak);
+    const displayStreak = calculateStreak(readDates);
 
     return (
         <div className="rounded-2xl border border-secondary/20 bg-white/70 backdrop-blur p-4">

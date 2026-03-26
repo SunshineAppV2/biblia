@@ -1,3 +1,5 @@
+import { getLocalDateString } from "./utils";
+
 const NOTIFY_KEY = "biblequest_notify_enabled";
 const LAST_NOTIFIED_KEY = "biblequest_last_notified";
 const REMIND_HOUR = 19; // 7pm default reminder
@@ -60,7 +62,7 @@ export function disableNotifications(): void {
 }
 
 export function markReadToday(): void {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     // Save to read dates (for StreakWeek component)
     const stored = localStorage.getItem("biblequest_read_dates");
     const dates: string[] = stored ? JSON.parse(stored) : [];
@@ -78,7 +80,7 @@ export function checkStreakAtRisk(streak: number): void {
     if (!isNotificationsEnabled()) return;
     if (streak <= 0) return;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     const stored = localStorage.getItem("biblequest_read_dates");
     const dates: string[] = stored ? JSON.parse(stored) : [];
 
@@ -104,7 +106,7 @@ export function checkStreakAtRisk(streak: number): void {
 export function checkAndSendReminder(): void {
     if (!isNotificationsEnabled()) return;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getLocalDateString();
     const stored = localStorage.getItem("biblequest_read_dates");
     const dates: string[] = stored ? JSON.parse(stored) : [];
     const lastNotified = localStorage.getItem(LAST_NOTIFIED_KEY);

@@ -4,14 +4,14 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield, Gem } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { LevelProgressBar } from "@/components/LevelProgressBar";
 import { ACHIEVEMENTS, Achievement } from "@/lib/achievements";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, getLocalDateString, calculateStreak } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
@@ -27,10 +27,10 @@ export default function ProfilePage() {
     useEffect(() => { setNotifyEnabled(isNotificationsEnabled()); }, []);
 
     const handleBuyFreeze = async () => {
-        if (!user || (profile?.xp ?? 0) < 200 || buying) return;
+        if (!user || (profile?.gems ?? 0) < 50 || buying) return;
         setBuying(true);
         try {
-            await buyStreakFreeze(user.uid, 200);
+            await buyStreakFreeze(user.uid, 50);
             await refreshProfile();
             showToast("🛡️ Bloqueio de ofensiva adquirido!", "achievement");
         } catch (error) {
@@ -40,6 +40,7 @@ export default function ProfilePage() {
             setBuying(false);
         }
     };
+
 
     const toggleNotifications = async () => {
         if (notifyEnabled) {
@@ -142,6 +143,10 @@ export default function ProfilePage() {
                         xpRequiredForNextLevel={levelInfo.xpRequiredForNextLevel}
                         title={levelInfo.title}
                     />
+                    <div className="flex items-center gap-2 pt-2 border-t border-primary/5">
+                        <Gem className="w-4 h-4 text-blue-500 fill-current" />
+                        <span className="text-sm font-black text-primary">{profile.gems || 0} Gemas</span>
+                    </div>
                 </section>
 
                 {/* Stats Grid */}
@@ -151,7 +156,7 @@ export default function ProfilePage() {
                             <Flame className="w-4 h-4 fill-current" />
                             <span className="text-xs uppercase font-black">Ofensiva</span>
                         </div>
-                        <div className="text-2xl font-black text-primary">{profile.streak} dias</div>
+                        <div className="text-2xl font-black text-primary">{calculateStreak(profile.readDates || [])} dias</div>
                         <ShareButton type="streak" value={profile.streak} />
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-accent/50">
@@ -228,15 +233,15 @@ export default function ProfilePage() {
                     </div>
                     <button
                         onClick={handleBuyFreeze}
-                        disabled={buying || (profile.xp || 0) < 200}
+                        disabled={buying || (profile.gems || 0) < 50}
                         className={cn(
                              "px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border shadow-lg relative z-10",
-                             (profile.xp || 0) >= 200 
+                             (profile.gems || 0) >= 50 
                                  ? "bg-blue-500 border-blue-600 text-white hover:bg-blue-600 hover:shadow-blue-500/20 active:scale-95" 
                                  : "bg-muted border-muted text-muted-foreground cursor-not-allowed opacity-60"
                         )}
                     >
-                        {buying ? "..." : (profile.xp || 0) >= 200 ? "Comprar (200 XP)" : "XP Insuficiente"}
+                        {buying ? "..." : (profile.gems || 0) >= 50 ? "Comprar (50 Gemas)" : "Gemas Insuficientes"}
                     </button>
                 </section>
 

@@ -7,7 +7,7 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import { ChevronLeft, Lock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, calculateStreak } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -55,11 +55,11 @@ export default function ConquistasPage() {
             case "chapters_100": return { value: Math.min(profile.totalChapters ?? 0, 100), max: 100 };
             case "chapters_500": return { value: Math.min(profile.totalChapters ?? 0, 500), max: 500 };
             case "bible_complete": return { value: Math.min(profile.totalChapters ?? 0, 1189), max: 1189 };
-            case "streak_3": return { value: Math.min(profile.streak ?? 0, 3), max: 3 };
-            case "streak_7": return { value: Math.min(profile.streak ?? 0, 7), max: 7 };
-            case "streak_30": return { value: Math.min(profile.streak ?? 0, 30), max: 30 };
-            case "streak_100": return { value: Math.min(profile.streak ?? 0, 100), max: 100 };
-            case "streak_365": return { value: Math.min(profile.streak ?? 0, 365), max: 365 };
+            case "streak_3": return { value: Math.min(calculateStreak(profile.readDates || []), 3), max: 3 };
+            case "streak_7": return { value: Math.min(calculateStreak(profile.readDates || []), 7), max: 7 };
+            case "streak_30": return { value: Math.min(calculateStreak(profile.readDates || []), 30), max: 30 };
+            case "streak_100": return { value: Math.min(calculateStreak(profile.readDates || []), 100), max: 100 };
+            case "streak_365": return { value: Math.min(calculateStreak(profile.readDates || []), 365), max: 365 };
             case "wisdom_10": return { value: Math.min(profile.wisdomPoints ?? 0, 10), max: 10 };
             case "wisdom_100": return { value: Math.min(profile.wisdomPoints ?? 0, 100), max: 100 };
             default: return null;

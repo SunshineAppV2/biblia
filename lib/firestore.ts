@@ -16,6 +16,7 @@ export interface UserProfile {
     lastActive: Timestamp | null;
     readDates: string[]; // Array de strings ISO de datas em que um capítulo foi lido
     streakFreezes: number; // Quantidade de bloqueios de ofensiva disponíveis
+    gems: number; // Moeda virtual para compras
     preferredVersion?: string;
     achievements?: string[];
     wisdomPoints?: number;
@@ -39,6 +40,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             totalChapters: 0,
             readDates: [], // Inicializa o novo campo
             streakFreezes: 0, // Inicia com zero bloqueios
+            gems: 100, // Presente de boas-vindas: 100 gemas
             lastActive: null,
             preferredVersion: "ARC",
             achievements: [],
@@ -47,15 +49,19 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
         await setDoc(userRef, newProfile);
         return newProfile;
     } else {
+        const data = userSnap.data();
         await updateDoc(userRef, {
             displayName: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
             lastActive: serverTimestamp(),
+            // Garante campo gems exista se já fosse um usuário antigo
+            gems: data.gems !== undefined ? data.gems : 100,
         });
-        return userSnap.data() as UserProfile;
+        return { ...data, ...userSnap.data() } as UserProfile;
     }
 }
+
 
 export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     const userRef = doc(db, "users", uid);
@@ -90,11 +96,12 @@ export async function updateUserVersion(uid: string, version: string): Promise<v
     });
 }
 
-export async function buyStreakFreeze(uid: string, xpCost: number): Promise<void> {
+export async function buyStreakFreeze(uid: string, gemCost: number): Promise<void> {
     const userRef = doc(db, "users", uid);
     await updateDoc(userRef, {
-        xp: increment(-xpCost),
+        gems: increment(-gemCost),
         streakFreezes: increment(1),
     });
 }
+
 

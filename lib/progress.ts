@@ -1,7 +1,7 @@
 import { db } from "./firebase";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, Timestamp } from "firebase/firestore";
 import { calculateLevel } from "./levels";
-import { UserProfile } from "./firestore"; // Importa a interface UserProfile
+import { getLocalDateString } from "./utils";
 
 function toDate(ts: unknown): Date | null {
     if (!ts) return null;
@@ -12,15 +12,13 @@ function toDate(ts: unknown): Date | null {
 }
 
 function isYesterday(date: Date): boolean {
-    const now = new Date();
-    const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
-    return date.toDateString() === yesterday.toDateString();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return getLocalDateString(date) === getLocalDateString(yesterday);
 }
 
 function isToday(date: Date): boolean {
-    const now = new Date();
-    return date.toDateString() === now.toDateString();
+    return getLocalDateString(date) === getLocalDateString(new Date());
 }
 
 function getDaysDifference(date1: Date, date2: Date): number {
@@ -62,13 +60,14 @@ export async function completeChapter(
         const userSnap = await getDoc(userRef);
         let newStreak = 1;
         let isPostMaxLevel = false;
-        const todayStr = new Date().toISOString().slice(0, 10);
+        const todayStr = getLocalDateString();
 
         const updatePayload: Record<string, unknown> = {
             xp: increment(xpAmount),
             weeklyXp: increment(xpAmount),
             lastActive: serverTimestamp(),
             totalChapters: increment(1),
+            gems: increment(10), // Ganha 10 gemas por capítulo
         };
 
         if (userSnap.exists()) {
