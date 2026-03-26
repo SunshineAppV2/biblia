@@ -181,12 +181,54 @@ export interface League {
     participants: LeagueParticipant[];
 }
 
+/**
+ * Week ID based on Sunday 19:00 cutoff.
+ * A new week starts every Sunday at 19:00.
+ * Returns the date string (YYYY-MM-DD) of the Sunday when the current week started.
+ */
 export function getCurrentWeekId(): string {
     const now = new Date();
-    const oneJan = new Date(now.getFullYear(), 0, 1);
-    const numberOfDays = Math.floor((now.getTime() - oneJan.getTime()) / (24 * 60 * 60 * 1000));
-    const week = Math.ceil((numberOfDays + oneJan.getDay() + 1) / 7);
-    return `${now.getFullYear()}-W${week.toString().padStart(2, '0')}`;
+    const day = now.getDay(); // 0 = Sunday
+    const hour = now.getHours();
+
+    // How many days back to the last "week start" (Sunday 19:00)
+    let daysBack: number;
+    if (day === 0 && hour >= 19) {
+        daysBack = 0; // Today is Sunday after 19:00 — new week just started
+    } else if (day === 0) {
+        daysBack = 7; // Today is Sunday before 19:00 — still in previous week
+    } else {
+        daysBack = day; // Mon(1)–Sat(6) → go back to last Sunday
+    }
+
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - daysBack);
+    const y = weekStart.getFullYear();
+    const m = String(weekStart.getMonth() + 1).padStart(2, "0");
+    const d = String(weekStart.getDate()).padStart(2, "0");
+    return `week-${y}-${m}-${d}`;
+}
+
+/** Returns the next league reset Date (next Sunday at 19:00). */
+export function getNextLeagueReset(): Date {
+    const now = new Date();
+    const day = now.getDay();
+    const hour = now.getHours();
+
+    // Days until next Sunday 19:00
+    let daysAhead: number;
+    if (day === 0 && hour < 19) {
+        daysAhead = 0; // Today is Sunday, reset hasn't happened yet
+    } else if (day === 0) {
+        daysAhead = 7; // Today is Sunday after 19:00, next reset is next Sunday
+    } else {
+        daysAhead = 7 - day; // Days remaining until Sunday
+    }
+
+    const reset = new Date(now);
+    reset.setDate(now.getDate() + daysAhead);
+    reset.setHours(19, 0, 0, 0);
+    return reset;
 }
 
 export async function getLeagueLeaderboard(user: UserProfile): Promise<LeagueParticipant[]> {

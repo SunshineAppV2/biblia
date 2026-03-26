@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UserProfile } from "@/lib/firestore";
-import { getLeagueLeaderboard, LeagueParticipant, getPromotionZone, getDemotionZone } from "@/lib/leagues";
+import { getLeagueLeaderboard, LeagueParticipant, getPromotionZone, getDemotionZone, getNextLeagueReset } from "@/lib/leagues";
 import { cn } from "@/lib/utils";
 import { ArrowUp, ArrowDown, Minus, Crown } from "lucide-react";
 import { useAuth } from "./AuthProvider";
@@ -14,21 +14,15 @@ interface LeaderboardProps {
 }
 
 function getTimeUntilLeagueReset(): string {
-    const now = new Date();
-    const day = now.getDay(); // 0=Dom, 1=Seg, ..., 6=Sab
-    const daysUntilSunday = day === 0 ? 0 : 7 - day;
-
-    const endOfWeek = new Date(now);
-    endOfWeek.setDate(now.getDate() + daysUntilSunday);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    const diff = Math.max(0, endOfWeek.getTime() - now.getTime());
+    const diff = Math.max(0, getNextLeagueReset().getTime() - Date.now());
     const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
 
     if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h`;
-    return "menos de 1h";
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}min`;
+    return "encerrando agora";
 }
 
 export function Leaderboard({ className }: LeaderboardProps) {
