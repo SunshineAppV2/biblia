@@ -14,7 +14,13 @@
       "Bash(curl -s \"https://bolls.life/get-chapter/NVI/1/1/\")",
       "Bash(curl -s \"https://bolls.life/get-chapter/NAA/1/1/\")",
       "Bash(curl -s \"https://bolls.life/get-chapter/ARA/1/1/\")",
-      "Bash(curl -s \"https://bolls.life/get-chapter/NTPT/1/1/\")"
+      "Bash(curl -s \"https://bolls.life/get-chapter/NTPT/1/1/\")",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//g/ANO BIBLICO/**)",
+      "Bash(node -e \":*)",
+      "Bash(python -c \"import sys,json; d=json.loads\\(sys.stdin.read\\(\\)\\); print\\(d.get\\(''''timestamp'''',''''''''\\), d.get\\(''''type'''',''''''''\\), str\\(d.get\\(''''message'''',''''''''\\)\\)[:200]\\)\")",
+      "Bash(wc -l 'g:\\\\ANO BIBLICO\\\\app\\\\page.tsx' g:ANO BIBLICOcomponents/*.tsx)"
     ]
   }
 }

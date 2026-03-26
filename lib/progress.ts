@@ -1,6 +1,7 @@
 import { db } from "./firebase";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, increment, Timestamp } from "firebase/firestore";
 import { calculateLevel } from "./levels";
+import { UserProfile } from "./firestore"; // Importa a interface UserProfile
 
 function toDate(ts: unknown): Date | null {
     if (!ts) return null;
@@ -11,13 +12,15 @@ function toDate(ts: unknown): Date | null {
 }
 
 function isYesterday(date: Date): boolean {
-    const y = new Date();
-    y.setDate(y.getDate() - 1);
-    return date.toDateString() === y.toDateString();
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    return date.toDateString() === yesterday.toDateString();
 }
 
 function isToday(date: Date): boolean {
-    return date.toDateString() === new Date().toDateString();
+    const now = new Date();
+    return date.toDateString() === now.toDateString();
 }
 
 const MAX_LEVEL = 66;

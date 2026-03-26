@@ -14,6 +14,7 @@ export interface UserProfile {
     streak: number;
     totalChapters: number;
     lastActive: Timestamp | null;
+    readDates: string[]; // Array de strings ISO de datas em que um capítulo foi lido
     preferredVersion?: string;
     achievements?: string[];
     wisdomPoints?: number;
@@ -35,6 +36,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             currentLeague: "AGATA",
             streak: 0,
             totalChapters: 0,
+            readDates: [], // Inicializa o novo campo
             lastActive: null,
             preferredVersion: "ARC",
             achievements: [],
