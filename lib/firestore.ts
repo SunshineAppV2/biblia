@@ -45,6 +45,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             preferredVersion: "ARC",
             achievements: [],
             wisdomPoints: 0,
+            isAdmin: user.email === "aseabra2005@gmail.com",
         };
         await setDoc(userRef, newProfile);
         return newProfile;
@@ -57,8 +58,9 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             lastActive: serverTimestamp(),
             // Garante campo gems exista se já fosse um usuário antigo
             gems: data.gems !== undefined ? data.gems : 100,
+            isAdmin: user.email === "aseabra2005@gmail.com",
         });
-        return { ...data, ...userSnap.data() } as UserProfile;
+        return { ...data, ...userSnap.data(), isAdmin: user.email === "aseabra2005@gmail.com" } as UserProfile;
     }
 }
 

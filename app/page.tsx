@@ -50,8 +50,8 @@ export default function Home() {
     const [wasAlreadyRead, setWasAlreadyRead] = useState(false);
 
     // Level Up States
+    const [prevLevel, setPrevLevel] = useState<number | null>(null);
     const [showLevelUp, setShowLevelUp] = useState(false);
-    const [newLevelReached, setNewLevelReached] = useState(1);
 
     // Quiz States
     const [showQuizOffer, setShowQuizOffer] = useState(false);
@@ -137,6 +137,7 @@ export default function Home() {
         const stored = localStorage.getItem(key);
         setBookmarks(stored ? new Set(JSON.parse(stored)) : new Set());
     }, [nextChapter.bookId, nextChapter.chapter]);
+
     const toggleBookmark = (verseIndex: number) => {
         const next = new Set(bookmarks);
         if (next.has(verseIndex)) {
@@ -152,6 +153,18 @@ export default function Home() {
             JSON.stringify([...next])
         );
     };
+
+    // Level Up tracking effect
+    useEffect(() => {
+        if (profile) {
+            const current = getLevelInfo(profile.xp).currentLevel;
+            if (prevLevel !== null && (prevLevel > 0) && current > prevLevel) {
+                setShowLevelUp(true);
+            }
+            if (current > 0) setPrevLevel(current);
+        }
+    }, [profile?.xp]);
+
     const handleVersePointerDown = (verseIndex: number) => {
         pressTimerRef.current = setTimeout(() => toggleBookmark(verseIndex), 600);
     };
@@ -477,19 +490,30 @@ export default function Home() {
                                 <span className="text-xs text-muted-foreground">Nv.</span>
                                 <span className="text-primary font-bold">{getLevelInfo(profile?.xp || 0).currentLevel}</span>
                             </div>
+                            
+                            {/* Animated XP */}
                             <motion.div
-                                className="flex items-center gap-1 text-accent"
-                                key={profile?.xp}
-                                initial={{ scale: 1 }}
-                                animate={{ scale: [1, 1.2, 1] }}
-                                transition={{ duration: 0.3 }}
+                                className="flex items-center gap-1 text-accent font-black"
+                                key={`xp-${profile?.xp}`}
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                             >
-                                <Trophy className="w-4 h-4 fill-current" /> {profile?.xp || 0} XP
+                                <Trophy className="w-4 h-4 fill-current" /> {profile?.xp || 0}
                             </motion.div>
-                            <div className="flex items-center gap-1 text-blue-500 font-bold ml-2">
-                                <Gem className="w-4 h-4 fill-current" />
-                                {profile?.gems || 0}
-                            </div>
+
+                            {/* Animated Gems */}
+                            <motion.div 
+                                className="flex items-center gap-1 text-blue-500 font-bold ml-1 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20"
+                                key={`gems-${profile?.gems}`}
+                                initial={{ y: -10, opacity: 0, scale: 0.5 }}
+                                animate={{ y: 0, opacity: 1, scale: 1 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 12 }}
+                            >
+                                <Gem className="w-4 h-4 fill-current drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                                <span>{profile?.gems || 0}</span>
+                            </motion.div>
+
 
                             <Link
                                 href="/profile"
@@ -847,7 +871,7 @@ export default function Home() {
 
             <LevelUpModal
                 isOpen={showLevelUp}
-                level={newLevelReached}
+                level={getLevelInfo(profile?.xp || 0).currentLevel}
                 onClose={() => setShowLevelUp(false)}
             />
 

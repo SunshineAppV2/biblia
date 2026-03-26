@@ -1,108 +1,114 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { getLevelTitle } from "@/lib/levels";
+import { Trophy, Star, Shield, ArrowUp, Zap } from "lucide-react";
 
-const CONFETTI = ["⭐", "✨", "🌟", "💫", "🏆", "🎉", "🎊", "👑", "💎", "🙌"];
-
-function Confetti() {
-    return (
-        <>
-            {Array.from({ length: 24 }, (_, i) => {
-                const x = (Math.random() - 0.5) * 500;
-                const y = -(150 + Math.random() * 400);
-                const emoji = CONFETTI[i % CONFETTI.length];
-                return (
-                    <motion.span
-                        key={i}
-                        className="fixed text-xl pointer-events-none select-none z-[200]"
-                        style={{ left: "50%", top: "50%" }}
-                        initial={{ opacity: 1, x: 0, y: 0, scale: 0, rotate: 0 }}
-                        animate={{ opacity: 0, x, y, scale: [0, 1.3, 0.9], rotate: Math.random() * 720 - 360 }}
-                        transition={{ duration: 1.5 + Math.random() * 0.8, delay: i * 0.04, ease: "easeOut" }}
-                    >
-                        {emoji}
-                    </motion.span>
-                );
-            })}
-        </>
-    );
-}
-
-interface LevelUpModalProps {
-    isOpen: boolean;
-    level: number;
-    onClose: () => void;
-}
-
-export function LevelUpModal({ isOpen, level, onClose }: LevelUpModalProps) {
-    const title = getLevelTitle(level);
-
+export function LevelUpModal({ isOpen, level, onClose }: { isOpen: boolean; level: number; onClose: () => void }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/70 backdrop-blur-sm">
-                    <Confetti />
-
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                    {/* Backdrop */}
                     <motion.div
-                        initial={{ scale: 0.4, opacity: 0, rotate: -5 }}
-                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        exit={{ scale: 0.5, opacity: 0 }}
-                        transition={{ type: "spring", stiffness: 280, damping: 22 }}
-                        className="relative max-w-sm w-full rounded-3xl overflow-hidden text-center shadow-2xl"
-                        style={{
-                            background: "linear-gradient(145deg, #1A237E 0%, #0D1B6E 60%, #B8820A 100%)",
-                            border: "2px solid rgba(184,130,10,0.5)",
-                            boxShadow: "0 0 60px rgba(184,130,10,0.35), 0 0 120px rgba(26,35,126,0.4)",
-                        }}
-                    >
-                        {/* Top shimmer */}
-                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary to-transparent" />
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+                    />
 
-                        <div className="p-8 space-y-5">
-                            {/* Crown */}
+                    {/* Content */}
+                    <motion.div
+                        initial={{ scale: 0.5, y: 50, opacity: 0 }}
+                        animate={{ scale: 1, y: 0, opacity: 1 }}
+                        exit={{ scale: 0.8, y: 20, opacity: 0 }}
+                        className="relative w-full max-w-sm rounded-3xl p-8 text-center overflow-hidden"
+                        style={{ background: "linear-gradient(135deg, #1A237E 0%, #0D1754 100%)" }}
+                    >
+                        {/* Shimmer Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+
+                        <div className="relative z-10 space-y-6">
+                            {/* Animated Level Badge */}
                             <motion.div
-                                animate={{ y: [0, -8, 0], rotate: [0, -5, 5, 0] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                className="text-6xl leading-none"
+                                initial={{ rotate: -15, scale: 0 }}
+                                animate={{ rotate: 0, scale: 1 }}
+                                transition={{ type: "spring", damping: 10, delay: 0.2 }}
+                                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-accent to-yellow-300 flex items-center justify-center shadow-2xl shadow-accent/40"
                             >
-                                👑
+                                <span className="text-4xl font-black text-white">{level}</span>
                             </motion.div>
 
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-black text-secondary/80 uppercase tracking-[0.3em]">
-                                    Subiu de Nível!
-                                </p>
-                                <motion.div
-                                    initial={{ scale: 0.5 }}
-                                    animate={{ scale: [1, 1.05, 1] }}
-                                    transition={{ delay: 0.3, duration: 0.5 }}
-                                    className="text-6xl font-black text-white italic tracking-tight"
-                                    style={{ textShadow: "0 0 30px rgba(184,130,10,0.6)" }}
+                            <div className="space-y-2 text-white">
+                                <motion.p
+                                    initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-accent font-black uppercase tracking-[0.2em] text-xs"
                                 >
-                                    {level}
-                                </motion.div>
-                                <p className="text-secondary font-black text-lg uppercase tracking-widest">
-                                    {title}
-                                </p>
+                                    Novo Nível Desbloqueado
+                                </motion.p>
+                                <motion.h2
+                                    initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="text-4xl font-black"
+                                >
+                                    {level === 2 ? "Iniciante!" : "Incrível!"}
+                                </motion.h2>
+                                <motion.p
+                                    initial={{ y: 10, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-primary-foreground/70 font-medium"
+                                >
+                                    Sua jornada bíblica está crescendo. Continue assim para chegar à liga diamante!
+                                </motion.p>
                             </div>
 
-                            <p className="text-white/60 text-sm leading-relaxed">
-                                Você alcançou novos horizontes na sua jornada bíblica. Continue lendo!
-                            </p>
+                            {/* Reward Simulation */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.7 }}
+                                className="p-4 rounded-2xl bg-white/10 border border-white/5 flex items-center justify-between"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                                       <Zap className="w-6 h-6 text-accent fill-current" />
+                                    </div>
+                                    <div className="text-left">
+                                       <p className="text-[10px] font-black uppercase text-white/50">Recompensa</p>
+                                       <p className="text-sm font-bold text-white">Bônus de Nível</p>
+                                    </div>
+                                </div>
+                                <span className="text-xl font-black text-accent">+10 XP</span>
+                            </motion.div>
 
                             <motion.button
-                                whileTap={{ scale: 0.96 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={onClose}
-                                className="w-full py-3.5 font-black rounded-2xl text-sm uppercase tracking-widest transition-all"
-                                style={{
-                                    background: "linear-gradient(135deg, #B8820A, #D4A430)",
-                                    color: "#07091C",
-                                    boxShadow: "0 4px 20px rgba(184,130,10,0.4)",
-                                }}
+                                className="w-full py-4 rounded-2xl bg-white text-primary font-black uppercase tracking-widest shadow-xl shadow-white/10 transition-all hover:bg-slate-50"
                             >
-                                Continuar Jornada →
+                                Continuar
                             </motion.button>
+                        </div>
+
+                        {/* Particle burst simulation using svg/motion */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            {[...Array(12)].map((_, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ x: "50%", y: "50%", opacity: 0 }}
+                                    animate={{ 
+                                        x: `${50 + (Math.cos(i) * 60)}%`, 
+                                        y: `${50 + (Math.sin(i) * 60)}%`, 
+                                        opacity: [0, 1, 0] 
+                                    }}
+                                    transition={{ duration: 0.8, delay: 0.3, repeat: Infinity, repeatDelay: 2 }}
+                                    className="absolute w-2 h-2 rounded-full bg-accent"
+                                />
+                            ))}
                         </div>
                     </motion.div>
                 </div>
