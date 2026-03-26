@@ -33,9 +33,10 @@ import { VerseSearch } from "@/components/VerseSearch";
 import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChapter } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 import { MobileNav } from "@/components/MobileNav";
+import WelcomePage from "@/components/WelcomePage";
 
 export default function Home() {
-    const { user, profile, loginWithGoogle, refreshProfile } = useAuth();
+    const { user, profile, loading, loginWithGoogle, refreshProfile } = useAuth();
     const { showToast } = useToast();
 
     // UI States
@@ -408,6 +409,19 @@ export default function Home() {
     };
 
     const chaptersCompleted = Math.max(0, (nextChapter.chapter - 1));
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <p className="text-sm font-bold text-muted-foreground animate-pulse">Carregando sua jornada...</p>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return <WelcomePage onLogin={loginWithGoogle} />;
+    }
 
     return (
         <div className="min-h-screen pb-24 font-sans bg-background">
