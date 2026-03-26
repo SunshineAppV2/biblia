@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LevelUpModal } from "@/components/LevelUpModal";
 import { QuizModal } from "@/components/QuizModal";
 import { QuizOfferModal } from "@/components/QuizOfferModal";
-import { getQuizBank } from "@/lib/quiz-data";
+import { getQuizBank, ensureBanksLoaded } from "@/lib/quiz-data";
 import { AdBanner } from "@/components/AdBanner";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { VersionSelector } from "@/components/VersionSelector";
@@ -178,6 +178,7 @@ export default function Home() {
     // On mount: check notification reminder
     useEffect(() => {
         checkAndSendReminder();
+        ensureBanksLoaded(); // Pre-load all quiz banks for faster access
     }, []);
 
     // Check streak at risk when profile loads
@@ -369,6 +370,10 @@ export default function Home() {
         if (isCompletedNow && !wasAlreadyRead && user) {
             const bookId = nextChapter.bookId;
             const chapter = nextChapter.chapter;
+            
+            // Re-ensure banks are loaded just in case (should be mostly immediate if already loaded)
+            await ensureBanksLoaded();
+            
             const hasBank = !!getQuizBank(bookId, chapter);
             if (hasBank) {
                 setQuizTarget({
@@ -812,8 +817,8 @@ export default function Home() {
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <span className="text-lg text-accent">Capítulo Concluído!</span>
-                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">+50 XP adicionado</span>
+                                                                <span className="text-lg text-accent">Leitura Concluída!</span>
+                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">+50 XP • Quiz Disponível ao Avançar</span>
                                                             </>
                                                         )}
                                                     </div>

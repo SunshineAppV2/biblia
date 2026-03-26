@@ -74,12 +74,7 @@ function SadParticles() {
 }
 
 export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTest }: QuizModalProps) {
-    const [questions] = useState<PreparedQuestion[]>(() => {
-        const bank = getQuizBank(bookId, chapter);
-        if (!bank) return [];
-        return prepareQuiz(bank, isTest ? bank.length : 3);
-    });
-
+    const [questions, setQuestions] = useState<PreparedQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [answerState, setAnswerState] = useState<AnswerState>("unanswered");
@@ -89,6 +84,24 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
     const [showParticles, setShowParticles] = useState(false);
     const [combo, setCombo] = useState(0);
     const [lastXpGained, setLastXpGained] = useState(0);
+
+    // Reset and initialize when opening
+    useEffect(() => {
+        if (isOpen) {
+            const bank = getQuizBank(bookId, chapter);
+            const prepared = bank ? prepareQuiz(bank, isTest ? bank.length : 3) : [];
+            setQuestions(prepared);
+            setCurrentIndex(0);
+            setSelectedOption(null);
+            setAnswerState("unanswered");
+            setXpDelta(0);
+            setResults([]);
+            setShowResults(false);
+            setCombo(0);
+            setLastXpGained(0);
+            if (prepared.length > 0) setTimeLeft(calcTime(prepared[0]));
+        }
+    }, [isOpen, bookId, chapter, isTest]);
 
     // Timer
     const [timeLeft, setTimeLeft] = useState(() =>

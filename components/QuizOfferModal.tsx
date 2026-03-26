@@ -35,9 +35,12 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                         <Brain className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-foreground">Quiz Disponível!</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            {bookName} {chapter} — 3 perguntas
+                        <h3 className="text-xl font-black text-foreground">Teste de Conhecimento!</h3>
+                        <p className="text-sm text-cyan-500 font-bold mt-1 uppercase tracking-tighter">
+                            Apenas sobre o que você acabou de ler:
+                        </p>
+                        <p className="font-black text-lg text-secondary mt-0.5">
+                            {bookName} {chapter}
                         </p>
                     </div>
                 </div>

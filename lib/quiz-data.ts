@@ -38,7 +38,7 @@ export function prepareQuiz(bank: BankQuestion[], count = 3): PreparedQuestion[]
 const EXTRA_BANKS: Array<Record<string, Record<number, BankQuestion[]>>> = [];
 
 let _banksLoaded = false;
-async function ensureBanksLoaded() {
+export async function ensureBanksLoaded() {
     if (_banksLoaded) return;
     _banksLoaded = true;
     const mods = await Promise.allSettled([
