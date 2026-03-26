@@ -51,6 +51,7 @@ async function ensureBanksLoaded() {
         import("./quiz-data-1sam").then(m => m.QUIZ_BANK_1SAM).catch(() => null),
         import("./quiz-data-2sam").then(m => m.QUIZ_BANK_2SAM).catch(() => null),
         import("./quiz-data-1reis").then(m => m.QUIZ_BANK_1REIS).catch(() => null),
+        import("./quiz-data-2reis").then(m => m.QUIZ_BANK_2REIS).catch(() => null),
     ]);
     for (const r of mods) {
         if (r.status === "fulfilled" && r.value) EXTRA_BANKS.push(r.value);
