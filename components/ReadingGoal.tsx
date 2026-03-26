@@ -33,7 +33,7 @@ export function ReadingGoal() {
 
   return (
     <div
-      className="rounded-2xl overflow-hidden shadow-sm border"
+      className="rounded-2xl shadow-sm border relative"
       style={{
         background: "var(--card)",
         borderColor: done ? "rgba(34,197,94,0.35)" : "rgba(66,165,245,0.25)",
@@ -41,7 +41,8 @@ export function ReadingGoal() {
     >
       {/* Header */}
       <div
-        className="px-5 py-3 flex items-center justify-between"
+        className="px-5 py-3 flex items-center justify-between rounded-t-2xl overflow-hidden"
+
         style={{
           background: done
             ? "linear-gradient(135deg, #14532d 0%, #166534 100%)"
@@ -83,15 +84,15 @@ export function ReadingGoal() {
                   </button>
                 ))}
               </div>
-              <div className="p-2 bg-primary/5">
-                <p className="text-[10px] font-black text-muted-foreground uppercase px-2 mb-1">Personalizado</p>
-                <div className="flex items-center gap-2 px-2">
+              <div className="p-3 bg-secondary/10">
+                <p className="text-[10px] font-black text-secondary uppercase px-1 mb-1.5">Meta Personalizada</p>
+                <div className="flex items-center gap-2">
                    <input 
                       type="number"
                       min="1"
-                      max="100"
-                      placeholder="Ex: 20"
-                      className="w-full bg-transparent border-b border-primary/20 text-xs font-bold focus:outline-none py-1"
+                      placeholder="Ex: 15"
+                      className="w-full bg-white/50 dark:bg-black/20 border border-primary/20 rounded-lg text-xs font-black focus:outline-none focus:border-secondary px-2 py-1.5"
+                      autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           const val = parseInt((e.target as HTMLInputElement).value);
@@ -99,14 +100,24 @@ export function ReadingGoal() {
                         }
                       }}
                       onBlur={(e) => {
-                         const val = parseInt((e.target as HTMLInputElement).value);
-                         if (val > 0) handleGoalChange(val);
+                         // Optional: auto-save on blur if value changed
                       }}
                    />
+                   <button 
+                     onClick={(e) => {
+                       const input = (e.currentTarget.previousSibling as HTMLInputElement);
+                       const val = parseInt(input.value);
+                       if (val > 0) handleGoalChange(val);
+                     }}
+                     className="bg-secondary text-white text-[10px] font-black px-2 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
+                   >
+                     OK
+                   </button>
                 </div>
               </div>
             </div>
           )}
+
 
         </div>
       </div>
