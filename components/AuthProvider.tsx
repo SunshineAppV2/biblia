@@ -43,13 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(currentUser);
             if (currentUser) {
                 try {
-                    const existing = await getUserProfile(currentUser.uid);
-                    if (existing) {
-                        setProfile(existing);
-                    } else {
-                        const newProfile = await createOrUpdateUser(currentUser);
-                        setProfile(newProfile);
-                    }
+                    const profile = await createOrUpdateUser(currentUser);
+                    setProfile(profile);
                 } catch (error) {
                     console.error("Error fetching profile:", error);
                 }
