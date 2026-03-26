@@ -52,11 +52,20 @@ export default function ProfilePage() {
         }
     };
 
+    const [localReadDates, setLocalReadDates] = useState<string[]>([]);
+    useEffect(() => {
+        const stored = localStorage.getItem("biblequest_read_dates");
+        const fromLocal = stored ? JSON.parse(stored) : [];
+        const merged = Array.from(new Set([...fromLocal, ...(profile?.readDates || [])]));
+        setLocalReadDates(merged);
+    }, [profile?.readDates]);
+
     useEffect(() => {
         if (profile?.achievements) {
             setUnlockedIds(profile.achievements);
         }
     }, [profile?.achievements]);
+
 
     if (!user || !profile) {
         return (
@@ -156,7 +165,7 @@ export default function ProfilePage() {
                             <Flame className="w-4 h-4 fill-current" />
                             <span className="text-xs uppercase font-black">Ofensiva</span>
                         </div>
-                        <div className="text-2xl font-black text-primary">{calculateStreak(profile.readDates || [])} dias</div>
+                        <div className="text-2xl font-black text-primary">{calculateStreak(localReadDates)} dias</div>
                         <ShareButton type="streak" value={profile.streak} />
                     </div>
                     <div className="glass-card p-4 space-y-2 border-l-4 border-accent/50">

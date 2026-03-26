@@ -95,8 +95,19 @@ export default function Home() {
         }
     }, [isDark]);
 
+    // Streak calculation consistency (from StreakWeek)
+    const [localReadDates, setLocalReadDates] = useState<string[]>([]);
+    useEffect(() => {
+        const stored = localStorage.getItem("biblequest_read_dates");
+        const fromLocal = stored ? JSON.parse(stored) : [];
+        // Merge with profile.readDates to ensure we have the most complete history
+        const merged = Array.from(new Set([...fromLocal, ...(profile?.readDates || [])]));
+        setLocalReadDates(merged);
+    }, [profile?.readDates]);
+
     // Swipe navigation
     const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
+
     const handleTouchStart = (e: React.TouchEvent) => {
         swipeTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     };
@@ -441,7 +452,7 @@ export default function Home() {
                         <>
                             <div className="flex items-center gap-1 text-secondary">
                                 <Flame className="w-4 h-4 fill-current drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]" />
-                                {calculateStreak(profile?.readDates || [])}
+                                {calculateStreak(localReadDates)}
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className="text-xs text-muted-foreground">Nv.</span>
@@ -628,7 +639,7 @@ export default function Home() {
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ofensiva</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
-                                        {calculateStreak(profile?.readDates || [])} <span className="text-sm font-normal text-muted-foreground">dias</span>
+                                        {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">dias</span>
                                     </div>
                                 </div>
 
