@@ -650,7 +650,7 @@ export default function Home() {
                             <DailyVerse />
 
                             {/* Streak Week */}
-                            {user && profile && <StreakWeek streak={profile.streak} />}
+                            {user && profile && <StreakWeek streak={profile.streak} streakFreezes={profile.streakFreezes} />}
 
                             {/* Daily Missions */}
                             {user && <DailyMissions />}

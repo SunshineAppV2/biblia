@@ -6,11 +6,12 @@ import { Flame } from "lucide-react";
 
 interface StreakWeekProps {
     streak: number;
+    streakFreezes?: number;
 }
 
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
-export function StreakWeek({ streak }: StreakWeekProps) {
+export function StreakWeek({ streak, streakFreezes = 0 }: StreakWeekProps) {
     const [readDates, setReadDates] = useState<string[]>([]);
 
     useEffect(() => {
@@ -30,12 +31,64 @@ export function StreakWeek({ streak }: StreakWeekProps) {
         return { label: DAY_LABELS[d.getDay()], isRead, isToday, dateStr };
     });
 
+    // Helper calculate visual streak from readDates to ensure consistency with flames
+    // This counts consecutive days counting back from today
+    const calculateVisualStreak = () => {
+        let count = 0;
+        const checkDate = new Date(today);
+        
+        // Check if read today
+        const todayStr = checkDate.toISOString().slice(0, 10);
+        if (readDates.includes(todayStr)) {
+            count++;
+            // Go backwards
+            while (true) {
+                checkDate.setDate(checkDate.getDate() - 1);
+                const dStr = checkDate.toISOString().slice(0, 10);
+                if (readDates.includes(dStr)) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            // Check if read yesterday (streak preserved if read today later)
+            checkDate.setDate(checkDate.getDate() - 1);
+            const yesterdayStr = checkDate.toISOString().slice(0, 10);
+            if (readDates.includes(yesterdayStr)) {
+                count++;
+                while (true) {
+                    checkDate.setDate(checkDate.getDate() - 1);
+                    const dStr = checkDate.toISOString().slice(0, 10);
+                    if (readDates.includes(dStr)) {
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return count;
+    };
+
+    const visualStreak = calculateVisualStreak();
+    // Use the max of visual streak and database streak for safety
+    const displayStreak = Math.max(streak, visualStreak);
+
     return (
         <div className="rounded-2xl border border-secondary/20 bg-white/70 backdrop-blur p-4">
             <div className="flex items-center gap-2 mb-3">
                 <Flame className="w-4 h-4 text-red-400 fill-red-400" />
                 <span className="text-xs font-black text-primary uppercase tracking-widest">Ofensiva Semanal</span>
-                <span className="ml-auto text-sm font-black text-secondary">{streak} dias</span>
+                
+                {streakFreezes > 0 && (
+                    <div className="ml-2 flex items-center gap-1 bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-blue-200">
+                        <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" />
+                        BLOQUEIO ATIVO ({streakFreezes})
+                    </div>
+                )}
+
+                <span className="ml-auto text-sm font-black text-secondary">{displayStreak} {displayStreak === 1 ? 'dia' : 'dias'}</span>
             </div>
             <div className="flex justify-between gap-1">
                 {days.map((day, i) => (

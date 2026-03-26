@@ -23,6 +23,13 @@ function isToday(date: Date): boolean {
     return date.toDateString() === now.toDateString();
 }
 
+function getDaysDifference(date1: Date, date2: Date): number {
+    const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    const diff = Math.abs(d2.getTime() - d1.getTime());
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
 const MAX_LEVEL = 66;
 
 /**
@@ -54,32 +61,52 @@ export async function completeChapter(
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
         let newStreak = 1;
-
         let isPostMaxLevel = false;
-
-        if (userSnap.exists()) {
-            const data = userSnap.data();
-            const lastActive = toDate(data.lastActive);
-            const currentStreak: number = data.streak || 0;
-            const currentLevel = calculateLevel(data.xp || 0);
-            isPostMaxLevel = currentLevel >= MAX_LEVEL;
-
-            if (lastActive && isToday(lastActive)) {
-                newStreak = currentStreak; // Already read today
-            } else if (lastActive && isYesterday(lastActive)) {
-                newStreak = currentStreak + 1; // Consecutive day
-            } else {
-                newStreak = 1; // Gap in reading, reset
-            }
-        }
+        const todayStr = new Date().toISOString().slice(0, 10);
 
         const updatePayload: Record<string, unknown> = {
             xp: increment(xpAmount),
             weeklyXp: increment(xpAmount),
             lastActive: serverTimestamp(),
-            streak: newStreak,
             totalChapters: increment(1),
         };
+
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            const lastActive = toDate(data.lastActive);
+            const currentStreak = data.streak || 0;
+            const streakFreezes = data.streakFreezes || 0;
+            const currentLevel = calculateLevel(data.xp || 0);
+            isPostMaxLevel = currentLevel >= MAX_LEVEL;
+            
+            // Sync readDates in Firestore
+            const existingDates = data.readDates || [];
+            if (!existingDates.includes(todayStr)) {
+                updatePayload.readDates = [...existingDates, todayStr].slice(-30);
+            }
+
+            if (lastActive && isToday(lastActive)) {
+                newStreak = currentStreak; 
+            } else if (lastActive && isYesterday(lastActive)) {
+                newStreak = currentStreak + 1;
+            } else if (lastActive) {
+                // Gap in reading days
+                const daysMissed = getDaysDifference(lastActive, new Date()) - 1;
+                if (daysMissed > 0 && streakFreezes >= daysMissed) {
+                    newStreak = currentStreak + 1; // Preserve and increment
+                    updatePayload.streakFreezes = increment(-daysMissed);
+                } else {
+                    newStreak = 1; // Reset
+                }
+            } else {
+                newStreak = 1; // First reading
+            }
+        } else {
+            // First time ever
+            updatePayload.readDates = [todayStr];
+        }
+
+        updatePayload.streak = newStreak;
 
         // Post-max-level: award a Wisdom Point in addition to XP
         if (isPostMaxLevel) {

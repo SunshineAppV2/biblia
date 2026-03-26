@@ -15,6 +15,7 @@ export interface UserProfile {
     totalChapters: number;
     lastActive: Timestamp | null;
     readDates: string[]; // Array de strings ISO de datas em que um capítulo foi lido
+    streakFreezes: number; // Quantidade de bloqueios de ofensiva disponíveis
     preferredVersion?: string;
     achievements?: string[];
     wisdomPoints?: number;
@@ -37,6 +38,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             streak: 0,
             totalChapters: 0,
             readDates: [], // Inicializa o novo campo
+            streakFreezes: 0, // Inicia com zero bloqueios
             lastActive: null,
             preferredVersion: "ARC",
             achievements: [],
@@ -87,3 +89,12 @@ export async function updateUserVersion(uid: string, version: string): Promise<v
         lastActive: serverTimestamp(),
     });
 }
+
+export async function buyStreakFreeze(uid: string, xpCost: number): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        xp: increment(-xpCost),
+        streakFreezes: increment(1),
+    });
+}
+

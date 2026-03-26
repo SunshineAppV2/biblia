@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -15,12 +15,31 @@ import { cn } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
+import { buyStreakFreeze } from "@/lib/firestore";
+import { useToast } from "@/components/Toast";
 
 export default function ProfilePage() {
-    const { user, profile, logout } = useAuth();
+    const { user, profile, logout, refreshProfile } = useAuth();
+    const { showToast } = useToast();
     const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
     const [notifyEnabled, setNotifyEnabled] = useState(false);
+    const [buying, setBuying] = useState(false);
     useEffect(() => { setNotifyEnabled(isNotificationsEnabled()); }, []);
+
+    const handleBuyFreeze = async () => {
+        if (!user || (profile?.xp ?? 0) < 200 || buying) return;
+        setBuying(true);
+        try {
+            await buyStreakFreeze(user.uid, 200);
+            await refreshProfile();
+            showToast("🛡️ Bloqueio de ofensiva adquirido!", "achievement");
+        } catch (error) {
+            console.error("Failed to buy freeze", error);
+            showToast("Erro ao processar compra.", "error");
+        } finally {
+            setBuying(false);
+        }
+    };
 
     const toggleNotifications = async () => {
         if (notifyEnabled) {
@@ -190,6 +209,36 @@ export default function ProfilePage() {
 
                 {/* Reading Heatmap */}
                 <ReadingHeatmap userId={user.uid} />
+
+                {/* Streak Freezes — Feature request: Bloqueio de ofensiva */}
+                <section className="glass-card p-4 flex items-center justify-between border-blue-400/30 bg-blue-500/5 relative overflow-hidden group">
+                    <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
+                    <div className="flex items-center gap-3 relative z-10">
+                        <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0 border border-blue-200 dark:border-blue-800">
+                             <Shield className="w-5 h-5 text-blue-500 shadow-sm" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-black text-primary uppercase tracking-wider">Bloqueio de Ofensiva</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">
+                                 {profile.streakFreezes && profile.streakFreezes > 0 
+                                     ? `Você possui ${profile.streakFreezes} bloqueio(s) ativo(s).`
+                                     : "Proteja sua ofensiva se você esquecer de ler um dia."}
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleBuyFreeze}
+                        disabled={buying || (profile.xp || 0) < 200}
+                        className={cn(
+                             "px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border shadow-lg relative z-10",
+                             (profile.xp || 0) >= 200 
+                                 ? "bg-blue-500 border-blue-600 text-white hover:bg-blue-600 hover:shadow-blue-500/20 active:scale-95" 
+                                 : "bg-muted border-muted text-muted-foreground cursor-not-allowed opacity-60"
+                        )}
+                    >
+                        {buying ? "..." : (profile.xp || 0) >= 200 ? "Comprar (200 XP)" : "XP Insuficiente"}
+                    </button>
+                </section>
 
                 {/* Notifications */}
                 <section className="glass-card p-4 flex items-center justify-between">
