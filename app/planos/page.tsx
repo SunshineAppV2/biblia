@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, BookOpen, CheckCircle2, Clock, Layers } from "lucide-react";
+import { ChevronLeft, BookOpen, CheckCircle2, Clock, Layers, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { getPlanProgress, getTodaysPlanChapter } from "@/lib/reading-plan";
 
 // ─── Plan definitions ────────────────────────────────────────────────────────
 
@@ -20,6 +21,16 @@ interface Plan {
 }
 
 const PLANS: Plan[] = [
+    {
+        id: "reavivados",
+        name: "Reavivados por Sua Palavra",
+        description: "Plano comunitário: 1 capítulo por dia em ordem canônica. Iniciado em 17/04/2025 — lendo junto com toda a comunidade.",
+        icon: "🔥",
+        durationDays: 1189,
+        totalChapters: 1189,
+        chaptersPerDay: 1,
+        scope: "Bíblia completa — ordem canônica",
+    },
     {
         id: "bible_1_year",
         name: "Bíblia em 1 Ano",
@@ -74,12 +85,16 @@ interface ActivePlan {
 export default function PlanosPage() {
     const [activePlan, setActivePlan] = useState<ActivePlan | null>(null);
     const [confirming, setConfirming] = useState<string | null>(null);
+    const [reavivadosProgress, setReavivadosProgress] = useState<{ dayNumber: number; totalDays: number; percent: number } | null>(null);
+    const [reavivadosToday, setReavivadosToday] = useState<{ bookName: string; chapter: number } | null>(null);
 
     useEffect(() => {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) setActivePlan(JSON.parse(raw));
         } catch {}
+        setReavivadosProgress(getPlanProgress());
+        setReavivadosToday(getTodaysPlanChapter());
     }, []);
 
     const activate = (planId: string) => {
@@ -185,6 +200,7 @@ export default function PlanosPage() {
                     {PLANS.map((plan, i) => {
                         const isActive = activePlan?.id === plan.id;
                         const isConfirming = confirming === plan.id;
+                        const isReavivados = plan.id === "reavivados";
 
                         return (
                             <motion.div
@@ -194,7 +210,9 @@ export default function PlanosPage() {
                                 transition={{ delay: i * 0.07 }}
                                 className={cn(
                                     "rounded-2xl border p-5 space-y-4 transition-all",
-                                    isActive
+                                    isReavivados
+                                        ? "border-orange-400/40 bg-orange-50/60 dark:bg-orange-950/20"
+                                        : isActive
                                         ? "border-secondary/40 bg-secondary/10"
                                         : "border-primary/15 bg-white/70 backdrop-blur"
                                 )}
@@ -238,8 +256,42 @@ export default function PlanosPage() {
                                     {plan.scope}
                                 </p>
 
+                                {/* Reavivados live progress */}
+                                {isReavivados && reavivadosProgress && reavivadosToday && (
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between text-xs">
+                                            <span className="font-bold text-orange-600 flex items-center gap-1">
+                                                <Flame className="w-3.5 h-3.5 fill-current" />
+                                                Hoje: {reavivadosToday.bookName} {reavivadosToday.chapter}
+                                            </span>
+                                            <span className="text-muted-foreground font-semibold">
+                                                Dia {reavivadosProgress.dayNumber} de {reavivadosProgress.totalDays}
+                                            </span>
+                                        </div>
+                                        <div className="h-2 bg-orange-100 dark:bg-orange-900/30 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full rounded-full transition-all duration-700"
+                                                style={{
+                                                    width: `${reavivadosProgress.percent}%`,
+                                                    background: "linear-gradient(90deg, #ea580c, #f97316)",
+                                                }}
+                                            />
+                                        </div>
+                                        <p className="text-[10px] text-muted-foreground text-right">
+                                            {reavivadosProgress.percent}% da Bíblia concluído
+                                        </p>
+                                        <Link
+                                            href="/"
+                                            className="block w-full py-2.5 rounded-xl text-center text-sm font-black text-white transition-all hover:opacity-90"
+                                            style={{ background: "linear-gradient(135deg, #ea580c, #f97316)" }}
+                                        >
+                                            Ler hoje no Dashboard 🔥
+                                        </Link>
+                                    </div>
+                                )}
+
                                 {/* Action */}
-                                {!isActive && (
+                                {!isActive && !isReavivados && (
                                     <AnimatePresence mode="wait">
                                         {isConfirming ? (
                                             <motion.div
@@ -282,7 +334,7 @@ export default function PlanosPage() {
                                     </AnimatePresence>
                                 )}
 
-                                {isActive && (
+                                {isActive && !isReavivados && (
                                     <p className="text-xs text-center text-secondary font-bold">
                                         Plano em andamento — continue lendo no dashboard!
                                     </p>
