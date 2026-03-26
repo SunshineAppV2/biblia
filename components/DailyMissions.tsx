@@ -15,15 +15,20 @@ interface MissionState {
     read1: boolean; // 1 capítulo
     read2: boolean; // 2 capítulos
     quiz1: boolean; // 1 quiz
+    quiz_perfect: boolean; // 100% no quiz
+    early_bird: boolean; // Ler antes das 9h
+    marathon: boolean; // Ler 5 capítulos
+    read_count?: number; // Contador interno de capítulos no dia
 }
 
 function loadMissions(): MissionState {
-    if (typeof window === "undefined") return { read1: false, read2: false, quiz1: false };
+    const defaultState: MissionState = { read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 };
+    if (typeof window === "undefined") return defaultState;
     try {
         const raw = localStorage.getItem(`biblequest_missions_${getTodayKey()}`);
-        if (raw) return JSON.parse(raw);
+        if (raw) return { ...defaultState, ...JSON.parse(raw) };
     } catch {}
-    return { read1: false, read2: false, quiz1: false };
+    return defaultState;
 }
 
 function saveMissions(state: MissionState) {
@@ -37,13 +42,33 @@ function saveMissions(state: MissionState) {
 export function trackDailyRead(): number {
     const state = loadMissions();
     let bonus = 0;
+    const now = new Date();
+    const hour = now.getHours();
 
+    state.read_count = (state.read_count || 0) + 1;
+
+    // 1 Capítulo
     if (!state.read1) {
         state.read1 = true;
         bonus += 15;
-    } else if (!state.read2) {
+    } 
+    
+    // 2 Capítulos
+    if (state.read_count >= 2 && !state.read2) {
         state.read2 = true;
         bonus += 30;
+    }
+
+    // Madrugador (antes das 9h)
+    if (hour < 9 && !state.early_bird) {
+        state.early_bird = true;
+        bonus += 25;
+    }
+
+    // Maratonista (5 capítulos)
+    if (state.read_count >= 5 && !state.marathon) {
+        state.marathon = true;
+        bonus += 60;
     }
 
     saveMissions(state);
@@ -51,12 +76,22 @@ export function trackDailyRead(): number {
 }
 
 /** Call this every time a quiz is completed. Returns the XP bonus earned (0 if already done). */
-export function trackDailyQuiz(): number {
+export function trackDailyQuiz(isPerfect: boolean = false): number {
     const state = loadMissions();
-    if (state.quiz1) return 0;
-    state.quiz1 = true;
+    let bonus = 0;
+
+    if (!state.quiz1) {
+        state.quiz1 = true;
+        bonus += 20;
+    }
+
+    if (isPerfect && !state.quiz_perfect) {
+        state.quiz_perfect = true;
+        bonus += 30;
+    }
+
     saveMissions(state);
-    return 20;
+    return bonus;
 }
 
 // ─── Mission definitions ────────────────────────────────────────────────────
@@ -74,10 +109,34 @@ const MISSIONS: Mission[] = [
     {
         id: "read1",
         icon: BookOpen,
-        title: "Primeira Leitura do Dia",
+        title: "Primeira Leitura",
         description: "Leia 1 capítulo hoje",
         xp: 15,
         color: "text-accent",
+    },
+    {
+        id: "early_bird",
+        icon: Zap,
+        title: "Madrugador",
+        description: "Leia 1 cap. antes das 09:00",
+        xp: 25,
+        color: "text-yellow-500",
+    },
+    {
+        id: "quiz1",
+        icon: Target,
+        title: "Desafio do Quiz",
+        description: "Complete 1 quiz",
+        xp: 20,
+        color: "text-primary",
+    },
+    {
+        id: "quiz_perfect",
+        icon: Target,
+        title: "Gênio do Quiz",
+        description: "Acerte 100% em um quiz",
+        xp: 30,
+        color: "text-blue-500",
     },
     {
         id: "read2",
@@ -88,19 +147,19 @@ const MISSIONS: Mission[] = [
         color: "text-secondary",
     },
     {
-        id: "quiz1",
-        icon: Target,
-        title: "Desafio do Quiz",
-        description: "Complete 1 quiz",
-        xp: 20,
-        color: "text-primary",
+        id: "marathon",
+        icon: Zap,
+        title: "Maratona Bíblica",
+        description: "Leia 5 capítulos hoje",
+        xp: 60,
+        color: "text-red-500",
     },
 ];
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function DailyMissions() {
-    const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false });
+    const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 });
 
     useEffect(() => {
         setMissions(loadMissions());
@@ -112,8 +171,8 @@ export function DailyMissions() {
         return () => clearInterval(interval);
     }, []);
 
-    const completedCount = Object.values(missions).filter(Boolean).length;
-    const allDone = completedCount === 3;
+    const completedCount = Object.keys(missions).filter(k => k !== 'read_count' && missions[k as keyof MissionState] === true).length;
+    const allDone = completedCount >= 6;
 
     return (
         <section className="space-y-3">
@@ -123,7 +182,7 @@ export function DailyMissions() {
                     Missões Diárias
                 </h3>
                 <span className="text-xs font-bold text-muted-foreground">
-                    {completedCount}/3 completas
+                    {completedCount}/{MISSIONS.length} completas
                 </span>
             </div>
 

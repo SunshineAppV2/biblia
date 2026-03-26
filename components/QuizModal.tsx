@@ -35,7 +35,7 @@ interface QuizModalProps {
     bookId: string;
     bookName: string;
     chapter: number;
-    onComplete: (xpDelta: number) => void;
+    onComplete: (xpDelta: number, correctCount: number) => void;
 }
 
 type AnswerState = "unanswered" | "correct" | "wrong";
@@ -125,7 +125,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
     if (!isOpen) return null;
 
     if (questions.length === 0) {
-        onComplete(0);
+        onComplete(0, 0);
         return null;
     }
 
@@ -167,7 +167,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
     };
 
     const handleFinish = () => {
-        onComplete(xpDelta);
+        onComplete(xpDelta, correctCount);
     };
 
     const isPerfect = correctCount === 3;

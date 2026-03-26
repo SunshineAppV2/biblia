@@ -30,7 +30,7 @@ import { ReadingGoal } from "@/components/ReadingGoal";
 import { Biblio } from "@/components/Biblio";
 import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
-import { checkAndSendReminder, checkStreakAtRisk, markReadToday } from "@/lib/notifications";
+import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChapter } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 
 export default function Home() {
@@ -227,8 +227,9 @@ export default function Home() {
         const xpAmount = 50;
         const wasAtMaxLevel = calculateLevel(xpBeforeCompletion) >= 66;
 
-        // Track daily missions and notifications
+        // Track daily/weekly progress
         markReadToday();
+        trackWeeklyChapter();
         const missionBonus = trackDailyRead();
         const totalQuizDelta = quizXpDelta + missionBonus;
 
@@ -324,16 +325,19 @@ export default function Home() {
         await doNavigateNext();
     };
 
-    const handleQuizComplete = async (quizXpDelta: number) => {
+    const handleQuizComplete = async (quizXpDelta: number, correctCount: number) => {
         setShowQuiz(false);
-        trackDailyQuiz();
+        const missionBonus = trackDailyQuiz(correctCount === 3);
+        const totalDelta = quizXpDelta + (missionBonus || 0);
+        
         // Apply quiz XP bonus/penalty separately
-        if (quizXpDelta !== 0 && user) {
-            await applyXpDelta(user.uid, quizXpDelta);
+        if (totalDelta !== 0 && user) {
+            await applyXpDelta(user.uid, totalDelta);
             await refreshProfile();
         }
         await doNavigateNext();
     };
+
 
     // Actual navigation to next chapter — called after quiz or directly
     const doNavigateNext = async () => {

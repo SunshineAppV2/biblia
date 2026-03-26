@@ -12,9 +12,15 @@ export function ReadingGoal() {
   const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-    setChapters(getWeeklyChapters());
-    setGoal(getWeeklyGoal());
+    const refresh = () => {
+      setChapters(getWeeklyChapters());
+      setGoal(getWeeklyGoal());
+    };
+    refresh();
+    const interval = setInterval(refresh, 3000);
+    return () => clearInterval(interval);
   }, []);
+
 
   const handleGoalChange = (g: number) => {
     setGoal(g);
@@ -58,24 +64,50 @@ export function ReadingGoal() {
           </button>
           {showPicker && (
             <div
-              className="absolute right-0 top-8 z-50 rounded-xl shadow-xl border overflow-hidden"
+              className="absolute right-0 top-8 z-50 rounded-xl shadow-xl border overflow-hidden w-48"
               style={{ background: "var(--card)", borderColor: "rgba(255,255,255,0.1)" }}
             >
-              {GOAL_OPTIONS.map((g) => (
-                <button
-                  key={g}
-                  onClick={() => handleGoalChange(g)}
-                  className="w-full px-4 py-2 text-sm text-left hover:bg-primary/10 transition-colors font-medium"
-                  style={{
-                    color: g === goal ? "#3b82f6" : "var(--foreground)",
-                    fontWeight: g === goal ? 700 : 400,
-                  }}
-                >
-                  {g} capítulos/semana
-                </button>
-              ))}
+              <div className="p-2 border-b border-white/5">
+                <p className="text-[10px] font-black text-muted-foreground uppercase px-2 mb-1">Sugestões</p>
+                {GOAL_OPTIONS.map((g) => (
+                  <button
+                    key={g}
+                    onClick={() => handleGoalChange(g)}
+                    className="w-full px-3 py-1.5 text-xs text-left hover:bg-primary/10 rounded-lg transition-colors font-medium border-l-2 border-transparent"
+                    style={{
+                      color: g === goal ? "#3b82f6" : "var(--foreground)",
+                      borderColor: g === goal ? "#3b82f6" : "transparent",
+                    }}
+                  >
+                    {g} capítulos/semana
+                  </button>
+                ))}
+              </div>
+              <div className="p-2 bg-primary/5">
+                <p className="text-[10px] font-black text-muted-foreground uppercase px-2 mb-1">Personalizado</p>
+                <div className="flex items-center gap-2 px-2">
+                   <input 
+                      type="number"
+                      min="1"
+                      max="100"
+                      placeholder="Ex: 20"
+                      className="w-full bg-transparent border-b border-primary/20 text-xs font-bold focus:outline-none py-1"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = parseInt((e.target as HTMLInputElement).value);
+                          if (val > 0) handleGoalChange(val);
+                        }
+                      }}
+                      onBlur={(e) => {
+                         const val = parseInt((e.target as HTMLInputElement).value);
+                         if (val > 0) handleGoalChange(val);
+                      }}
+                   />
+                </div>
+              </div>
             </div>
           )}
+
         </div>
       </div>
 
@@ -115,24 +147,27 @@ export function ReadingGoal() {
           />
         </div>
 
-        {/* Day dots */}
-        <div className="flex gap-1.5 mt-3">
-          {Array.from({ length: goal }).map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 h-1.5 rounded-full"
-              style={{
-                background:
-                  i < chapters
-                    ? done
-                      ? "#22c55e"
-                      : "#3b82f6"
-                    : "rgba(0,0,0,0.12)",
-                maxWidth: 28,
-              }}
-            />
-          ))}
-        </div>
+        {/* Day dots - only for goals up to 14 to avoid clutter */}
+        {goal <= 14 && (
+          <div className="flex gap-1.5 mt-3">
+            {Array.from({ length: goal }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 h-1.5 rounded-full"
+                style={{
+                  background:
+                    i < chapters
+                      ? done
+                        ? "#22c55e"
+                        : "#3b82f6"
+                      : "rgba(0,0,0,0.12)",
+                  maxWidth: 28,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
 
         {!done && (
           <p className="text-xs mt-2" style={{ color: "var(--muted-foreground)" }}>
