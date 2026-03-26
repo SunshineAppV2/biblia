@@ -121,7 +121,7 @@ export function checkAndSendReminder(): void {
     if (hour < 8 || hour > 22) return;
 
     localStorage.setItem(LAST_NOTIFIED_KEY, today);
-    new Notification("BibleQuest — Sua leitura de hoje te espera! 📖", {
+    new Notification("AnoBíblico+ — Sua leitura de hoje te espera! 📖", {
         body: "Mantenha sua ofensiva! Alguns minutos de leitura bíblica podem transformar seu dia.",
         icon: "/icon-192",
         badge: "/icon-192",

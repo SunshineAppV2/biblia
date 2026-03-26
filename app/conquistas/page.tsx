@@ -9,6 +9,7 @@ import Link from "next/link";
 import { ChevronLeft, Lock } from "lucide-react";
 import { cn, calculateStreak } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { MobileNav } from "@/components/MobileNav";
 
 const CATEGORY_LABELS: Record<string, string> = {
     leitura: "📖 Leitura",
@@ -196,13 +197,15 @@ export default function ConquistasPage() {
                         </div>
                     );
                 })}
-
                 {loading && (
                     <div className="text-center py-8">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto" />
                     </div>
                 )}
             </div>
+
+            <div className="h-24" />
+            <MobileNav />
         </div>
     );
 }

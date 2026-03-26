@@ -156,13 +156,31 @@ const MISSIONS: Mission[] = [
     },
 ];
 
+function getMissionsForToday(): Mission[] {
+    const d = new Date();
+    const day = d.getDate() + d.getMonth() * 31; // More stable seed
+    const fixed = MISSIONS[0];
+    const others = MISSIONS.slice(1);
+    
+    // Pick 2 from others
+    const startIdx = day % others.length;
+    const selection = [
+        fixed,
+        others[startIdx],
+        others[(startIdx + 1) % others.length]
+    ];
+    return selection;
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function DailyMissions() {
     const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 });
+    const [activeMissions, setActiveMissions] = useState<Mission[]>([]);
 
     useEffect(() => {
         setMissions(loadMissions());
+        setActiveMissions(getMissionsForToday());
 
         // Poll for external updates (when trackDailyRead/Quiz is called)
         const interval = setInterval(() => {
@@ -171,8 +189,9 @@ export function DailyMissions() {
         return () => clearInterval(interval);
     }, []);
 
-    const completedCount = Object.keys(missions).filter(k => k !== 'read_count' && missions[k as keyof MissionState] === true).length;
-    const allDone = completedCount >= 6;
+    const completedCount = activeMissions.filter(m => missions[m.id] === true).length;
+    const allDone = completedCount === activeMissions.length;
+
 
     return (
         <section className="space-y-3">
@@ -182,7 +201,7 @@ export function DailyMissions() {
                     Missões Diárias
                 </h3>
                 <span className="text-xs font-bold text-muted-foreground">
-                    {completedCount}/{MISSIONS.length} completas
+                    {completedCount}/{activeMissions.length} completas
                 </span>
             </div>
 
@@ -201,7 +220,7 @@ export function DailyMissions() {
             )}
 
             <div className="space-y-2.5">
-                {MISSIONS.map((mission, i) => {
+                {activeMissions.map((mission, i) => {
                     const done = missions[mission.id];
                     const Icon = mission.icon;
                     // For read2: only show progress if read1 is done

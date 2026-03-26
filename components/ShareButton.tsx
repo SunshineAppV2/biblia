@@ -14,13 +14,13 @@ interface Props {
 
 function buildText(type: ShareType, value: number | string, name?: string): string {
     if (type === "streak") {
-        return `🔥 ${value} dias de leitura bíblica consecutivos no BibleQuest! 📖 anobiblico.vercel.app`;
+        return `🔥 ${value} dias de leitura bíblica consecutivos no AnoBíblico+! 📖 anobiblico.vercel.app`;
     }
     if (type === "achievement") {
-        return `🏆 Conquista desbloqueada: ${name || value}! Jornada bíblica gamificada. 📖 anobiblico.vercel.app`;
+        return `🏆 Conquista desbloqueada: ${name || value}! Jornada bíblica no AnoBíblico+. 📖 anobiblico.vercel.app`;
     }
     // level
-    return `⭐ Cheguei ao Nível ${value} no BibleQuest! 📖 anobiblico.vercel.app`;
+    return `⭐ Cheguei ao Nível ${value} no AnoBíblico+! 📖 anobiblico.vercel.app`;
 }
 
 export function ShareButton({ type, value, name }: Props) {

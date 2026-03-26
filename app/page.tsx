@@ -32,6 +32,7 @@ import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
 import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChapter } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
+import { MobileNav } from "@/components/MobileNav";
 
 export default function Home() {
     const { user, profile, loginWithGoogle, refreshProfile } = useAuth();
@@ -419,7 +420,7 @@ export default function Home() {
                         </button>
                     )}
                     <h1 className="text-xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent tracking-tight">
-                        BibleQuest
+                        AnoBíblico+
                     </h1>
                     {isReading && chapterContent && (
                         <button
@@ -846,11 +847,14 @@ export default function Home() {
 
             {/* Footer */}
             {!isReading && (
-                <div className="pb-20 pt-4 text-center">
-                    <Link href="/politica-de-privacidade" className="text-xs text-muted-foreground hover:text-primary transition-colors">
-                        Política de Privacidade
-                    </Link>
-                </div>
+                <>
+                    <div className="pb-32 pt-4 text-center">
+                        <Link href="/politica-de-privacidade" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                            Política de Privacidade
+                        </Link>
+                    </div>
+                    <MobileNav />
+                </>
             )}
         </div>
     );

@@ -118,7 +118,7 @@ export default function NotificacoesPage() {
             <div className="mb-8">
                 <h1 className="text-2xl font-bold text-white">Notificações</h1>
                 <p className="text-gray-400 text-sm mt-0.5">
-                    Envie notificações push para todos os usuários do BibleQuest
+                    Envie notificações push para todos os usuários do AnoBíblico+
                 </p>
             </div>
 

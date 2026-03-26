@@ -243,7 +243,7 @@ export function SplashScreen() {
                                     background: "linear-gradient(135deg, #C5A059 0%, #1A237E 45%, #42A5F5 100%)",
                                     WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
                                 }}>
-                                BibleQuest
+                                AnoBíblico+
                             </h1>
                             <p className="text-sm font-semibold tracking-[0.28em] uppercase"
                                 style={{ color: "#455A80" }}>

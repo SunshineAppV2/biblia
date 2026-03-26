@@ -5,13 +5,13 @@ import { SplashScreen } from "@/components/SplashScreen";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    title: "BibleQuest",
-    description: "Jornada Bíblica Gamificada",
+    title: "AnoBíblico+",
+    description: "Sua Jornada Bíblica em um Ano",
     manifest: "/manifest.json",
     appleWebApp: {
         capable: true,
         statusBarStyle: "black-translucent",
-        title: "BibleQuest",
+        title: "AnoBíblico+",
     },
     other: {
         "google-adsense-account": "ca-pub-6990451998593893",

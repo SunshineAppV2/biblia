@@ -17,6 +17,7 @@ import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
 import { buyStreakFreeze } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
+import { MobileNav } from "@/components/MobileNav";
 
 export default function ProfilePage() {
     const { user, profile, logout, refreshProfile } = useAuth();
@@ -387,7 +388,9 @@ export default function ProfilePage() {
                         })}
                     </div>
                 </section>
+                <div className="h-24" />
             </main>
+            <MobileNav />
         </div>
     );
 }
