@@ -26,10 +26,11 @@ import { useToast } from "@/components/Toast";
 import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
 import { DailyVerse } from "@/components/DailyVerse";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
+import { ReadingGoal } from "@/components/ReadingGoal";
 import { Biblio } from "@/components/Biblio";
 import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
-import { checkAndSendReminder, markReadToday } from "@/lib/notifications";
+import { checkAndSendReminder, checkStreakAtRisk, markReadToday } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 
 export default function Home() {
@@ -94,6 +95,27 @@ export default function Home() {
         }
     }, [isDark]);
 
+    // Swipe navigation
+    const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
+    const handleTouchStart = (e: React.TouchEvent) => {
+        swipeTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    };
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (!swipeTouchRef.current) return;
+        const dx = e.changedTouches[0].clientX - swipeTouchRef.current.x;
+        const dy = e.changedTouches[0].clientY - swipeTouchRef.current.y;
+        swipeTouchRef.current = null;
+        // Only trigger if horizontal movement dominates and exceeds threshold
+        if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        if (dx < 0 && isCompletedNow) {
+            // Swipe left → next chapter
+            handleNextChapter();
+        } else if (dx > 0) {
+            // Swipe right → back to dashboard
+            handleBack();
+        }
+    };
+
     // Verse bookmarks (feature 11)
     const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
     const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -131,6 +153,11 @@ export default function Home() {
     useEffect(() => {
         checkAndSendReminder();
     }, []);
+
+    // Check streak at risk when profile loads
+    useEffect(() => {
+        if (profile?.streak) checkStreakAtRisk(profile.streak);
+    }, [profile?.streak]);
 
     // On login: check league week promotion/demotion
     useEffect(() => {
@@ -613,6 +640,9 @@ export default function Home() {
                                 </div>
                             </div>
 
+                            {/* Reading Goal */}
+                            {user && <ReadingGoal />}
+
                             {/* Reading Plan */}
                             <ReadingPlanCard onNavigate={handleNavigate} />
 
@@ -646,6 +676,8 @@ export default function Home() {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -20, opacity: 0 }}
                             transition={{ duration: 0.4, ease: "easeOut" }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
                         >
                             {loadingContent ? (
                                 <div className="flex flex-col items-center justify-center py-20 gap-4">
