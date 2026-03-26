@@ -361,28 +361,31 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
                                             </motion.button>
                                         </div>
 
-                                        {/* Biblical Reference Badge */}
+                                        {/* Biblical Reference Badge (Premium Redesign) */}
                                         {currentQuestion.reference && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: 10 }}
+                                                initial={{ opacity: 0, y: 15 }}
                                                 animate={{ opacity: 1, y: 0 }}
-                                                className="mt-2 flex items-center justify-between overflow-hidden rounded-xl border border-secondary/30 bg-secondary/15 shadow-xl shadow-secondary/5 backdrop-blur-md"
+                                                className="mt-4 overflow-hidden rounded-2xl border border-secondary/40 bg-gradient-to-br from-secondary/20 to-secondary/5 p-[1px] shadow-2xl shadow-secondary/10"
                                             >
-                                                <div className="flex items-center gap-3 px-4 py-3">
-                                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary/20 text-secondary border border-secondary/30 shadow-inner">
-                                                        <Book className="h-5 w-5" />
+                                                <div className="flex items-center justify-between rounded-2xl bg-white/5 backdrop-blur-xl px-4 py-3.5">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20 border border-secondary/50">
+                                                            <Book className="h-6 w-6" />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-secondary/90 mb-0.5">
+                                                                Referência Bíblica
+                                                            </span>
+                                                            <span className="text-base font-extrabold text-foreground leading-none">
+                                                                {currentQuestion.reference}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <span className="block text-[9px] font-black uppercase tracking-[0.2em] text-secondary/70">
-                                                            Referência de Estudo
-                                                        </span>
-                                                        <span className="block text-sm font-bold text-secondary-foreground">
-                                                            {currentQuestion.reference}
-                                                        </span>
+                                                    <div className="flex flex-col items-end opacity-40">
+                                                        <span className="text-[9px] font-bold uppercase tracking-wider text-secondary">Verificar</span>
+                                                        <ArrowRight className="h-4 w-4 text-secondary" />
                                                     </div>
-                                                </div>
-                                                <div className="bg-secondary/20 px-3 py-4 self-stretch flex items-center justify-center border-l border-secondary/20">
-                                                    <ArrowRight className="h-4 w-4 text-secondary/60" />
                                                 </div>
                                             </motion.div>
                                         )}
