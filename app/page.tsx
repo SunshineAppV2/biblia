@@ -259,11 +259,10 @@ export default function Home() {
                 showToast("🕊️ Ponto de Sabedoria conquistado!", "achievement");
             }
 
-            // Check level up
+            // Check level up celebration
             const oldLevel = calculateLevel(xpBeforeCompletion);
             const newLevel = calculateLevel(xpBeforeCompletion + xpAmount + totalQuizDelta);
             if (newLevel > oldLevel) {
-                setNewLevelReached(newLevel);
                 setTimeout(() => setShowLevelUp(true), 800);
             }
 
