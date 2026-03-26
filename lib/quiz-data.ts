@@ -2,6 +2,7 @@ export interface BankQuestion {
     question: string;
     answer: string;
     distractors: [string, string];
+    reference?: string;
 }
 
 /**
@@ -12,18 +13,20 @@ export interface PreparedQuestion {
     question: string;
     options: string[];
     correctIndex: number;
+    reference?: string;
 }
 
 export function prepareQuiz(bank: BankQuestion[], count = 3): PreparedQuestion[] {
     const shuffled = [...bank].sort(() => Math.random() - 0.5);
     const selected = shuffled.slice(0, Math.min(count, shuffled.length));
 
-    return selected.map(({ question, answer, distractors }) => {
+    return selected.map(({ question, answer, distractors, reference }) => {
         const options = [answer, ...distractors].sort(() => Math.random() - 0.5);
         return {
             question,
             options,
             correctIndex: options.indexOf(answer),
+            reference
         };
     });
 }
@@ -137,14 +140,14 @@ export function getQuizBankChapterCount(bookId: string, chapter: number): number
 const QUIZ_BANK: Record<string, Record<number, BankQuestion[]>> = {
     genesis: {
         1: [
-            { question: "O que Deus criou no primeiro dia?", answer: "A luz", distractors: ["Os animais", "O sol e a lua"] },
-            { question: "Em qual dia Deus criou o firmamento?", answer: "No segundo dia", distractors: ["No terceiro dia", "No primeiro dia"] },
-            { question: "O que Deus criou no quarto dia?", answer: "O sol, a lua e as estrelas", distractors: ["As plantas e árvores", "Os peixes e aves"] },
-            { question: "O que aconteceu no sétimo dia?", answer: "Deus descansou e santificou o dia", distractors: ["Deus criou os animais", "Deus criou o homem"] },
-            { question: "Em qual dia Deus criou os animais terrestres e o homem?", answer: "No sexto dia", distractors: ["No quinto dia", "No sétimo dia"] },
-            { question: "O que Deus disse ser 'muito bom' ao final da criação?", answer: "Tudo o que havia feito", distractors: ["Apenas o homem", "Apenas a luz"] },
-            { question: "De que forma Deus criou o homem, segundo Gênesis 1?", answer: "À sua imagem e semelhança", distractors: ["Do pó da terra", "Da água dos mares"] },
-            { question: "No terceiro dia, o que Deus fez surgir das águas?", answer: "A terra seca e as plantas", distractors: ["Os peixes", "Os animais"] },
+            { question: "O que Deus criou no primeiro dia?", answer: "A luz", distractors: ["Os animais", "O sol e a lua"], reference: "Gênesis 1:3-5" },
+            { question: "Em qual dia Deus criou le o firmamento?", answer: "No segundo dia", distractors: ["No terceiro dia", "No primeiro dia"], reference: "Gênesis 1:6-8" },
+            { question: "O que Deus criou no quarto dia?", answer: "O sol, a lua e as estrelas", distractors: ["As plantas e árvores", "Os peixes e aves"], reference: "Gênesis 1:14-19" },
+            { question: "O que aconteceu no sétimo dia?", answer: "Deus descansou e santificou o dia", distractors: ["Deus criou os animais", "Deus criou o homem"], reference: "Gênesis 2:2-3" },
+            { question: "Em qual dia Deus criou os animais terrestres e o homem?", answer: "No sexto dia", distractors: ["No quinto dia", "No sétimo dia"], reference: "Gênesis 1:24-31" },
+            { question: "O que Deus disse ser 'muito bom' ao final da criação?", answer: "Tudo o que havia feito", distractors: ["Apenas o homem", "Apenas a luz"], reference: "Gênesis 1:31" },
+            { question: "De que forma Deus criou o homem, segundo Gênesis 1?", answer: "À sua imagem e semelhança", distractors: ["Do pó da terra", "Da água dos mares"], reference: "Gênesis 1:27" },
+            { question: "No terceiro dia, o que Deus fez surgir das águas?", answer: "A terra seca e as plantas", distractors: ["Os peixes", "Os animais"], reference: "Gênesis 1:9-13" },
         ],
         2: [
             { question: "Como se chamava o jardim onde Deus colocou o homem?", answer: "Éden", distractors: ["Canaã", "Gosém"] },

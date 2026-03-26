@@ -12,6 +12,7 @@ import {
 import { db } from "@/lib/firebase";
 import { BankQuestion, getQuizBank } from "@/lib/quiz-data";
 import { motion, AnimatePresence } from "framer-motion";
+import { QuizModal } from "@/components/QuizModal";
 
 // ─── Books data ───────────────────────────────────────────────────────────────
 
@@ -96,9 +97,10 @@ interface FormState {
     answer: string;
     distractor0: string;
     distractor1: string;
+    reference: string;
 }
 
-const EMPTY_FORM: FormState = { question: "", answer: "", distractor0: "", distractor1: "" };
+const EMPTY_FORM: FormState = { question: "", answer: "", distractor0: "", distractor1: "", reference: "" };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -111,6 +113,7 @@ function docId(bookId: string, chapter: number) {
 export default function QuizAdminPage() {
     const [expandedBook, setExpandedBook] = useState<string | null>("genesis");
     const [selectedChapter, setSelectedChapter] = useState<{ bookId: string; chapter: number } | null>(null);
+    const [showTestModal, setShowTestModal] = useState(false);
 
     // Questions for the selected chapter
     const [staticQs, setStaticQs] = useState<BankQuestion[]>([]);
@@ -191,6 +194,7 @@ export default function QuizAdminPage() {
             question: form.question.trim(),
             answer: form.answer.trim(),
             distractors: [form.distractor0.trim(), form.distractor1.trim()],
+            reference: form.reference.trim(),
         };
         const ref = doc(db, "quiz_questions", docId(selectedChapter.bookId, selectedChapter.chapter));
         const snap = await getDoc(ref);
@@ -225,6 +229,7 @@ export default function QuizAdminPage() {
                 question: form.question.trim(),
                 answer: form.answer.trim(),
                 distractors: [form.distractor0.trim(), form.distractor1.trim()],
+                reference: form.reference.trim(),
             };
             const ref = doc(db, "quiz_questions", docId(selectedChapter.bookId, selectedChapter.chapter));
             // Replace: remove old, add new
@@ -265,6 +270,7 @@ export default function QuizAdminPage() {
             answer: q.answer,
             distractor0: q.distractors[0],
             distractor1: q.distractors[1],
+            reference: q.reference || "",
         });
     }
 
@@ -375,16 +381,24 @@ export default function QuizAdminPage() {
                                     {staticQs.length} estáticas · {firestoreQs.length} editáveis
                                 </p>
                             </div>
-                            <button
-                                onClick={() => {
-                                    setShowAddForm(true);
-                                    setEditingIndex(null);
-                                    setForm(EMPTY_FORM);
-                                }}
-                                className="px-4 py-2 rounded-lg bg-white text-gray-900 text-sm font-semibold hover:bg-gray-100 transition-colors"
-                            >
-                                + Adicionar Pergunta
-                            </button>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setShowTestModal(true)}
+                                    className="px-4 py-2 rounded-lg bg-accent/20 text-accent text-sm font-semibold hover:bg-accent/30 transition-colors border border-accent/30"
+                                >
+                                    🎯 Testar Capítulo
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowAddForm(true);
+                                        setEditingIndex(null);
+                                        setForm(EMPTY_FORM);
+                                    }}
+                                    className="px-4 py-2 rounded-lg bg-white text-gray-900 text-sm font-semibold hover:bg-gray-100 transition-colors"
+                                >
+                                    + Adicionar Pergunta
+                                </button>
+                            </div>
                         </div>
 
                         {loadingChapter ? (
@@ -456,6 +470,18 @@ export default function QuizAdminPage() {
                     </>
                 )}
             </div>
+
+            {/* Test Modal Overlay */}
+            {showTestModal && selectedChapter && (
+                <QuizModal
+                    isOpen={showTestModal}
+                    bookId={selectedChapter.bookId}
+                    bookName={BOOKS.find(b => b.id === selectedChapter.bookId)?.label || ""}
+                    chapter={selectedChapter.chapter}
+                    isTest={true}
+                    onComplete={() => setShowTestModal(false)}
+                />
+            )}
         </div>
     );
 }
@@ -499,6 +525,11 @@ function QuestionCard({
                                 {d}
                             </span>
                         ))}
+                        {q.reference && (
+                            <span className="text-xs px-2.5 py-1 rounded-full bg-secondary/15 text-secondary-foreground font-medium border border-secondary/20 uppercase">
+                                📖 {q.reference}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -599,6 +630,17 @@ function QuestionForm({
                         className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none"
                     />
                 </div>
+            </div>
+
+            <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1">Referência (Ex: Gênesis 1:1)</label>
+                <input
+                    type="text"
+                    value={form.reference}
+                    onChange={(e) => setForm((f) => ({ ...f, reference: e.target.value }))}
+                    placeholder="Referência bíblica..."
+                    className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none"
+                />
             </div>
 
             <div className="flex gap-3 pt-1">

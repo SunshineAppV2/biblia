@@ -36,6 +36,7 @@ interface QuizModalProps {
     bookName: string;
     chapter: number;
     onComplete: (xpDelta: number, correctCount: number) => void;
+    isTest?: boolean;
 }
 
 type AnswerState = "unanswered" | "correct" | "wrong";
@@ -72,11 +73,11 @@ function SadParticles() {
     return <>{particles.map((p, i) => <Particle key={i} emoji={p.emoji} delay={p.delay} />)}</>;
 }
 
-export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: QuizModalProps) {
+export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTest }: QuizModalProps) {
     const [questions] = useState<PreparedQuestion[]>(() => {
         const bank = getQuizBank(bookId, chapter);
         if (!bank) return [];
-        return prepareQuiz(bank, 3);
+        return prepareQuiz(bank, isTest ? bank.length : 3);
     });
 
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -170,7 +171,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
         onComplete(xpDelta, correctCount);
     };
 
-    const isPerfect = correctCount === 3;
+    const isPerfect = correctCount === questions.length;
     const isZero = correctCount === 0 && showResults;
 
     return (
@@ -333,6 +334,18 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                             </motion.button>
                                         </div>
 
+                                        {/* Biblical Reference */}
+                                        {currentQuestion.reference && (
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                className="flex items-center gap-2 rounded-xl px-3 py-2 border bg-secondary/5 border-secondary/20 text-secondary-foreground/80"
+                                            >
+                                                <span className="text-[10px] font-black uppercase tracking-wider opacity-70">Confira em:</span>
+                                                <span className="text-xs font-bold">{currentQuestion.reference}</span>
+                                            </motion.div>
+                                        )}
+
                                         {/* Correct answer hint when wrong */}
                                         {answerState === "wrong" && (
                                             <motion.div
@@ -343,12 +356,12 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                             >
                                                 <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                                                 <div>
-                                                    <p className="text-[11px] font-black text-accent uppercase tracking-wider mb-0.5">
-                                                        Resposta correta
-                                                    </p>
-                                                    <p className="text-xs text-foreground leading-snug">
-                                                        {currentQuestion.options[currentQuestion.correctIndex]}
-                                                    </p>
+                                                     <p className="text-[11px] font-black text-accent uppercase tracking-wider mb-0.5">
+                                                         Resposta correta
+                                                     </p>
+                                                     <p className="text-xs text-foreground leading-snug">
+                                                         {currentQuestion.options[currentQuestion.correctIndex]}
+                                                     </p>
                                                 </div>
                                             </motion.div>
                                         )}
@@ -385,7 +398,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete }: Qui
                                 "text-2xl font-black",
                                 isPerfect ? "text-yellow-500" : isZero ? "text-red-400" : "text-gray-900 dark:text-white"
                             )}>
-                                {isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 corretas`}
+                                {isTest ? `Teste: ${correctCount}/${questions.length}` : isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 corretas`}
                             </h3>
 
                             <p className="text-sm text-muted-foreground leading-relaxed">
