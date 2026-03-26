@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Book, Trophy, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const NAV_ITEMS = [
     { label: "Home", icon: Home, href: "/" },
@@ -30,15 +31,23 @@ export function MobileNav() {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-4 rounded-2xl",
-                                active ? "text-secondary scale-110" : "text-muted-foreground hover:text-primary"
+                                "flex flex-col items-center justify-center gap-1.5 transition-all duration-300 relative py-2 px-4 rounded-2xl",
+                                active 
+                                    ? "text-secondary scale-110" 
+                                    : "text-foreground/40 hover:text-foreground/70"
                             )}
                         >
                             {active && (
-                                <div className="absolute inset-0 bg-secondary/10 rounded-2xl blur-sm" />
+                                <motion.div 
+                                    layoutId="nav-glow"
+                                    className="absolute inset-0 bg-secondary/15 rounded-2xl blur-md" 
+                                />
                             )}
-                            <Icon className={cn("w-5 h-5", active ? "stroke-[2.5px]" : "stroke-[2px]")} />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+                            <Icon className={cn("w-6 h-6", active ? "stroke-[2.5px] drop-shadow-[0_0_8px_rgba(212,164,48,0.5)]" : "stroke-[1.5px]")} />
+                            <span className={cn(
+                                "text-[10px] font-bold uppercase tracking-widest",
+                                active ? "text-secondary" : "text-foreground/50"
+                            )}>{item.label}</span>
                         </Link>
                     );
                 })}
