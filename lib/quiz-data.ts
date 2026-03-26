@@ -53,6 +53,9 @@ async function ensureBanksLoaded() {
         import("./quiz-data-1reis").then(m => m.QUIZ_BANK_1REIS).catch(() => null),
         import("./quiz-data-2reis").then(m => m.QUIZ_BANK_2REIS).catch(() => null),
         import("./quiz-data-1cron").then(m => m.QUIZ_BANK_1CRON).catch(() => null),
+        import("./quiz-data-2cron").then(m => m.QUIZ_BANK_2CRON).catch(() => null),
+        import("./quiz-data-esdras").then(m => m.QUIZ_BANK_ESDRAS).catch(() => null),
+        import("./quiz-data-neemias").then(m => m.QUIZ_BANK_NEEMIAS).catch(() => null),
     ]);
     for (const r of mods) {
         if (r.status === "fulfilled" && r.value) EXTRA_BANKS.push(r.value);
