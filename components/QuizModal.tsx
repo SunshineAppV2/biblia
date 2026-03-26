@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { CheckCircle, XCircle, ChevronRight, Trophy, Brain, Clock } from "lucide-react";
+import { CheckCircle, XCircle, ChevronRight, Trophy, Brain, Clock, Book, ArrowRight } from "lucide-react";
 import { prepareQuiz, getQuizBank, PreparedQuestion, BankQuestion } from "@/lib/quiz-data";
 
 /** Calculates time in seconds based on total character count of question + options */
@@ -361,15 +361,29 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
                                             </motion.button>
                                         </div>
 
-                                        {/* Biblical Reference */}
+                                        {/* Biblical Reference Badge */}
                                         {currentQuestion.reference && (
                                             <motion.div
-                                                initial={{ opacity: 0, scale: 0.95 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                className="flex items-center gap-2 rounded-xl px-3 py-2 border bg-secondary/5 border-secondary/20 text-secondary-foreground/80"
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="mt-2 flex items-center justify-between overflow-hidden rounded-xl border border-secondary/30 bg-secondary/15 shadow-xl shadow-secondary/5 backdrop-blur-md"
                                             >
-                                                <span className="text-[10px] font-black uppercase tracking-wider opacity-70">Confira em:</span>
-                                                <span className="text-xs font-bold">{currentQuestion.reference}</span>
+                                                <div className="flex items-center gap-3 px-4 py-3">
+                                                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary/20 text-secondary border border-secondary/30 shadow-inner">
+                                                        <Book className="h-5 w-5" />
+                                                    </div>
+                                                    <div>
+                                                        <span className="block text-[9px] font-black uppercase tracking-[0.2em] text-secondary/70">
+                                                            Referência de Estudo
+                                                        </span>
+                                                        <span className="block text-sm font-bold text-secondary-foreground">
+                                                            {currentQuestion.reference}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-secondary/20 px-3 py-4 self-stretch flex items-center justify-center border-l border-secondary/20">
+                                                    <ArrowRight className="h-4 w-4 text-secondary/60" />
+                                                </div>
                                             </motion.div>
                                         )}
 
