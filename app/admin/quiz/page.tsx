@@ -486,6 +486,7 @@ export default function QuizAdminPage() {
                     bookName={BOOKS.find(b => b.id === selectedChapter.bookId)?.label || ""}
                     chapter={selectedChapter.chapter}
                     isTest={true}
+                    customQuestions={allTagged}
                     onComplete={() => setShowTestModal(false)}
                 />
             )}

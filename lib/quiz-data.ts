@@ -17,11 +17,21 @@ export interface PreparedQuestion {
 }
 
 export function prepareQuiz(bank: BankQuestion[], count = 3): PreparedQuestion[] {
-    const shuffled = [...bank].sort(() => Math.random() - 0.5);
+    const shuffled = [...bank];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     const selected = shuffled.slice(0, Math.min(count, shuffled.length));
 
     return selected.map(({ question, answer, distractors, reference }) => {
-        const options = [answer, ...distractors].sort(() => Math.random() - 0.5);
+        // Shuffle alternatives (answer + 2 distractors)
+        const options = [answer, ...distractors];
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        
         return {
             question,
             options,

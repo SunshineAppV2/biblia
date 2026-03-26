@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CheckCircle, XCircle, ChevronRight, Trophy, Brain, Clock } from "lucide-react";
-import { prepareQuiz, getQuizBank, PreparedQuestion } from "@/lib/quiz-data";
+import { prepareQuiz, getQuizBank, PreparedQuestion, BankQuestion } from "@/lib/quiz-data";
 
 /** Calculates time in seconds based on total character count of question + options */
 function calcTime(question: PreparedQuestion): number {
@@ -37,6 +37,7 @@ interface QuizModalProps {
     chapter: number;
     onComplete: (xpDelta: number, correctCount: number) => void;
     isTest?: boolean;
+    customQuestions?: BankQuestion[];
 }
 
 type AnswerState = "unanswered" | "correct" | "wrong";
@@ -73,7 +74,7 @@ function SadParticles() {
     return <>{particles.map((p, i) => <Particle key={i} emoji={p.emoji} delay={p.delay} />)}</>;
 }
 
-export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTest }: QuizModalProps) {
+export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTest, customQuestions }: QuizModalProps) {
     const [questions, setQuestions] = useState<PreparedQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -88,8 +89,8 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
     // Reset and initialize when opening
     useEffect(() => {
         if (isOpen) {
-            const bank = getQuizBank(bookId, chapter);
-            const prepared = bank ? prepareQuiz(bank, isTest ? bank.length : 3) : [];
+            const bank = customQuestions || getQuizBank(bookId, chapter) || [];
+            const prepared = prepareQuiz(bank, isTest ? bank.length : 3);
             setQuestions(prepared);
             setCurrentIndex(0);
             setSelectedOption(null);
@@ -101,7 +102,7 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
             setLastXpGained(0);
             if (prepared.length > 0) setTimeLeft(calcTime(prepared[0]));
         }
-    }, [isOpen, bookId, chapter, isTest]);
+    }, [isOpen, bookId, chapter, isTest, customQuestions]);
 
     // Timer
     const [timeLeft, setTimeLeft] = useState(() =>
@@ -139,8 +140,21 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
     if (!isOpen) return null;
 
     if (questions.length === 0) {
-        onComplete(0, 0);
-        return null;
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center max-w-sm w-full">
+                    <div className="text-4xl mb-4">📖</div>
+                    <h3 className="text-xl font-bold text-white mb-2">Sem perguntas disponíveis</h3>
+                    <p className="text-gray-400 mb-6">Este capítulo ainda não possui questões no banco de dados.</p>
+                    <button 
+                        onClick={() => onComplete(0, 0)}
+                        className="w-full py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200"
+                    >
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     const currentQuestion = questions[currentIndex];
