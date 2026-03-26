@@ -37,34 +37,36 @@ export function prepareQuiz(bank: BankQuestion[], count = 3): PreparedQuestion[]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EXTRA_BANKS: Array<Record<string, Record<number, BankQuestion[]>>> = [];
 
-let _banksLoaded = false;
+let _loadPromise: Promise<void> | null = null;
 export async function ensureBanksLoaded() {
-    if (_banksLoaded) return;
-    _banksLoaded = true;
-    const mods = await Promise.allSettled([
-        import("./quiz-data-nt-general").then(m => m.QUIZ_BANK_NT_GENERAL),
-        import("./quiz-data-pentateuch").then(m => m.QUIZ_BANK_PENTATEUCH).catch(() => null),
-        import("./quiz-data-hist1").then(m => m.QUIZ_BANK_HIST1).catch(() => null),
-        import("./quiz-data-hist2").then(m => m.QUIZ_BANK_HIST2).catch(() => null),
-        import("./quiz-data-wisdom-minor").then(m => m.QUIZ_BANK_WISDOM_MINOR).catch(() => null),
-        import("./quiz-data-salmos").then(m => m.QUIZ_BANK_SALMOS).catch(() => null),
-        import("./quiz-data-prophets").then(m => m.QUIZ_BANK_PROPHETS).catch(() => null),
-        import("./quiz-data-gospels").then(m => m.QUIZ_BANK_GOSPELS).catch(() => null),
-        import("./quiz-data-nt-paul").then(m => m.QUIZ_BANK_NT_PAUL).catch(() => null),
-        import("./quiz-data-1sam").then(m => m.QUIZ_BANK_1SAM).catch(() => null),
-        import("./quiz-data-2sam").then(m => m.QUIZ_BANK_2SAM).catch(() => null),
-        import("./quiz-data-1reis").then(m => m.QUIZ_BANK_1REIS).catch(() => null),
-        import("./quiz-data-2reis").then(m => m.QUIZ_BANK_2REIS).catch(() => null),
-        import("./quiz-data-1cron").then(m => m.QUIZ_BANK_1CRON).catch(() => null),
-        import("./quiz-data-2cron").then(m => m.QUIZ_BANK_2CRON).catch(() => null),
-        import("./quiz-data-esdras").then(m => m.QUIZ_BANK_ESDRAS).catch(() => null),
-        import("./quiz-data-neemias").then(m => m.QUIZ_BANK_NEEMIAS).catch(() => null),
-        import("./quiz-data-ester").then(m => m.QUIZ_BANK_ESTER).catch(() => null),
-        import("./quiz-data-job").then(m => m.QUIZ_BANK_JOB).catch(() => null),
-    ]);
-    for (const r of mods) {
-        if (r.status === "fulfilled" && r.value) EXTRA_BANKS.push(r.value);
-    }
+    if (_loadPromise) return _loadPromise;
+    _loadPromise = (async () => {
+        const mods = await Promise.allSettled([
+            import("./quiz-data-nt-general").then(m => m.QUIZ_BANK_NT_GENERAL),
+            import("./quiz-data-pentateuch").then(m => m.QUIZ_BANK_PENTATEUCH).catch(() => null),
+            import("./quiz-data-hist1").then(m => m.QUIZ_BANK_HIST1).catch(() => null),
+            import("./quiz-data-hist2").then(m => m.QUIZ_BANK_HIST2).catch(() => null),
+            import("./quiz-data-wisdom-minor").then(m => m.QUIZ_BANK_WISDOM_MINOR).catch(() => null),
+            import("./quiz-data-salmos").then(m => m.QUIZ_BANK_SALMOS).catch(() => null),
+            import("./quiz-data-prophets").then(m => m.QUIZ_BANK_PROPHETS).catch(() => null),
+            import("./quiz-data-gospels").then(m => m.QUIZ_BANK_GOSPELS).catch(() => null),
+            import("./quiz-data-nt-paul").then(m => m.QUIZ_BANK_NT_PAUL).catch(() => null),
+            import("./quiz-data-1sam").then(m => m.QUIZ_BANK_1SAM).catch(() => null),
+            import("./quiz-data-2sam").then(m => m.QUIZ_BANK_2SAM).catch(() => null),
+            import("./quiz-data-1reis").then(m => m.QUIZ_BANK_1REIS).catch(() => null),
+            import("./quiz-data-2reis").then(m => m.QUIZ_BANK_2REIS).catch(() => null),
+            import("./quiz-data-1cron").then(m => m.QUIZ_BANK_1CRON).catch(() => null),
+            import("./quiz-data-2cron").then(m => m.QUIZ_BANK_2CRON).catch(() => null),
+            import("./quiz-data-esdras").then(m => m.QUIZ_BANK_ESDRAS).catch(() => null),
+            import("./quiz-data-neemias").then(m => m.QUIZ_BANK_NEEMIAS).catch(() => null),
+            import("./quiz-data-ester").then(m => m.QUIZ_BANK_ESTER).catch(() => null),
+            import("./quiz-data-job").then(m => m.QUIZ_BANK_JOB).catch(() => null),
+        ]);
+        for (const r of mods) {
+            if (r.status === "fulfilled" && r.value) EXTRA_BANKS.push(r.value);
+        }
+    })();
+    return _loadPromise;
 }
 
 function getAllBanks(): Array<Record<string, Record<number, BankQuestion[]>>> {

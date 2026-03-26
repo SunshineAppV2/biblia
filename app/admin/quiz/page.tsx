@@ -10,7 +10,7 @@ import {
     arrayRemove,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { BankQuestion, getQuizBank } from "@/lib/quiz-data";
+import { BankQuestion, getQuizBank, ensureBanksLoaded } from "@/lib/quiz-data";
 import { motion, AnimatePresence } from "framer-motion";
 import { QuizModal } from "@/components/QuizModal";
 
@@ -114,6 +114,7 @@ export default function QuizAdminPage() {
     const [expandedBook, setExpandedBook] = useState<string | null>("genesis");
     const [selectedChapter, setSelectedChapter] = useState<{ bookId: string; chapter: number } | null>(null);
     const [showTestModal, setShowTestModal] = useState(false);
+    const [ready, setReady] = useState(false);
 
     // Questions for the selected chapter
     const [staticQs, setStaticQs] = useState<BankQuestion[]>([]);
@@ -129,6 +130,11 @@ export default function QuizAdminPage() {
     const [form, setForm] = useState<FormState>(EMPTY_FORM);
     const [formLoading, setFormLoading] = useState(false);
 
+    // Initial load
+    useEffect(() => {
+        ensureBanksLoaded().then(() => setReady(true));
+    }, []);
+
     // Load chapter questions
     const loadChapter = useCallback(async (bookId: string, chapter: number) => {
         setLoadingChapter(true);
@@ -136,6 +142,7 @@ export default function QuizAdminPage() {
         setEditingIndex(null);
         setForm(EMPTY_FORM);
 
+        await ensureBanksLoaded();
         const statics = getQuizBank(bookId, chapter) ?? [];
         setStaticQs(statics);
 
