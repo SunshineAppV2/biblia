@@ -43,7 +43,7 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
               Plano de Leitura
             </p>
             <p className="text-sm font-bold text-white leading-none">
-              Reavivados por Sua Palavra
+              REAVIVADOS POR SUA PALAVRA (RPSP)
             </p>
           </div>
         </div>

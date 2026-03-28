@@ -38,6 +38,13 @@ const STEPS = [
     },
     {
         icon: <Star className="w-12 h-12 text-secondary" />,
+        title: "Plano RPSP Oficial",
+        description: "Siga o plano REAVIVADOS POR SUA PALAVRA (RPSP). Um capítulo por dia em sincronia com milhões de pessoas ao redor do mundo.",
+        highlight: "REAVIVADOS POR SUA PALAVRA",
+        color: "from-blue-200/20 to-primary/10",
+    },
+    {
+        icon: <Trophy className="w-12 h-12 text-accent" />,
         title: "Conquistas e Ligas",
         description: "Desbloqueie conquistas especiais e compita em ligas semanais com outros leitores. Os melhores são promovidos!",
         highlight: "Comece agora e escreva sua história",
