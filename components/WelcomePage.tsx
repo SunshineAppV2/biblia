@@ -18,18 +18,25 @@ const FEATURES = [
         bg: "bg-orange-500/10"
     },
     {
-        icon: Users,
-        title: "Tribos Bíblicas",
-        description: "Crie grupos com amigos para lerem juntos. Ranking exclusivo para tribos com 3+ membros.",
-        color: "text-blue-500",
-        bg: "bg-blue-500/10"
-    },
-    {
-        icon: RefreshCw,
-        title: "Diversos Planos",
-        description: "Escolha entre RPSP, NT em 3 meses, Salmos em 30 dias e mais. Cada um com seu ritmo.",
+        icon: Zap,
+        title: "BOM DE BÍBLIA+",
+        description: "Duelos baseados no seu plano semanal. Disponível a partir do Nível 10.",
         color: "text-secondary",
         bg: "bg-secondary/10"
+    },
+    {
+        icon: Star,
+        title: "BIBLIAQUIZ+",
+        description: "Arena global estilo trivia com roleta e coleção de selos. (Nível 20+)",
+        color: "text-primary",
+        bg: "bg-primary/10"
+    },
+    {
+        icon: Users,
+        title: "Tribos e Convites",
+        description: "Convide amigos e ganhe 100 Gemas! Forme tribos e suba no ranking mundial.",
+        color: "text-blue-500",
+        bg: "bg-blue-500/10"
     },
     {
         icon: Trophy,
@@ -39,16 +46,9 @@ const FEATURES = [
         bg: "bg-amber-500/10"
     },
     {
-        icon: Gem,
-        title: "Gemas e Recompensas",
-        description: "Ganhe gemas ao ler e usar em quizzes para desbloquear itens e proteções.",
-        color: "text-blue-400",
-        bg: "bg-blue-400/10"
-    },
-    {
-        icon: Target,
-        title: "Metas Diárias",
-        description: "Defina seus objetivos e acompanhe seu progresso com métricas precisas.",
+        icon: RefreshCw,
+        title: "Planos Dinâmicos",
+        description: "RPSP, NT em 3 meses, Bíblia em 1 Ano e mais. Comece de onde quiser.",
         color: "text-emerald-500",
         bg: "bg-emerald-500/10"
     }

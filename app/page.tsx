@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ReadingTimer } from "@/components/ReadingTimer";
 import { cn, calculateStreak } from "@/lib/utils";
 import Link from "next/link";
-import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem, Download, Volume2, VolumeX, Pause, Play } from "lucide-react";
+import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem, Download, Volume2, VolumeX, Pause, Play, Lock } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { completeChapter, isChapterCompleted } from "@/lib/progress";
@@ -777,6 +777,56 @@ export default function Home() {
                                 planId={profile?.activePlanId || "rpsp"}
                                 startDate={profile?.planStartDate?.toDate()}
                             />
+
+                            {/* Activities Section */}
+                            <section className="space-y-3">
+                                <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] px-1 opacity-60">Atividades Bíblicas</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {(profile?.xp || 0) >= 10000 ? (
+                                        <Link href="/arena" className="bg-white/70 backdrop-blur border border-secondary/20 hover:border-secondary transition-all rounded-3xl p-5 flex flex-col gap-3 group shadow-sm">
+                                            <div className="w-10 h-10 bg-secondary/10 rounded-2xl flex items-center justify-center border border-secondary/20 group-hover:scale-110 transition-transform">
+                                                <Zap className="w-5 h-5 text-secondary fill-current" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-[11px] uppercase text-primary leading-tight">BOM DE BÍBLIA+</h4>
+                                                <p className="text-[9px] text-muted-foreground mt-0.5">Duelo do seu Plano</p>
+                                            </div>
+                                        </Link>
+                                    ) : (
+                                        <div className="bg-black/5 border border-black/5 rounded-3xl p-5 flex flex-col gap-3 opacity-50 grayscale cursor-not-allowed">
+                                            <div className="w-10 h-10 bg-black/10 rounded-2xl flex items-center justify-center border border-black/10">
+                                                <Lock className="w-4 h-4 text-black/40" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-[11px] uppercase text-primary leading-tight">BOM DE BÍBLIA+</h4>
+                                                <p className="text-[9px] text-red-500/60 font-bold mt-0.5 uppercase">Nível 10 Necessário</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {(profile?.xp || 0) >= 20000 ? (
+                                        <Link href="/desafios" className="bg-white/70 backdrop-blur border border-primary/20 hover:border-primary transition-all rounded-3xl p-5 flex flex-col gap-3 group shadow-sm">
+                                            <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 group-hover:scale-110 transition-transform">
+                                                <Trophy className="w-5 h-5 text-primary" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-[11px] uppercase text-primary leading-tight">BIBLIAQUIZ+</h4>
+                                                <p className="text-[9px] text-muted-foreground mt-0.5">Desafio Trivia GERAL</p>
+                                            </div>
+                                        </Link>
+                                    ) : (
+                                        <div className="bg-black/5 border border-black/5 rounded-3xl p-5 flex flex-col gap-3 opacity-50 grayscale cursor-not-allowed">
+                                            <div className="w-10 h-10 bg-black/10 rounded-2xl flex items-center justify-center border border-black/10">
+                                                <Lock className="w-4 h-4 text-black/40" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-black text-[11px] uppercase text-primary leading-tight">BIBLIAQUIZ+</h4>
+                                                <p className="text-[9px] text-red-500/60 font-bold mt-0.5 uppercase">Nível 20 Necessário</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </section>
 
                             {/* Daily Verse */}
                             <DailyVerse />
