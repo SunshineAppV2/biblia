@@ -15,7 +15,7 @@ import { cn, getLocalDateString, calculateStreak } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
-import { buyStreakFreeze, UserProfile, redeemReferralCode } from "@/lib/firestore";
+import { buyStreakFreeze, UserProfile, redeemReferralCode, adminSetUserXp, adminResetUser } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import { MobileNav } from "@/components/MobileNav";
@@ -401,6 +401,63 @@ export default function ProfilePage() {
                         })}
                     </div>
                 </section>
+
+                {/* ADMIN DEBUG TOOLS */}
+                {profile.isAdmin && (
+                    <section className="mt-12 p-6 rounded-[32px] bg-red-500/5 border-2 border-dashed border-red-500/20 space-y-6">
+                        <div className="flex items-center gap-2 text-red-500">
+                            <Shield className="w-5 h-5 fill-current" />
+                            <h3 className="font-black uppercase tracking-widest text-sm italic">Painel do Administrador (MODO TESTE)</h3>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                             <button 
+                                onClick={async () => {
+                                    if(confirm("Promover para Level 10? (+10.000 XP)")) {
+                                        await adminSetUserXp(user.uid, 10000);
+                                        await refreshProfile();
+                                        showToast("NÍVEL 10 ALCANÇADO!", "achievement");
+                                    }
+                                }}
+                                className="bg-white border border-red-500/20 p-4 rounded-2xl text-[10px] font-black uppercase text-red-600 hover:bg-red-500 hover:text-white transition-all"
+                             >
+                                Pular p/ Nível 10
+                             </button>
+                             <button 
+                                onClick={async () => {
+                                    if(confirm("Promover para Level 20? (+20.000 XP)")) {
+                                        await adminSetUserXp(user.uid, 20000);
+                                        await refreshProfile();
+                                        showToast("NÍVEL 20 ALCANÇADO!", "achievement");
+                                    }
+                                }}
+                                className="bg-white border border-red-500/20 p-4 rounded-2xl text-[10px] font-black uppercase text-red-600 hover:bg-red-500 hover:text-white transition-all"
+                             >
+                                Pular p/ Nível 20
+                             </button>
+                        </div>
+
+                        <button 
+                            onClick={async () => {
+                                if(confirm("CUIDADO: Isso vai zerar toda a sua conta (XP, Gemas, Conquistas, etc). Deseja continuar?")) {
+                                    await adminResetUser(user.uid);
+                                    await refreshProfile();
+                                    showToast("USUÁRIO COMPLETAMENTE ZERADO!", "error");
+                                    window.location.reload();
+                                }
+                            }}
+                            className="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-red-500/20 uppercase tracking-widest text-xs active:scale-95"
+                        >
+                            ZERAR MEU USUÁRIO
+                        </button>
+
+                        <div className="p-4 bg-red-500/10 rounded-2xl">
+                             <p className="text-[10px] text-red-800 font-bold leading-tight">
+                                Este painel é visível apenas para admins (seu email: {user.email}). Use para testar bloqueios de nível e fluxo de conquistas.
+                             </p>
+                        </div>
+                    </section>
+                )}
                 <div className="h-24" />
             </main>
             <MobileNav />

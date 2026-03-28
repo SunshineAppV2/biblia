@@ -271,4 +271,26 @@ export async function getGroupById(groupId: string): Promise<UserGroup | null> {
     return snap.exists() ? (snap.data() as UserGroup) : null;
 }
 
+export async function adminSetUserXp(uid: string, xp: number): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, { xp });
+}
+
+export async function adminResetUser(uid: string): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        xp: 0,
+        weeklyXp: 0,
+        gems: 100,
+        streak: 0,
+        totalChapters: 0,
+        readDates: [],
+        achievements: [],
+        wisdomPoints: 0,
+        referralsCount: 0,
+        referredBy: null,
+        totalReadInCycle: 0
+    });
+}
+
 
