@@ -71,6 +71,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             planStartDate: serverTimestamp() as Timestamp,
             referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
             referralsCount: 0,
+            groupId: null,
         };
         await setDoc(userRef, newProfile);
         return newProfile;
@@ -84,6 +85,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             // Garante campo gems exista se já fosse um usuário antigo
             gems: data.gems !== undefined ? data.gems : 100,
             isAdmin: user.email === "aseabra2005@gmail.com",
+            groupId: data.groupId !== undefined ? data.groupId : null,
         };
 
         // Migração: adicionar referralCode para usuários antigos
@@ -147,7 +149,7 @@ export async function createGroup(uid: string, name: string, description: string
     if (userData.groupId) throw new Error("User already in a group");
 
     const groupsRef = collection(db, "groups");
-    const newGroupRef = doc(groupsRef); // Gera um ID único localmente
+    const newGroupRef = doc(groupsRef);
     const groupId = newGroupRef.id;
 
     const newGroup = {
@@ -161,8 +163,17 @@ export async function createGroup(uid: string, name: string, description: string
         members: [uid]
     };
 
-    await setDoc(newGroupRef, newGroup);
-    await updateDoc(userRef, { groupId });
+    try {
+        await setDoc(newGroupRef, newGroup);
+    } catch (e: any) {
+        throw new Error("Erro no Grupo: " + e.message);
+    }
+
+    try {
+        await updateDoc(userRef, { groupId });
+    } catch (e: any) {
+        throw new Error("Erro no Perfil: " + e.message);
+    }
 
     return groupId;
 }

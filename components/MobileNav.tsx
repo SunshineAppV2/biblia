@@ -20,11 +20,10 @@ export function MobileNav() {
     const { logout } = useAuth();
 
     return (
-        <nav className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:w-max z-50 transition-all duration-700">
-            {/* Dark/Navy Glass background for better contrast with "letras claras" */}
+        <nav className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:w-max z-[100] transition-all duration-700">
             <div className="absolute inset-x-0 bottom-0 h-[72px] sm:h-[64px] bg-[#0E1B5C]/95 backdrop-blur-2xl border-t sm:border border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] sm:rounded-full" />
             
-            <div className="relative h-[72px] sm:h-[64px] max-w-md mx-auto sm:mx-0 sm:min-w-[420px] flex items-center justify-around px-4">
+            <div className="relative h-[72px] sm:h-[64px] max-w-md mx-auto sm:mx-0 sm:min-w-[420px] flex items-center justify-between px-8">
                 {NAV_ITEMS.map((item) => {
                     const active = pathname === item.href;
                     const Icon = item.icon;
@@ -56,15 +55,6 @@ export function MobileNav() {
                         </Link>
                     );
                 })}
-
-                {/* Logout Button */}
-                <button
-                    onClick={logout}
-                    className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 text-red-400/50 hover:text-red-400"
-                >
-                    <LogOut className="w-6 h-6 stroke-[1.5px]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.1em] opacity-60">Sair</span>
-                </button>
             </div>
             
             {/* Safe area spacer for mobile - not needed in floating mode on sm */}

@@ -464,7 +464,7 @@ export default function Home() {
         );
     }
 
-    if (!user) {
+    if (!user && !loading) {
         return <WelcomePage onLogin={loginWithGoogle} />;
     }
 
@@ -673,7 +673,7 @@ export default function Home() {
                                     </div>
 
                                     <div className="flex-1 min-w-0">
-                                        <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">
+                                        <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em] ">
                                             Próxima Leitura
                                         </span>
                                         <h3 className="text-2xl font-black text-primary mt-0.5 capitalize leading-tight">
