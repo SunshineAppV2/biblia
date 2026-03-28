@@ -75,9 +75,9 @@ export default function ProfilePage() {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center p-6 text-center">
                 <div className="space-y-4">
-                    <h1 className="text-2xl font-bold text-white">Ops! Você precisa estar logado.</h1>
+                    <h1 className="text-2xl font-bold text-white">{t('common.login_required' as any) || "Ops! Você precisa estar logado."}</h1>
                     <Link href="/" className="inline-block text-primary hover:underline">
-                        Voltar para o Início
+                        {t('common.back_home' as any) || "Voltar para o Início"}
                     </Link>
                 </div>
             </div>
@@ -96,12 +96,12 @@ export default function ProfilePage() {
                 <Link href="/" className="p-2 hover:bg-primary/10 rounded-full transition-colors">
                     <ChevronLeft className="w-6 h-6 text-primary" />
                 </Link>
-                <h1 className="text-lg font-black text-primary uppercase italic tracking-widest">Seu Perfil</h1>
+                <h1 className="text-lg font-black text-primary uppercase italic tracking-widest">{t('profile.title')}</h1>
                 <button
                     onClick={logout}
                     className="text-xs font-bold text-red-400 p-2 hover:bg-red-400/10 rounded-lg transition-colors"
                 >
-                    Sair
+                    {t('profile.logout')}
                 </button>
             </header>
 
@@ -132,8 +132,8 @@ export default function ProfilePage() {
                         </h2>
                         <p className="text-muted-foreground text-sm flex items-center justify-center gap-2 mt-1">
                             <Calendar className="w-3 h-3" />
-                            Membro desde{" "}
-                            {new Date(user.metadata.creationTime || Date.now()).toLocaleDateString("pt-BR", {
+                            {t('profile.member_since' as any) || "Membro desde"}{" "}
+                            {new Date(user.metadata.creationTime || Date.now()).toLocaleDateString(locale === 'pt' ? "pt-BR" : "en-US", {
                                 month: "long",
                                 year: "numeric",
                             })}
@@ -145,9 +145,9 @@ export default function ProfilePage() {
                 <section className="glass-card p-6 space-y-4">
                     <div className="flex justify-between items-end">
                         <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                            Progresso de Nível
+                            {t('profile.level_progress' as any) || "Progresso de Nível"}
                         </span>
-                        <span className="text-sm font-black text-primary">XP TOTAL: {profile.xp}</span>
+                        <span className="text-sm font-black text-primary">{t('profile.xp_total')}: {profile.xp}</span>
                     </div>
                     <LevelProgressBar
                         level={levelInfo.currentLevel}
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                     />
                     <div className="flex items-center gap-2 pt-2 border-t border-primary/5">
                         <Gem className="w-4 h-4 text-blue-500 fill-current" />
-                        <span className="text-sm font-black text-primary">{profile.gems || 0} Gemas</span>
+                        <span className="text-sm font-black text-primary">{profile.gems || 0} {t('profile.gems')}</span>
                     </div>
                 </section>
 
@@ -355,10 +355,10 @@ export default function ProfilePage() {
                 <section className="space-y-4">
                     <div className="flex items-center justify-between px-2">
                         <h3 className="text-sm font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                            <Award className="w-4 h-4 text-primary" /> Conquistas ({unlockedCount}/{totalAchievements})
+                            <Award className="w-4 h-4 text-primary" /> {t('profile.achievements_title')} ({unlockedCount}/{totalAchievements})
                         </h3>
                         <Link href="/conquistas" className="text-xs text-accent font-bold hover:underline">
-                            Ver todas →
+                            {t('common.view_all' as any) || "Ver todas"} →
                         </Link>
                     </div>
                     <div className="space-y-3">

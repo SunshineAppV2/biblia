@@ -149,7 +149,7 @@ export default function Home() {
             showToast("Marcador removido", "info");
         } else {
             next.add(verseIndex);
-            showToast("📖 Versículo salvo nos favoritos", "achievement");
+            showToast(t('reading.verse_saved' as any) || "📖 Versículo salvo nos favoritos", "achievement");
         }
         setBookmarks(next);
         localStorage.setItem(
@@ -194,8 +194,8 @@ export default function Home() {
     useEffect(() => {
         if (!user || !profile) return;
         checkAndProcessLeagueWeek(profile).then(result => {
-            if (result?.promoted) showToast(`🎉 Promovido para a Liga ${result.newLeague}!`, "achievement");
-            else if (result?.demoted) showToast(`📉 Rebaixado para a Liga ${result.newLeague}`, "info");
+            if (result?.promoted) showToast(`${t('profile.promoted' as any) || "🎉 Promovido para a Liga"} ${result.newLeague}!`, "achievement");
+            else if (result?.demoted) showToast(`${t('profile.demoted' as any) || "📉 Rebaixado para a Liga"} ${result.newLeague}`, "info");
         }).catch(() => {});
     }, [user?.uid]);
 

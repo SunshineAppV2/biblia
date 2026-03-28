@@ -56,7 +56,7 @@ export default function TribesPage() {
         if (!user || !newName) return;
         try {
             await createGroup(user.uid, newName, newDesc);
-            showToast("Tribo criada com sucesso!", "success");
+            showToast(t('common.success' as any) || "Tribo criada com sucesso!", "success");
             setIsCreating(false);
             refreshProfile();
         } catch (error: any) {
@@ -65,10 +65,10 @@ export default function TribesPage() {
     };
 
     const handleLeave = async () => {
-        if (!user || !confirm("Tem certeza que deseja sair desta tribo?")) return;
+        if (!user || !confirm(t('common.confirm_leave' as any) || "Tem certeza que deseja sair desta tribo?")) return;
         try {
             await leaveGroup(user.uid);
-            showToast("Você saiu da tribo.", "info");
+            showToast(t('common.left_tribe' as any) || "Você saiu da tribo.", "info");
             refreshProfile();
         } catch (error: any) {
             showToast(error.message, "error");
@@ -91,11 +91,11 @@ export default function TribesPage() {
                     <div className="w-12 h-12 rounded-2xl bg-secondary/15 flex items-center justify-center">
                         <Users className="w-7 h-7 text-secondary" />
                     </div>
-                    Tribos Bíblicas
+                    {t('tribes.title')}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-3 font-medium leading-relaxed">
-                   Unam-se para conquistar o objetivo de ler a Bíblia toda em um ano. <br />
-                   <span className="text-secondary font-bold underline underline-offset-4 decoration-secondary/30">Guerreiem juntos, cresçam juntos.</span>
+                   {t('tribes.subtitle')} <br />
+                   <span className="text-secondary font-bold underline underline-offset-4 decoration-secondary/30">{t('tribes.war_together' as any) || "Guerreiem juntos, cresçam juntos."}</span>
                 </p>
             </header>
 
@@ -362,19 +362,19 @@ export default function TribesPage() {
                     <div className="p-16 border-4 border-dotted border-secondary/15 rounded-[48px] text-center bg-secondary/5">
                         <Users className="w-12 h-12 text-secondary/30 mx-auto mb-6 opacity-50" />
                         <p className="text-sm text-secondary font-black italic px-10 leading-relaxed uppercase tracking-widest">
-                            Nenhuma tribo atingiu o quórum mínimo de 3 membros para batalha.
+                            {t('tribes.no_ranking_msg' as any) || "Nenhuma tribo atingiu o quórum mínimo de 3 membros para batalha."}
                         </p>
-                        <p className="text-[10px] text-muted-foreground mt-4 font-bold uppercase tracking-widest">A glória aguarda os primeiros!</p>
+                        <p className="text-[10px] text-muted-foreground mt-4 font-bold uppercase tracking-widest">{t('tribes.glory_awaits' as any) || "A glória aguarda os primeiros!"}</p>
                     </div>
                 )}
             </div>
             
             <div className="mt-12 p-8 rounded-3xl bg-secondary/10 border border-secondary/15 text-center">
-                <p className="text-[10px] font-black text-secondary uppercase tracking-[0.3em] mb-4">Como funciona o Ranking?</p>
+                <p className="text-[10px] font-black text-secondary uppercase tracking-[0.3em] mb-4">{t('tribes.how_it_works' as any) || "Como funciona o Ranking?"}</p>
                 <ul className="text-[10px] text-muted-foreground text-left space-y-3 font-bold uppercase tracking-tighter">
-                    <li className="flex gap-3"><span className="text-secondary">●</span> Somente grupos com 3 a 10 membros participam.</li>
-                    <li className="flex gap-3"><span className="text-secondary">●</span> Todo XP ganho por leitura individual soma para a Tribo.</li>
-                    <li className="flex gap-3"><span className="text-secondary">●</span> O ranking reseta semanalmente para novas disputas.</li>
+                    <li className="flex gap-3"><span className="text-secondary">●</span> {t('tribes.rule1' as any) || "Somente grupos com 3 a 10 membros participam."}</li>
+                    <li className="flex gap-3"><span className="text-secondary">●</span> {t('tribes.rule2' as any) || "Todo XP ganho por leitura individual soma para a Tribo."}</li>
+                    <li className="flex gap-3"><span className="text-secondary">●</span> {t('tribes.rule3' as any) || "O ranking reseta semanalmente para novas disputas."}</li>
                 </ul>
             </div>
         </div>
