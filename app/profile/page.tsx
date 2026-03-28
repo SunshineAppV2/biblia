@@ -15,7 +15,7 @@ import { cn, getLocalDateString, calculateStreak } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
-import { buyStreakFreeze, UserProfile, redeemReferralCode, adminSetUserXp, adminResetUser, searchUserByEmail } from "@/lib/firestore";
+import { buyStreakFreeze, UserProfile, redeemReferralCode, adminSetUserXp, adminResetUser, searchUserByEmail, adminUpdateUserData } from "@/lib/firestore";
 import { Search, UserMinus } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
@@ -32,6 +32,38 @@ export default function ProfilePage() {
     const [searchEmail, setSearchEmail] = useState("");
     const [foundUser, setFoundUser] = useState<UserProfile | null>(null);
     const [searching, setSearching] = useState(false);
+
+    const [manualXp, setManualXp] = useState<string>("");
+    const [manualGems, setManualGems] = useState<string>("");
+    const [manualStreak, setManualStreak] = useState<string>("");
+
+    useEffect(() => {
+        if (foundUser) {
+            setManualXp(foundUser.xp.toString());
+            setManualGems((foundUser.gems || 0).toString());
+            setManualStreak(foundUser.streak.toString());
+        }
+    }, [foundUser]);
+
+    const handleUpdateUser = async () => {
+        if (!foundUser) return;
+        setSearching(true);
+        try {
+            await adminUpdateUserData(foundUser.uid, {
+                xp: parseInt(manualXp) || 0,
+                gems: parseInt(manualGems) || 0,
+                streak: parseInt(manualStreak) || 0,
+            });
+            showToast("Dados atualizados remotamente!", "success");
+            // Soft refresh for the found user display
+            const updated = await searchUserByEmail(foundUser.email || "");
+            setFoundUser(updated);
+        } catch (e) {
+            showToast("Erro ao atualizar dados.", "error");
+        } finally {
+            setSearching(false);
+        }
+    };
 
     const handleSearch = async () => {
         if (!searchEmail) return;
@@ -510,9 +542,48 @@ export default function ProfilePage() {
                                         <div>
                                             <p className="text-sm font-black text-red-900">{foundUser.displayName}</p>
                                             <p className="text-[10px] text-red-500 font-medium">{foundUser.email}</p>
-                                            <p className="text-[10px] font-black uppercase text-red-400 mt-1">XP: {foundUser.xp} | Gemas: {foundUser.gems}</p>
                                         </div>
                                     </div>
+
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-black text-red-400 uppercase tracking-tighter">XP</label>
+                                            <input 
+                                                type="number"
+                                                value={manualXp}
+                                                onChange={(e) => setManualXp(e.target.value)}
+                                                className="w-full bg-red-50 border border-red-200 rounded-lg px-2 py-1.5 text-xs font-bold text-red-900 focus:outline-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-black text-red-400 uppercase tracking-tighter">Gemas</label>
+                                            <input 
+                                                type="number"
+                                                value={manualGems}
+                                                onChange={(e) => setManualGems(e.target.value)}
+                                                className="w-full bg-red-50 border border-red-200 rounded-lg px-2 py-1.5 text-xs font-bold text-red-900 focus:outline-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-[9px] font-black text-red-400 uppercase tracking-tighter">Streak</label>
+                                            <input 
+                                                type="number"
+                                                value={manualStreak}
+                                                onChange={(e) => setManualStreak(e.target.value)}
+                                                className="w-full bg-red-50 border border-red-200 rounded-lg px-2 py-1.5 text-xs font-bold text-red-900 focus:outline-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        onClick={handleUpdateUser}
+                                        disabled={searching}
+                                        className="w-full bg-red-600 text-white font-black py-3 rounded-xl text-[10px] uppercase shadow-lg shadow-red-600/20 hover:bg-black transition-all"
+                                    >
+                                        {searching ? "ATUALIZANDO..." : "SALVAR ALTERAÇÕES MANUAIS"}
+                                    </button>
+
+                                    <div className="h-px bg-red-100" />
 
                                     <div className="grid grid-cols-2 gap-2">
                                          <button 
@@ -524,9 +595,9 @@ export default function ProfilePage() {
                                                     setSearchEmail("");
                                                 }
                                             }}
-                                            className="w-full bg-red-600 text-white font-black py-3 rounded-xl text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-black transition-colors"
+                                            className="w-full bg-black text-white font-black py-3 rounded-xl text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-red-800 transition-colors"
                                          >
-                                            <UserMinus className="w-4 h-4" /> ZERAR CONTA
+                                            <UserMinus className="w-4 h-4" /> ZERAR TUDO
                                          </button>
                                          <button 
                                             onClick={() => setFoundUser(null)}

@@ -20,11 +20,11 @@ export function MobileNav() {
     const { logout } = useAuth();
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
+        <nav className="fixed bottom-0 sm:bottom-6 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:w-max z-50 transition-all duration-700">
             {/* Dark/Navy Glass background for better contrast with "letras claras" */}
-            <div className="absolute inset-x-0 bottom-0 h-[72px] bg-[#0E1B5C]/95 backdrop-blur-2xl border-t border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.3)]" />
+            <div className="absolute inset-x-0 bottom-0 h-[72px] sm:h-[64px] bg-[#0E1B5C]/95 backdrop-blur-2xl border-t sm:border border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] sm:rounded-full" />
             
-            <div className="relative h-[72px] max-w-md mx-auto flex items-center justify-around px-2">
+            <div className="relative h-[72px] sm:h-[64px] max-w-md mx-auto sm:mx-0 sm:min-w-[420px] flex items-center justify-around px-4">
                 {NAV_ITEMS.map((item) => {
                     const active = pathname === item.href;
                     const Icon = item.icon;
@@ -67,9 +67,8 @@ export function MobileNav() {
                 </button>
             </div>
             
-            {/* Safe area spacer */}
-            <div className="h-[env(safe-area-inset-bottom)] bg-[#0E1B5C]/95 backdrop-blur-2xl" />
+            {/* Safe area spacer for mobile - not needed in floating mode on sm */}
+            <div className="h-[env(safe-area-inset-bottom)] bg-[#0E1B5C]/95 backdrop-blur-2xl sm:hidden" />
         </nav>
     );
 }
-

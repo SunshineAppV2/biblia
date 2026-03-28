@@ -153,9 +153,9 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
             <section className="py-32 px-6 bg-white shadow-[0_-40px_100px_rgba(184,130,10,0.05)] rounded-[60px] relative z-10">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-24">
-                        <h2 className="text-4xl sm:text-6xl font-black mb-6 tracking-tighter italic">O que te espera na <span className="text-secondary">vanguarda</span>?</h2>
+                        <h2 className="text-4xl sm:text-6xl font-black mb-6 tracking-tighter italic">O que te espera no <span className="text-secondary">Próximo Nível</span>?</h2>
                         <div className="w-24 h-1.5 bg-secondary/30 mx-auto rounded-full mb-6" />
-                        <p className="text-[#455A80] font-bold text-sm uppercase tracking-widest">Ferramentas de elite para sua disciplina espiritual</p>
+                        <p className="text-[#455A80] font-bold text-sm uppercase tracking-widest">Ferramentas Épicas para sua disciplina espiritual</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
