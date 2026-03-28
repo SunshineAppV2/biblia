@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 export interface UserProfile {
@@ -38,6 +38,7 @@ export interface UserGroup {
     name: string;
     description: string;
     leaderUid: string;
+    admins: string[]; // uids dos administradores da tribo
     memberCount: number;
     totalXpWeek: number;
     createdAt: Timestamp;
@@ -160,7 +161,8 @@ export async function createGroup(uid: string, name: string, description: string
         memberCount: 1,
         totalXpWeek: 0,
         createdAt: serverTimestamp(),
-        members: [uid]
+        members: [uid],
+        admins: [uid] // O líder começa como admin
     };
 
     try {
@@ -315,4 +317,59 @@ export async function searchUserByEmail(email: string): Promise<UserProfile | nu
 export async function adminUpdateUserData(uid: string, data: Partial<UserProfile>): Promise<void> {
     const userRef = doc(db, "users", uid);
     await updateDoc(userRef, data);
+}
+
+export async function deleteGroup(groupId: string, leaderUid: string): Promise<void> {
+    const groupRef = doc(db, "groups", groupId);
+    const groupSnap = await getDoc(groupRef);
+    if (!groupSnap.exists()) throw new Error("Tribo não encontrada");
+    
+    const groupData = groupSnap.data() as UserGroup;
+    if (groupData.leaderUid !== leaderUid) throw new Error("Apenas o líder pode excluir a tribo");
+
+    const batch = writeBatch(db);
+    
+    // Remover groupId de todos os membros
+    for (const memberUid of groupData.members) {
+        batch.update(doc(db, "users", memberUid), { groupId: null });
+    }
+    
+    // Deletar o documento do grupo
+    batch.delete(groupRef);
+    
+    await batch.commit();
+}
+
+export async function toggleTribeAdmin(groupId: string, senderUid: string, targetUid: string): Promise<void> {
+    const groupRef = doc(db, "groups", groupId);
+    const groupSnap = await getDoc(groupRef);
+    if (!groupSnap.exists()) throw new Error("Tribo não encontrada");
+    
+    const groupData = groupSnap.data() as UserGroup;
+    
+    // Somente o líder pode nomear/remover admins
+    if (groupData.leaderUid !== senderUid) throw new Error("Apenas o líder pode gerenciar administradores");
+    if (targetUid === groupData.leaderUid) throw new Error("O líder sempre é administrador");
+
+    const currentAdmins = groupData.admins || [];
+    let newAdmins;
+    
+    if (currentAdmins.includes(targetUid)) {
+        newAdmins = currentAdmins.filter(id => id !== targetUid);
+    } else {
+        newAdmins = [...currentAdmins, targetUid];
+    }
+    
+    await updateDoc(groupRef, { admins: newAdmins });
+}
+
+export async function getGroupMembers(memberUids: string[]): Promise<UserProfile[]> {
+    if (memberUids.length === 0) return [];
+    
+    const usersRef = collection(db, "users");
+    // O Firestore tem limite de 10-30 itens no 'in', mas grupos são de max 10 membros
+    const q = query(usersRef, where("uid", "in", memberUids));
+    const snap = await getDocs(q);
+    
+    return snap.docs.map(d => d.data() as UserProfile);
 }

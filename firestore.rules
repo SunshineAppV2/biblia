@@ -9,10 +9,19 @@ service cloud.firestore {
     }
 
     // Users: usuários podem ler todos os perfis. 
-    // Podem escrever no próprio OU se forem admins.
+    // Podem escrever no próprio, ser editados por admins ou ter seu groupId removido pelo líder da tribo.
     match /users/{userId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow write: if request.auth != null && (
+        request.auth.uid == userId || 
+        isAdmin() ||
+        (
+          // Permite que o líder do grupo remova o groupId de um membro
+          resource != null && resource.data.groupId != null && 
+          request.resource.data.groupId == null && 
+          get(/databases/$(database)/documents/groups/$(resource.data.groupId)).data.leaderUid == request.auth.uid
+        )
+      );
 
       match /reading_progress/{progressId} {
         allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
@@ -28,7 +37,18 @@ service cloud.firestore {
     // Tribos (Grupos)
     match /groups/{groupId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null; // Mantendo permissivo como solicitado anteriormente para debug, mas agora com base em auth
+      allow create: if request.auth != null;
+      // Permite atualizar se for admin da tribo (líder ou admin nomeado)
+      // Para simplificar o bug anterior de tribunais, mantemos permissivo mas com foco no líder para exclusão
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.leaderUid || 
+        request.auth.uid in resource.data.admins ||
+        isAdmin()
+      );
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.data.leaderUid || 
+        isAdmin()
+      );
     }
 
     // Ranking e Ligas

@@ -8,10 +8,13 @@ import {
     leaveGroup, 
     getGroupsRanking, 
     getGroupById,
+    getGroupMembers,
+    deleteGroup,
+    toggleTribeAdmin,
     UserGroup,
     UserProfile
 } from "@/lib/firestore";
-import { Trophy, Users, Plus, Shield, LogOut, ChevronRight, Crown, Info, BookOpen, Flame, Zap, Target, Star, Gem, Play, Download } from "lucide-react";
+import { Trophy, Users, Plus, Shield, LogOut, ChevronRight, Crown, Info, BookOpen, Flame, Zap, Target, Star, Gem, Play, Download, Trash2, UserPlus, ShieldCheck, Copy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
@@ -26,6 +29,7 @@ export default function TribesPage() {
     const [isCreating, setIsCreating] = useState(false);
     const [newName, setNewName] = useState("");
     const [newDesc, setNewDesc] = useState("");
+    const [members, setMembers] = useState<UserProfile[]>([]);
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -36,8 +40,13 @@ export default function TribesPage() {
                 if (profile?.groupId) {
                     const g = await getGroupById(profile.groupId);
                     setGroup(g);
+                    if (g) {
+                        const m = await getGroupMembers(g.members);
+                        setMembers(m);
+                    }
                 } else {
                     setGroup(null);
+                    setMembers([]);
                 }
                 const r = await getGroupsRanking(3); // Min 3 members
                 setRanking(r);
@@ -72,6 +81,36 @@ export default function TribesPage() {
         } catch (error: any) {
             showToast(error.message, "error");
         }
+    };
+
+    const handleDelete = async () => {
+        if (!user || !group || !confirm("CUIDADO: Isso irá excluir a tribo permanentemente para todos os membros. Continuar?")) return;
+        try {
+            await deleteGroup(group.id, user.uid);
+            showToast("Tribo excluída com sucesso.", "success");
+            refreshProfile();
+        } catch (error: any) {
+            showToast(error.message, "error");
+        }
+    };
+
+    const handleToggleAdmin = async (targetUid: string) => {
+        if (!user || !group) return;
+        try {
+            await toggleTribeAdmin(group.id, user.uid, targetUid);
+            showToast("Privilégios atualizados.", "success");
+            const updated = await getGroupById(group.id);
+            setGroup(updated);
+        } catch (error: any) {
+            showToast(error.message, "error");
+        }
+    };
+
+    const copyInvite = () => {
+        if (!group) return;
+        const id = group.id.split('_')[1] || group.id;
+        navigator.clipboard.writeText(id);
+        showToast("ID da Tribo copiado!", "success");
     };
 
     if (loading) {
@@ -154,14 +193,31 @@ export default function TribesPage() {
                              </div>
 
                              <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-6">
+                                <div className="flex gap-4">
+                                    <button 
+                                        onClick={handleLeave}
+                                        className="flex items-center gap-2 text-[10px] font-black text-white/30 hover:text-red-300 transition-all uppercase tracking-[0.2em]"
+                                    >
+                                        <LogOut className="w-3.5 h-3.5" />
+                                        Sair
+                                    </button>
+                                    {group.leaderUid === user?.uid && (
+                                        <button 
+                                            onClick={handleDelete}
+                                            className="flex items-center gap-2 text-[10px] font-black text-white/30 hover:text-red-500 transition-all uppercase tracking-[0.2em]"
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                            Excluir
+                                        </button>
+                                    )}
+                                </div>
                                 <button 
-                                    onClick={handleLeave}
-                                    className="flex items-center gap-2 text-[10px] font-black text-white/30 hover:text-red-300 transition-all uppercase tracking-[0.2em]"
+                                    onClick={copyInvite}
+                                    className="flex items-center gap-2 text-[10px] font-black text-secondary hover:text-white transition-all uppercase tracking-[0.2em]"
                                 >
-                                    <LogOut className="w-3.5 h-3.5" />
-                                    Abandonar Tribo
+                                    <Copy className="w-3.5 h-3.5" />
+                                    ID: {group.id.split('_')[1] || "—"}
                                 </button>
-                                <div className="text-[9px] font-black text-secondary/60 italic">ID: {group.id.split('_')[1]}</div>
                              </div>
                         </div>
 
@@ -172,26 +228,51 @@ export default function TribesPage() {
                                 Guerreiros Ativos
                             </h3>
                             <div className="grid gap-3">
-                                {group.members.map((m, i) => (
-                                    <div key={m} className="group flex items-center justify-between p-4 rounded-2xl bg-white border border-black/5 hover:border-secondary/20 transition-all shadow-sm">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-[11px] font-black text-secondary">
-                                                #{i + 1}
+                                {members.map((m, i) => {
+                                    const isLeader = m.uid === group.leaderUid;
+                                    const isAdmin = group.admins?.includes(m.uid);
+                                    const canManage = group.leaderUid === user?.uid && !isLeader;
+
+                                    return (
+                                        <div key={m.uid} className="group flex items-center justify-between p-4 rounded-2xl bg-white border border-black/5 hover:border-secondary/20 transition-all shadow-sm">
+                                            <div className="flex items-center gap-4">
+                                                {m.photoURL ? (
+                                                    <img src={m.photoURL} alt={m.displayName || ""} className="w-10 h-10 rounded-xl object-cover" />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-[11px] font-black text-secondary uppercase">
+                                                        {m.displayName?.[0] || "?"}
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <span className="text-sm font-black text-primary block truncate max-w-[140px]">
+                                                        {isLeader && <Crown className="w-3.5 h-3.5 inline mr-1.5 text-secondary fill-current" />}
+                                                        {!isLeader && isAdmin && <ShieldCheck className="w-3.5 h-3.5 inline mr-1.5 text-blue-500 fill-current" />}
+                                                        {m.displayName || "Guerreiro"}
+                                                    </span>
+                                                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                        {isLeader ? "Líder Supremo" : isAdmin ? "Cunhado / Admin" : "Guerreiro"}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="text-sm font-black text-primary block truncate max-w-[140px]">
-                                                    {m === group.leaderUid && <Crown className="w-3.5 h-3.5 inline mr-1.5 text-secondary fill-current" />}
-                                                    Membro {m.slice(0, 6)}
-                                                </span>
-                                                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Guerreiro da Fé</span>
+                                            
+                                            <div className="flex items-center gap-2">
+                                                {canManage && (
+                                                    <button 
+                                                        onClick={() => handleToggleAdmin(m.uid)}
+                                                        title={isAdmin ? "Remover de Admin" : "Tornar Admin"}
+                                                        className={`p-2 rounded-lg border transition-all ${isAdmin ? "border-blue-500/20 text-blue-500 bg-blue-500/5" : "border-gray-100 text-gray-300 hover:text-blue-500"}`}
+                                                    >
+                                                        <ShieldCheck className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                                <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 text-[10px] font-black flex items-center gap-1.5">
+                                                    <Zap className="w-3 h-3 fill-current" />
+                                                    {m.xp} XP
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 text-[10px] font-black flex items-center gap-1.5">
-                                            <Zap className="w-3 h-3 fill-current" />
-                                            ONLINE
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </motion.div>
