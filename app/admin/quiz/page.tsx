@@ -483,7 +483,6 @@ export default function QuizAdminPage() {
                 <QuizModal
                     isOpen={showTestModal}
                     bookId={selectedChapter.bookId}
-                    bookName={BOOKS.find(b => b.id === selectedChapter.bookId)?.label || ""}
                     chapter={selectedChapter.chapter}
                     isTest={true}
                     customQuestions={allTagged}
