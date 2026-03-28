@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-    title: "Política de Privacidade — BibleQuest",
-    description: "Saiba como o BibleQuest coleta, usa e protege seus dados pessoais.",
+    title: "Política de Privacidade — AnoBíblico+",
+    description: "Saiba como o AnoBíblico+ coleta, usa e protege seus dados pessoais.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
                         href="/"
                         className="text-sm text-muted-foreground hover:text-primary transition-colors mb-6 inline-block"
                     >
-                        ← Voltar ao BibleQuest
+                        ← Voltar ao AnoBíblico+
                     </Link>
                     <h1 className="text-4xl font-black text-primary mb-2">Política de Privacidade</h1>
                     <p className="text-muted-foreground text-sm">Última atualização: {lastUpdated}</p>
@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
                     <section className="bg-white/70 rounded-2xl border border-secondary/20 p-6 space-y-3">
                         <h2 className="text-xl font-bold text-primary">1. Quem somos</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            O <strong className="text-primary">BibleQuest</strong> é um aplicativo web de leitura bíblica gamificada,
+                            O <strong className="text-primary">AnoBíblico+</strong> é um aplicativo web de leitura bíblica gamificada,
                             acessível em <strong>anobiblico.vercel.app</strong>. Este documento explica quais dados
                             coletamos, como os utilizamos e como protegemos sua privacidade, em conformidade com a
                             Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
@@ -154,7 +154,7 @@ export default function PrivacyPolicyPage() {
                     <section className="bg-white/70 rounded-2xl border border-secondary/20 p-6 space-y-3">
                         <h2 className="text-xl font-bold text-primary">8. Menores de idade</h2>
                         <p className="text-muted-foreground leading-relaxed">
-                            O BibleQuest não é direcionado a crianças menores de 13 anos e não coleta
+                            O AnoBíblico+ não é direcionado a crianças menores de 13 anos e não coleta
                             intencionalmente dados de menores. Caso identifique que dados de um menor foram
                             coletados, entre em contato para que possamos removê-los imediatamente.
                         </p>
@@ -165,7 +165,7 @@ export default function PrivacyPolicyPage() {
                         <p className="text-muted-foreground leading-relaxed">
                             Podemos atualizar esta Política de Privacidade periodicamente. Alterações
                             significativas serão comunicadas por meio do próprio aplicativo. O uso
-                            continuado do BibleQuest após alterações constitui aceitação da nova política.
+                            continuado do AnoBíblico+ após alterações constitui aceitação da nova política.
                         </p>
                     </section>
 
@@ -176,7 +176,7 @@ export default function PrivacyPolicyPage() {
                             enviadas para:
                         </p>
                         <p className="font-semibold text-primary">
-                            BibleQuest — anobiblico.vercel.app
+                            AnoBíblico+ — anobiblico.vercel.app
                         </p>
                         <p className="text-muted-foreground text-sm">
                             Respondemos em até 15 dias úteis, conforme exigido pela LGPD.
@@ -190,7 +190,7 @@ export default function PrivacyPolicyPage() {
                         href="/"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-bold rounded-full hover:opacity-90 transition-all text-sm"
                     >
-                        Voltar ao BibleQuest
+                        Voltar ao AnoBíblico+
                     </Link>
                 </div>
             </div>

@@ -41,23 +41,26 @@ export async function completeChapter(
     chapterId: string,
     xpAmount: number
 ): Promise<boolean> {
-    const progressId = `${bookId}_${chapterId}`;
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    const data = userSnap.data() || {};
+    const currentCycle = data.cycle || 1;
+
+    const progressId = `${bookId}_${chapterId}_cycle${currentCycle}`;
     const progressRef = doc(db, "users", userId, "reading_progress", progressId);
 
     try {
         const progressSnap = await getDoc(progressRef);
-        if (progressSnap.exists()) return false; // Already completed
+        if (progressSnap.exists()) return false; // Already completed in this cycle
 
         await setDoc(progressRef, {
             bookId,
             chapterId,
             completedAt: serverTimestamp(),
             xpAwarded: xpAmount,
+            cycle: currentCycle,
         });
 
-        // Read user for streak calculation
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
         let newStreak = 1;
         let isPostMaxLevel = false;
         const todayStr = getLocalDateString();
@@ -67,7 +70,7 @@ export async function completeChapter(
             weeklyXp: increment(xpAmount),
             lastActive: serverTimestamp(),
             totalChapters: increment(1),
-            gems: increment(10), // Ganha 10 gemas por capítulo
+            gems: increment(10), 
         };
 
         if (userSnap.exists()) {
@@ -78,6 +81,34 @@ export async function completeChapter(
             const currentLevel = calculateLevel(data.xp || 0);
             isPostMaxLevel = currentLevel >= MAX_LEVEL;
             
+            // Circular Logic
+            const cycle = data.cycle || 1;
+            const cycleStartChapter = data.cycleStartChapter;
+            const totalReadInCycle = (data.totalReadInCycle || 0) + 1;
+            const TOTAL_BIBLE_CHAPTERS = 1189;
+
+            if (!cycleStartChapter) {
+                // First chapter of the cycle
+                updatePayload.cycleStartChapter = { bookId, chapter: Number(chapterId) };
+                updatePayload.cycleStartDate = serverTimestamp();
+            }
+
+            updatePayload.totalReadInCycle = totalReadInCycle;
+
+            if (totalReadInCycle >= TOTAL_BIBLE_CHAPTERS) {
+                // Cycle complete!
+                updatePayload.cycle = cycle + 1;
+                updatePayload.totalReadInCycle = 0;
+                updatePayload.cycleStartChapter = null; // Reset for next cycle
+                updatePayload.cycleStartDate = null;
+                // Optional: clear or archive progress. 
+                // For now, we clear it so getNextUserChapter can find "unread" chapters again.
+                // NOTE: This usually requires a lot of deletions. In a real app we might 
+                // use a subcollection with the cycle number as part of the ID.
+                // But as per requirement "reseta o progresso", we'll implement a way 
+                // to ignore old progress in getNextUserChapter by using the cycle number.
+            }
+
             // Sync readDates in Firestore
             const existingDates = data.readDates || [];
             if (!existingDates.includes(todayStr)) {
@@ -89,30 +120,40 @@ export async function completeChapter(
             } else if (lastActive && isYesterday(lastActive)) {
                 newStreak = currentStreak + 1;
             } else if (lastActive) {
-                // Gap in reading days
                 const daysMissed = getDaysDifference(lastActive, new Date()) - 1;
                 if (daysMissed > 0 && streakFreezes >= daysMissed) {
-                    newStreak = currentStreak + 1; // Preserve and increment
+                    newStreak = currentStreak + 1;
                     updatePayload.streakFreezes = increment(-daysMissed);
                 } else {
-                    newStreak = 1; // Reset
+                    newStreak = 1;
                 }
             } else {
-                newStreak = 1; // First reading
+                newStreak = 1;
             }
         } else {
             // First time ever
             updatePayload.readDates = [todayStr];
+            updatePayload.cycle = 1;
+            updatePayload.totalReadInCycle = 1;
+            updatePayload.cycleStartChapter = { bookId, chapter: Number(chapterId) };
+            updatePayload.cycleStartDate = serverTimestamp();
         }
 
         updatePayload.streak = newStreak;
 
-        // Post-max-level: award a Wisdom Point in addition to XP
         if (isPostMaxLevel) {
             updatePayload.wisdomPoints = increment(1);
         }
 
         await updateDoc(userRef, updatePayload);
+
+        // Sync XP with group
+        if (data.groupId) {
+            const groupRef = doc(db, "groups", data.groupId);
+            await updateDoc(groupRef, {
+                totalXpWeek: increment(xpAmount)
+            });
+        }
 
         return true;
     } catch (error: unknown) {
@@ -132,11 +173,15 @@ export async function isChapterCompleted(
     chapterId: string
 ): Promise<boolean> {
     try {
-        const progressId = `${bookId}_${chapterId}`;
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        const currentCycle = userSnap.exists() ? (userSnap.data().cycle || 1) : 1;
+
+        const progressId = `${bookId}_${chapterId}_cycle${currentCycle}`;
         const progressRef = doc(db, "users", userId, "reading_progress", progressId);
         const snap = await getDoc(progressRef);
         return snap.exists();
     } catch {
-        return false; // Assume not completed when offline
+        return false; 
     }
 }

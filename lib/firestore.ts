@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc, increment, serverTimestamp, Timestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 export interface UserProfile {
@@ -21,6 +21,22 @@ export interface UserProfile {
     achievements?: string[];
     wisdomPoints?: number;
     isAdmin?: boolean;
+    cycle?: number;
+    totalReadInCycle?: number;
+    cycleStartChapter?: { bookId: string; chapter: number } | null;
+    cycleStartDate?: Timestamp | null;
+    groupId?: string | null;
+}
+
+export interface UserGroup {
+    id: string;
+    name: string;
+    description: string;
+    leaderUid: string;
+    memberCount: number;
+    totalXpWeek: number;
+    createdAt: Timestamp;
+    members: string[]; // array de uids
 }
 
 export async function createOrUpdateUser(user: User): Promise<UserProfile> {
@@ -104,6 +120,101 @@ export async function buyStreakFreeze(uid: string, gemCost: number): Promise<voi
         gems: increment(-gemCost),
         streakFreezes: increment(1),
     });
+}
+
+export async function createGroup(uid: string, name: string, description: string): Promise<string> {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) throw new Error("User not found");
+    const userData = userSnap.data() as UserProfile;
+    if (userData.groupId) throw new Error("User already in a group");
+
+    const groupId = `group_${Date.now()}_${uid}`;
+    const groupRef = doc(db, "groups", groupId);
+
+    const newGroup = {
+        id: groupId,
+        name,
+        description: description || "Sem descrição",
+        leaderUid: uid,
+        memberCount: 1,
+        totalXpWeek: 0,
+        createdAt: serverTimestamp(),
+        members: [uid]
+    };
+
+    await setDoc(groupRef, newGroup);
+    await updateDoc(userRef, { groupId });
+
+    return groupId;
+}
+
+export async function joinGroup(uid: string, groupId: string): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) throw new Error("User not found");
+    const userData = userSnap.data() as UserProfile;
+    if (userData.groupId) throw new Error("User already in a group");
+
+    const groupRef = doc(db, "groups", groupId);
+    const groupSnap = await getDoc(groupRef);
+    if (!groupSnap.exists()) throw new Error("Group not found");
+    
+    const groupData = groupSnap.data();
+    const members = groupData.members || [];
+    if (members.length >= 10) throw new Error("Group full");
+
+    await updateDoc(groupRef, {
+        members: [...members, uid],
+        memberCount: increment(1)
+    });
+
+    await updateDoc(userRef, { groupId });
+}
+
+export async function leaveGroup(uid: string): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) return;
+    const userData = userSnap.data() as UserProfile;
+    if (!userData.groupId) return;
+
+    const groupRef = doc(db, "groups", userData.groupId);
+    const groupSnap = await getDoc(groupRef);
+    if (groupSnap.exists()) {
+        const groupData = groupSnap.data();
+        const members = groupData.members || [];
+        const newMembers = members.filter((m: string) => m !== uid);
+        
+        if (newMembers.length === 0) {
+            await updateDoc(groupRef, { members: [], memberCount: 0 });
+        } else {
+            await updateDoc(groupRef, {
+                members: newMembers,
+                memberCount: newMembers.length,
+                leaderUid: groupData.leaderUid === uid ? newMembers[0] : groupData.leaderUid
+            });
+        }
+    }
+
+    await updateDoc(userRef, { groupId: null });
+}
+
+export async function getGroupsRanking(minMembers = 3): Promise<UserGroup[]> {
+    const groupsRef = collection(db, "groups");
+    const q = query(
+        groupsRef, 
+        where("memberCount", ">=", minMembers),
+        orderBy("totalXpWeek", "desc")
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => doc.data() as UserGroup);
+}
+
+export async function getGroupById(groupId: string): Promise<UserGroup | null> {
+    const groupRef = doc(db, "groups", groupId);
+    const snap = await getDoc(groupRef);
+    return snap.exists() ? (snap.data() as UserGroup) : null;
 }
 
 

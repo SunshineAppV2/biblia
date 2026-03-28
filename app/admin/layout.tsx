@@ -57,7 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar */}
             <aside className="w-56 bg-gray-900 border-r border-gray-800 flex flex-col shrink-0">
                 <div className="px-5 py-5 border-b border-gray-800">
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">BibleQuest</div>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">AnoBíblico+</div>
                     <div className="text-sm font-bold text-white">Painel Admin</div>
                 </div>
 

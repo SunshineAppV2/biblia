@@ -10,7 +10,7 @@ const STORAGE_KEY = "biblequest_onboarded";
 const STEPS = [
     {
         icon: <BookOpen className="w-12 h-12 text-secondary" />,
-        title: "Bem-vindo ao BibleQuest",
+        title: "Bem-vindo ao AnoBíblico+",
         description: "Leia a Bíblia inteira de forma gamificada. Cada capítulo lido é um passo na sua jornada espiritual.",
         highlight: "1.189 capítulos para explorar",
         color: "from-secondary/20 to-accent/10",

@@ -211,15 +211,15 @@ export function SplashScreen() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7 }}
                     className="fixed inset-0 z-[9999] flex flex-col items-center justify-center select-none"
-                    style={{ background: "linear-gradient(160deg, #E8EDF5 0%, #D4DCF0 45%, #E8EDF5 100%)" }}
+                    style={{ background: "linear-gradient(160deg, #FDFBF7 0%, #E8EDF5 50%, #FDFBF7 100%)" }}
                     onClick={() => setVisible(false)}
                 >
                     {/* Ambient glows */}
                     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-[0.12] blur-[80px]"
+                        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-[0.08] blur-[80px]"
                             style={{ background: "#1A237E" }} />
-                        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-72 h-72 rounded-full opacity-[0.10] blur-[60px]"
-                            style={{ background: "#C5A059" }} />
+                        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-72 h-72 rounded-full opacity-[0.06] blur-[60px]"
+                            style={{ background: "#B8820A" }} />
                     </div>
 
                     <div className="relative flex flex-col items-center gap-7 px-6">

@@ -10,6 +10,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ela tropeçou ao entrar no tabernáculo",
           "Ela estava chorando e gritando alto",
         ],
+        reference: "1 Samuel 1:12-16",
       },
       {
         question: "O que Ana prometeu a Deus se lhe concedesse um filho?",
@@ -18,19 +19,22 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ofereceria um sacrifício de cem bois ao Senhor",
           "Jejuaria por quarenta dias em agradecimento",
         ],
+        reference: "1 Samuel 1:11",
       },
       {
         question: "Qual era o nome do marido de Ana?",
         answer: "Elcana",
         distractors: ["Eli", "Penina"],
+        reference: "1 Samuel 1:1-2",
       },
       {
         question: "O que Ana fez antes de comer e após orar no tabernáculo?",
         answer: "Seu rosto não estava mais triste e ela comeu",
         distractors: [
           "Ela ofereceu um cordeiro em sacrifício imediatamente",
-          "Ela voltou para casa sem comer nada",
+          "Ela voltou para casa without comer nada",
         ],
+        reference: "1 Samuel 1:18",
       },
       {
         question: "Qual nome Ana deu ao filho prometido ao Senhor e por quê?",
@@ -39,6 +43,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Eli, em honra ao sacerdote que a abençoou",
           "Elcana, em honra ao seu marido",
         ],
+        reference: "1 Samuel 1:20",
       },
       {
         question: "Onde Ana levou Samuel após desmamar o filho?",
@@ -47,6 +52,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ao templo em Jerusalém para ser consagrado",
           "À cidade de Belém para ser criado por parentes",
         ],
+        reference: "1 Samuel 1:24-25",
       },
     ],
     2: [
@@ -57,6 +63,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "A vitória de Israel sobre os filisteus na batalha",
           "O nascimento de mais dois filhos gêmeos",
         ],
+        reference: "1 Samuel 2:1",
       },
       {
         question: "Qual era o pecado de Hofni e Finéias, filhos de Eli?",
@@ -65,6 +72,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Cobravam taxas abusivas dos adoradores no tabernáculo",
           "Ensinavam doutrinas falsas ao povo de Israel",
         ],
+        reference: "1 Samuel 2:12-17, 22",
       },
       {
         question: "O que Eli repreendeu seus filhos por estarem fazendo?",
@@ -73,6 +81,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Dormindo durante os sacrifícios no tabernáculo",
           "Roubando prata do tesouro sagrado",
         ],
+        reference: "1 Samuel 2:23-25",
       },
       {
         question: "O que o homem de Deus profetizou contra a casa de Eli?",
@@ -81,6 +90,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Eli seria deposto do sacerdócio imediatamente",
           "Que o tabernáculo de Siló seria destruído pelos filisteus",
         ],
+        reference: "1 Samuel 2:27-36",
       },
       {
         question: "Como Samuel crescia diante do Senhor enquanto os filhos de Eli pecavam?",
@@ -89,6 +99,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Samuel tornou-se o principal sacerdote ainda criança",
           "Samuel foi enviado a estudar com os profetas em Ramá",
         ],
+        reference: "1 Samuel 2:26",
       },
       {
         question: "O que Ana recebia de Elcana cada vez que subia ao tabernáculo?",
@@ -97,6 +108,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Uma túnica nova que ela mesma confeccionava para Samuel",
           "Um cordeiro sem defeito para oferecer em sacrifício",
         ],
+        reference: "1 Samuel 1:5",
       },
     ],
     3: [
@@ -104,6 +116,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Quantas vezes Deus chamou Samuel antes que Eli entendesse que era o Senhor falando?",
         answer: "Três vezes",
         distractors: ["Duas vezes", "Quatro vezes"],
+        reference: "1 Samuel 3:4-8",
       },
       {
         question: "O que Eli instruiu Samuel a responder quando ouvisse a voz novamente?",
@@ -112,6 +125,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Aqui estou, Eli, o teu servo te ouve",
           "Envia a tua mensagem, ó profeta do Altíssimo",
         ],
+        reference: "1 Samuel 3:9",
       },
       {
         question: "Qual era a situação espiritual de Israel quando Samuel era jovem?",
@@ -120,6 +134,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O povo adorava fielmente e os profetas eram abundantes",
           "Havia grande avivamento espiritual em toda a terra",
         ],
+        reference: "1 Samuel 3:1",
       },
       {
         question: "O que Deus revelou a Samuel sobre a casa de Eli?",
@@ -128,6 +143,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Eli seria transferido para servir em outro tabernáculo",
           "Que os filhos de Eli se arrependeriam e seriam poupados",
         ],
+        reference: "1 Samuel 3:11-14",
       },
       {
         question: "Como Samuel se sentiu em relação a contar a visão a Eli na manhã seguinte?",
@@ -136,6 +152,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ficou ansioso para compartilhar a mensagem com Eli",
           "Saiu correndo para anunciar ao povo de Israel primeiro",
         ],
+        reference: "1 Samuel 3:15",
       },
       {
         question: "Como Israel reconheceu Samuel após essa revelação?",
@@ -144,6 +161,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Samuel foi imediatamente ungido como sumo sacerdote",
           "Eli declarou publicamente Samuel como seu sucessor",
         ],
+        reference: "1 Samuel 3:20",
       },
     ],
     4: [
@@ -154,6 +172,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Hofni morreu e Finéias fugiu para o Egito",
           "Foram feitos prisioneiros e levados para Asdode",
         ],
+        reference: "1 Samuel 4:11",
       },
       {
         question: "Como Eli morreu ao ouvir a notícia da captura da arca?",
@@ -162,6 +181,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Morreu de tristeza deitado em sua cama naquela noite",
           "Saiu correndo e foi abatido por um filisteu na estrada",
         ],
+        reference: "1 Samuel 4:18",
       },
       {
         question: "Qual nome foi dado ao filho de Finéias que nasceu quando a notícia chegou?",
@@ -170,6 +190,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Elcana, em memória do avô que havia servido ao Senhor",
           "Eliabe, significando 'meu Deus é pai'",
         ],
+        reference: "1 Samuel 4:21",
       },
       {
         question: "Por que Israel trouxe a arca da aliança para o campo de batalha?",
@@ -178,6 +199,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para cumprir um voto que os anciãos tinham feito ao Senhor",
           "Porque um profeta ordenou que a levassem à batalha",
         ],
+        reference: "1 Samuel 4:3-5",
       },
       {
         question: "Qual foi o resultado da primeira batalha entre Israel e os filisteus no capítulo 4?",
@@ -186,6 +208,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Israel venceu e expulsou os filisteus da região",
           "A batalha terminou em empate sem mortes significativas",
         ],
+        reference: "1 Samuel 4:2",
       },
       {
         question: "O que a nora de Eli disse ao dar à luz antes de morrer?",
@@ -194,6 +217,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O Senhor nos abandonou por causa dos pecados de nossos sacerdotes",
           "Deus nos deu este filho para consolar nossa tristeza",
         ],
+        reference: "1 Samuel 4:21-22",
       },
     ],
     5: [
@@ -204,16 +228,19 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "A estátua explodiu em pedaços imediatamente na primeira noite",
           "Dagom ficou em pé, mas trincas apareceram em seu rosto",
         ],
+        reference: "1 Samuel 5:3-4",
       },
       {
         question: "Que praga Deus enviou sobre os habitantes de Asdode por causa da arca?",
         answer: "Tumores",
         distractors: ["Lepra", "Cegueira"],
+        reference: "1 Samuel 5:6",
       },
       {
         question: "Para qual cidade os homens de Asdode enviaram a arca depois das pragas?",
         answer: "Gate",
         distractors: ["Ecrom", "Gaza"],
+        reference: "1 Samuel 5:8",
       },
       {
         question: "O que os habitantes de Ecrom disseram quando a arca chegou à sua cidade?",
@@ -222,6 +249,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Receberemos a arca e ofereceremos sacrifícios ao Deus de Israel",
           "Enviaremos a arca de volta a Israel amanhã mesmo",
         ],
+        reference: "1 Samuel 5:10",
       },
       {
         question: "Qual foi o grito que subiu ao céu vindo de Ecrom por causa da arca?",
@@ -230,6 +258,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O povo cantava para afastar a maldição da arca",
           "Os sacerdotes de Dagom oravam pelo fim das pragas",
         ],
+        reference: "1 Samuel 5:11-12",
       },
       {
         question: "Por quantas cidades filistéias passou a arca, causando pragas?",
@@ -238,6 +267,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Cinco cidades, incluindo Gaza e Ascalom",
           "Duas cidades: Asdode e Gate apenas",
         ],
+        reference: "1 Samuel 5:6-10",
       },
     ],
     6: [
@@ -248,6 +278,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Carregada nos ombros de seus sacerdotes em procissão",
           "Transportada por soldados filisteus até a fronteira de Israel",
         ],
+        reference: "1 Samuel 6:7",
       },
       {
         question: "Que ofertas de expiação os filisteus colocaram junto com a arca?",
@@ -256,6 +287,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Dez talentos de prata e dez jarros de azeite sagrado",
           "Sete touros e sete carneiros sem defeito",
         ],
+        reference: "1 Samuel 6:4-5",
       },
       {
         question: "O que aconteceu com os 70 homens de Bete-Semes?",
@@ -264,6 +296,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Foram abençoados por tocar na arca ao descarregá-la",
           "Foram designados para guardar a arca em Bete-Semes",
         ],
+        reference: "1 Samuel 6:19",
       },
       {
         question: "O que as vacas fizeram quando foram colocadas no carro com a arca?",
@@ -272,6 +305,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "As vacas recusaram andar e os filisteus tiveram que empurrar o carro",
           "As vacas voltaram para os seus bezerros e os filisteus tiveram que recomeçar",
         ],
+        reference: "1 Samuel 6:12",
       },
       {
         question: "Por que os filisteus usaram vacas que tinham cria como teste?",
@@ -280,11 +314,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Porque vacas com cria eram os animais mais sagrados para os filisteus",
           "Porque vacas sem cria eram proibidas de puxar carros sagrados",
         ],
+        reference: "1 Samuel 6:7-9",
       },
       {
         question: "Para onde os homens de Bete-Semes enviaram a arca depois da tragédia?",
         answer: "Para Quiriate-Jearim",
         distractors: ["Para Siló", "Para Mispa"],
+        reference: "1 Samuel 6:21",
       },
     ],
     7: [
@@ -295,6 +331,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que todos os homens de Israel se circuncidassem novamente",
           "Que construíssem um altar e oferecessem cem holocaustos",
         ],
+        reference: "1 Samuel 7:3",
       },
       {
         question: "O que significa o nome Ebenézer que Samuel deu à pedra memorial?",
@@ -303,6 +340,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O Senhor é nossa fortaleza e rochedo",
           "Aqui o Senhor derrotou nossos inimigos",
         ],
+        reference: "1 Samuel 7:12",
       },
       {
         question: "O que Deus fez para confundir os filisteus enquanto Israel saía para batalha em Mispa?",
@@ -311,6 +349,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Enviou um anjo que feriu os chefes filisteus com cegueira",
           "Fez o sol parar no céu para que Israel tivesse mais tempo de lutar",
         ],
+        reference: "1 Samuel 7:10",
       },
       {
         question: "Por quantos anos os filisteus foram subjugados após a vitória em Mispa?",
@@ -319,6 +358,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Por quarenta anos, até a morte de Samuel",
           "Por vinte anos, até que Saul se tornou rei",
         ],
+        reference: "1 Samuel 7:13",
       },
       {
         question: "O que Samuel ofereceu ao Senhor quando os filisteus se aproximaram de Mispa?",
@@ -327,6 +367,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Dez bois e dez carneiros sem defeito",
           "Pão e vinho na presença do Senhor",
         ],
+        reference: "1 Samuel 7:9",
       },
       {
         question: "Onde Samuel julgava Israel durante seu ministério?",
@@ -335,6 +376,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ficava permanentemente em Siló onde estava a arca",
           "Julgava em Jerusalém e nas cidades ao redor",
         ],
+        reference: "1 Samuel 7:16",
       },
     ],
     8: [
@@ -345,6 +387,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Samuel era muito velho e não podia mais julgar o povo",
           "Os filisteus tinham um rei poderoso e Israel precisava competir",
         ],
+        reference: "1 Samuel 8:1-5",
       },
       {
         question: "O que Deus disse a Samuel sobre o pedido do povo por um rei?",
@@ -353,6 +396,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que era uma boa ideia pois Samuel estava ficando velho",
           "Que o povo estava com razão ao pedir um líder mais forte",
         ],
+        reference: "1 Samuel 8:7",
       },
       {
         question: "Segundo Samuel, o que o rei faria com os filhos de Israel?",
@@ -361,6 +405,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O rei traria paz e prosperidade para todo o povo de Israel",
           "O rei construiria um grande templo e organizaria o culto",
         ],
+        reference: "1 Samuel 8:11-17",
       },
       {
         question: "O que Samuel avisou que o povo faria quando o rei os oprimisse?",
@@ -369,6 +414,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se arrependeriam e voltariam a pedir um juiz como antes",
           "Lutariam contra o rei e o destituiriam do trono",
         ],
+        reference: "1 Samuel 8:18",
       },
       {
         question: "Qual foi a resposta do povo ao aviso de Samuel sobre os perigos de ter um rei?",
@@ -377,6 +423,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O povo se arrependeu e pediu a Samuel que continuasse a julgá-los",
           "O povo ficou em silêncio e foi para suas casas pensar no assunto",
         ],
+        reference: "1 Samuel 8:19-20",
       },
       {
         question: "Como eram os filhos de Samuel que julgavam Israel em Berseba?",
@@ -385,6 +432,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Eram sábios e justos, mas jovens demais para governar",
           "Eram valentes guerreiros mas não tinham dom para julgar",
         ],
+        reference: "1 Samuel 8:3",
       },
     ],
     9: [
@@ -395,6 +443,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para pedir a bênção do profeta antes de uma batalha",
           "Para levar ofertas ao tabernáculo em nome de seu pai",
         ],
+        reference: "1 Samuel 9:3",
       },
       {
         question: "Como Saul era descrito fisicamente?",
@@ -403,6 +452,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Era de estatura mediana mas possuía grande força física",
           "Era pequeno de estatura mas de rosto muito belo e agradável",
         ],
+        reference: "1 Samuel 9:2",
       },
       {
         question: "Como o servo de Saul convenceu-o a consultar o profeta?",
@@ -411,6 +461,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Disse que o profeta era famoso por achar animais perdidos",
           "Disse que passariam por perto e seria um desperdício não consultá-lo",
         ],
+        reference: "1 Samuel 9:8",
       },
       {
         question: "O que Deus disse a Samuel antes da chegada de Saul?",
@@ -419,11 +470,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que um homem alto viria buscar conselho sobre uma batalha",
           "Que Saul seria o melhor entre todos os candidatos ao trono",
         ],
+        reference: "1 Samuel 9:15-16",
       },
       {
         question: "De qual tribo Saul pertencia?",
         answer: "Da tribo de Benjamim",
         distractors: ["Da tribo de Judá", "Da tribo de Efraim"],
+        reference: "1 Samuel 9:1",
       },
       {
         question: "O que Samuel disse a Saul sobre as jumentas quando se encontraram?",
@@ -432,6 +485,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que as jumentas tinham sido vendidas por seus servos",
           "Que as jumentas estavam em Mispa e poderia buscá-las amanhã",
         ],
+        reference: "1 Samuel 9:20",
       },
     ],
     10: [
@@ -440,8 +494,9 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         answer: "Tomou uma ampola de azeite, derramou sobre a cabeça de Saul e o beijou",
         distractors: [
           "Derramou azeite sobre Saul diante de todo o povo em Mispa",
-          "Ungiu Saul com sangue de sacrifício na presença dos anciãos",
+          "Ungiu Saul with sangue de sacrifício na presença dos anciãos",
         ],
+        reference: "1 Samuel 10:1",
       },
       {
         question: "Qual foi o terceiro sinal que confirmaria para Saul que havia sido ungido?",
@@ -450,6 +505,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Um anjo apareceria a ele em sonho confirmando seu chamado",
           "Encontraria um leão no caminho e o mataria com as mãos",
         ],
+        reference: "1 Samuel 10:5-6",
       },
       {
         question: "Como Saul foi escolhido diante de todo o povo em Mispa?",
@@ -458,11 +514,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Samuel o apresentou ao povo e pediu que aclamassem seu rei",
           "Saul foi eleito após os anciãos de Israel votarem entre os candidatos",
         ],
+        reference: "1 Samuel 10:17-21",
       },
       {
         question: "Onde estava Saul quando o povo o procurou para ser apresentado como rei?",
         answer: "Escondido entre a bagagem",
         distractors: ["Orando no tabernáculo", "No campo cuidando dos animais"],
+        reference: "1 Samuel 10:22",
       },
       {
         question: "Como o povo reagiu quando Saul foi apresentado como rei?",
@@ -471,6 +529,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O povo ficou em silêncio pois Saul era desconhecido",
           "Alguns protestaram dizendo que preferiam um homem de Judá",
         ],
+        reference: "1 Samuel 10:24",
       },
       {
         question: "O que aconteceu a Saul quando o Espírito de Deus veio sobre ele no encontro com os profetas?",
@@ -479,6 +538,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul caiu por terra como morto e ficou assim por três dias",
           "Saul recebeu força sobre-humana e levantou uma pedra enorme",
         ],
+        reference: "1 Samuel 10:9-12",
       },
     ],
     11: [
@@ -486,6 +546,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Quem ameaçou a cidade de Jabes-Gileade?",
         answer: "Naás, o amonita",
         distractors: ["Golias, o filisteu", "Agague, o rei dos amalequitas"],
+        reference: "1 Samuel 11:1",
       },
       {
         question: "Qual cruel condição Naás o amonita impôs aos homens de Jabes-Gileade?",
@@ -494,6 +555,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que entregassem todos os seus filhos como escravos para Amom",
           "Que demolissem as muralhas da cidade e pagassem tributo anual",
         ],
+        reference: "1 Samuel 11:2",
       },
       {
         question: "Quantos homens Saul reuniu para salvar Jabes-Gileade?",
@@ -502,6 +564,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Cem mil homens de Israel e dez mil homens de Judá",
           "Quatrocentos mil homens de Israel e cinquenta mil de Judá",
         ],
+        reference: "1 Samuel 11:8",
       },
       {
         question: "Como o Espírito de Deus veio sobre Saul quando ouviu a notícia de Jabes-Gileade?",
@@ -510,11 +573,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul teve um sonho naquela noite e Deus lhe deu o plano de batalha",
           "Samuel ungiu Saul novamente antes que ele saísse para a batalha",
         ],
+        reference: "1 Samuel 11:6",
       },
       {
         question: "Onde Saul foi confirmado como rei após a vitória sobre os amonitas?",
         answer: "Em Gilgal",
         distractors: ["Em Mispa", "Em Siló"],
+        reference: "1 Samuel 11:15",
       },
       {
         question: "O que Saul disse quando alguém sugeriu matar os que duvidaram de seu reinado?",
@@ -523,6 +588,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Deixem que sejam julgados pelos anciãos de Israel",
           "Que sejam exilados para além do Jordão por sete anos",
         ],
+        reference: "1 Samuel 11:13",
       },
     ],
     12: [
@@ -533,6 +599,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se havia julgado injustamente alguém em Israel durante seus anos",
           "Se havia cobrado dízimos além do que a lei permitia",
         ],
+        reference: "1 Samuel 12:3",
       },
       {
         question: "Que sinal sobrenatural Deus enviou em resposta ao pedido de Samuel no capítulo 12?",
@@ -541,6 +608,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O sol ficou parado no céu por uma hora inteira",
           "Fogo desceu do céu e queimou o sacrifício no altar",
         ],
+        reference: "1 Samuel 12:17-18",
       },
       {
         question: "O que Samuel disse que não pararia de fazer pelo povo de Israel?",
@@ -549,14 +617,16 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ungir os reis e anunciar as guerras santas de Israel",
           "Oferecer sacrifícios diários pelo perdão dos pecados do povo",
         ],
+        reference: "1 Samuel 12:23",
       },
       {
-        question: "Qual foi a grande maldade que Samuel disse que o povo havia feito ao pedir um rei?",
+        question: "Qual foi the grande maldade que Samuel disse que o povo havia feito ao pedir um rei?",
         answer: "Rejeitaram ao Senhor que era seu rei ao pedir um rei humano",
         distractors: [
           "Deixaram de pagar os dízimos ao tabernáculo por anos seguidos",
           "Fizeram aliança com os filisteus sem consultar o Senhor",
         ],
+        reference: "1 Samuel 12:12, 17, 19",
       },
       {
         question: "O que Samuel disse que aconteceria se o povo e seu rei seguissem ao Senhor?",
@@ -565,6 +635,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Deus enviaria chuva abundante e as colheitas seriam ricas",
           "O povo de Israel se tornaria a nação mais poderosa da terra",
         ],
+        reference: "1 Samuel 12:14-15",
       },
       {
         question: "Qual frase resume a promessa de Deus no discurso de Samuel?",
@@ -573,6 +644,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O Senhor combaterá por vós, e vós ficareis em silêncio",
           "Não temas, porque eu sou contigo e nunca te deixarei",
         ],
+        reference: "1 Samuel 12:22",
       },
     ],
     13: [
@@ -583,6 +655,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Matou o mensageiro do rei filisteu em público",
           "Queimou as plantações dos filisteus na planície",
         ],
+        reference: "1 Samuel 13:3",
       },
       {
         question: "Por que Saul foi condenado por Samuel ao oferecer o holocausto?",
@@ -591,6 +664,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Usou animais com defeito para o sacrifício ao Senhor",
           "Ofereceu o sacrifício no lugar errado, fora do altar designado",
         ],
+        reference: "1 Samuel 13:8-13",
       },
       {
         question: "O que Samuel disse a Saul como consequência de sua desobediência?",
@@ -599,6 +673,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Saul seria destituído imediatamente e seus filhos também",
           "Que o exército de Israel seria derrotado na batalha seguinte",
         ],
+        reference: "1 Samuel 13:14",
       },
       {
         question: "Qual era a situação das armas em Israel na época?",
@@ -607,16 +682,19 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Israel tinha armas abundantes conquistadas em batalhas anteriores",
           "Apenas os levitas podiam portar armas segundo a lei filisteia",
         ],
+        reference: "1 Samuel 13:19-22",
       },
       {
         question: "Quantos homens permaneceram com Saul quando o povo viu o exército filisteu?",
         answer: "Cerca de seiscentos homens",
         distractors: ["Cerca de mil homens", "Cerca de trezentos homens"],
+        reference: "1 Samuel 13:15",
       },
       {
         question: "Onde estava o exército filisteu acampado para a batalha contra Saul?",
         answer: "Em Micmás",
         distractors: ["Em Gilgal", "Em Gibeá"],
+        reference: "1 Samuel 13:16, 23",
       },
     ],
     14: [
@@ -627,6 +705,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Com trinta homens escolhidos entre os mais valentes",
           "Com seu escudeiro e o sacerdote Aiás",
         ],
+        reference: "1 Samuel 14:1",
       },
       {
         question: "Qual sinal Jônatas usou para saber se Deus os entregaria nas mãos dos filisteus?",
@@ -635,6 +714,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se um pombo branco voasse sobre o acampamento filisteu, atacariam",
           "Se a espada de Jônatas brilhasse à luz do sol, era sinal de vitória",
         ],
+        reference: "1 Samuel 14:8-10",
       },
       {
         question: "Qual foi o voto imprudente que Saul fez durante a batalha?",
@@ -643,11 +723,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Prometeu oferecer seu primogênito ao Senhor se vencesse a batalha",
           "Jurou que nenhum filisteu prisioneiro seria poupado naquele dia",
         ],
+        reference: "1 Samuel 14:24",
       },
       {
         question: "O que Jônatas comeu inconscientemente, violando o voto de Saul?",
         answer: "Mel que estava no chão numa floresta",
         distractors: ["Pão que os filisteus tinham deixado para trás", "Uvas de uma vinha no caminho"],
+        reference: "1 Samuel 14:27",
       },
       {
         question: "O que o povo fez para salvar Jônatas de ser executado por Saul?",
@@ -656,11 +738,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Fugiu com Jônatas antes que Saul pudesse executar a sentença",
           "Convenceu o sacerdote a declarar o voto de Saul inválido",
         ],
+        reference: "1 Samuel 14:45",
       },
       {
         question: "Quantos filisteus Jônatas e seu escudeiro mataram no primeiro ataque?",
         answer: "Cerca de vinte homens num espaço de meio acre",
         distractors: ["Cerca de cinquenta homens numa emboscada", "Cerca de dez homens na entrada do desfiladeiro"],
+        reference: "1 Samuel 14:14",
       },
     ],
     15: [
@@ -671,6 +755,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Capturar o rei Agague e trazê-lo como prisioneiro para Samuel",
           "Conquistar as cidades amalequitas e distribuir as terras a Israel",
         ],
+        reference: "1 Samuel 15:3",
       },
       {
         question: "O que Saul poupou desobedecendo ao mandamento de Deus?",
@@ -679,6 +764,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "As mulheres e crianças amalequitas por compaixão",
           "Os tesouros de ouro e prata dos templos amalequitas",
         ],
+        reference: "1 Samuel 15:9",
       },
       {
         question: "Qual frase famosa Samuel disse a Saul sobre obediência?",
@@ -687,6 +773,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O coração contrito e humilhado não desprezarás, ó Deus",
           "O Senhor não olha para as aparências mas para o coração do homem",
         ],
+        reference: "1 Samuel 15:22",
       },
       {
         question: "O que Samuel fez com Agague, rei dos amalequitas?",
@@ -695,14 +782,16 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ordenou que Saul o executasse imediatamente",
           "Mandou Agague de volta para seu povo como advertência",
         ],
+        reference: "1 Samuel 15:33",
       },
       {
         question: "Qual foi a consequência da desobediência de Saul no capítulo 15?",
-        answer: "Samuel anunciou que o Senhor rejeitou Saul como rei de Israel",
+        answer: "Samuel anunciou que o Senhor rejeitou Saul como rei di Israel",
         distractors: [
           "Saul foi ferido em batalha como castigo por sua desobediência",
           "A família de Saul foi banida da linhagem real para sempre",
         ],
+        reference: "1 Samuel 15:23, 26",
       },
       {
         question: "O que Saul alegou ser o motivo de ter poupado o melhor do gado?",
@@ -711,6 +800,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que precisava do gado para alimentar seu exército durante a marcha",
           "Que Agague havia pedido misericórdia e prometido servir a Israel",
         ],
+        reference: "1 Samuel 15:15, 21",
       },
     ],
     16: [
@@ -721,6 +811,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Estava muito velho e não tinha forças para viajar até Belém",
           "Achava que Deus deveria escolher alguém da tribo de Judá",
         ],
+        reference: "1 Samuel 16:2",
       },
       {
         question: "Qual princípio Deus ensinou a Samuel ao escolher Davi?",
@@ -729,6 +820,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O mais novo será o maior e o maior será servo dos demais",
           "Deus escolhe os fracos para envergonhar os fortes do mundo",
         ],
+        reference: "1 Samuel 16:7",
       },
       {
         question: "Qual era a ocupação de Davi quando Samuel chegou a Belém?",
@@ -737,6 +829,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Estava treinando com arco e flecha com seus irmãos",
           "Estava lavrando a terra com seu pai Jessé",
         ],
+        reference: "1 Samuel 16:11",
       },
       {
         question: "Quantos filhos de Jessé passaram diante de Samuel antes de Davi?",
@@ -745,6 +838,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Cinco filhos, sendo Davi o mais novo de todos",
           "Três filhos, os mesmos que estavam com Saul no exército",
         ],
+        reference: "1 Samuel 16:10",
       },
       {
         question: "O que aconteceu com o Espírito do Senhor depois que Davi foi ungido?",
@@ -753,6 +847,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O Espírito veio sobre Davi mas também permaneceu com Saul",
           "O Espírito de Deus foi dado a Davi somente quando ele se tornou rei",
         ],
+        reference: "1 Samuel 16:13-14",
       },
       {
         question: "Por que Saul mandou buscar Davi para sua corte?",
@@ -761,6 +856,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para que fosse seu guarda-costas pessoal e copeiro",
           "Para que treinasse os soldados na arte da guerra e do estilingue",
         ],
+        reference: "1 Samuel 16:23",
       },
     ],
     17: [
@@ -768,11 +864,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Por quantos dias Golias desafiou os exércitos de Israel?",
         answer: "Quarenta dias",
         distractors: ["Sete dias", "Vinte dias"],
+        reference: "1 Samuel 17:16",
       },
       {
         question: "Qual era a altura de Golias segundo o texto?",
         answer: "Seis côvados e um palmo (aproximadamente 2,9 metros)",
         distractors: ["Quatro côvados e meio, cerca de dois metros", "Oito côvados, mais de três metros e meio"],
+        reference: "1 Samuel 17:4",
       },
       {
         question: "Por que Davi foi ao acampamento quando Golias desafiava Israel?",
@@ -781,6 +879,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para se alistar voluntariamente no exército de Saul",
           "Samuel o enviou com uma mensagem profética para Saul",
         ],
+        reference: "1 Samuel 17:17-18",
       },
       {
         question: "O que Davi disse a Golias antes do combate?",
@@ -789,6 +888,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que havia matado ursos e leões e que Golias seria igual a eles",
           "Que Deus dos exércitos de Israel enviaria seu anjo para derrotá-lo",
         ],
+        reference: "1 Samuel 17:45",
       },
       {
         question: "Que armas Davi usou para matar Golias?",
@@ -797,6 +897,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Uma lança leve e um escudo pequeno que pegou do arsenal",
           "Seu cajado de pastor e uma funda com projéteis de chumbo",
         ],
+        reference: "1 Samuel 17:49-50",
       },
       {
         question: "O que Davi fez após Golias cair ao chão?",
@@ -805,6 +906,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Levantou a pedra e a mostrou ao exército antes de cortar a cabeça",
           "Esperou que Golias morresse da pedrada antes de usar a espada",
         ],
+        reference: "1 Samuel 17:51",
       },
     ],
     18: [
@@ -815,6 +917,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Jurou diante de Deus e deu a Davi metade de seu patrimônio",
           "Declarou publicamente que Davi seria rei após Saul",
         ],
+        reference: "1 Samuel 18:3-4",
       },
       {
         question: "Qual cântico das mulheres despertou o ciúme de Saul contra Davi?",
@@ -823,6 +926,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul é nosso rei mas Davi é o herói de Israel",
           "De Saul veio a vitória mas Davi trouxe a glória",
         ],
+        reference: "1 Samuel 18:7",
       },
       {
         question: "O que Saul esperava que acontecesse a Davi ao pedir cem prepúcios de filisteus como dote por Mical?",
@@ -831,6 +935,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Davi ficasse tão ocupado com as batalhas que nunca voltasse",
           "Que Davi recusasse e perdesse o favor do povo",
         ],
+        reference: "1 Samuel 18:25",
       },
       {
         question: "Qual foi a reação de Saul quando viu que o Senhor estava com Davi?",
@@ -839,6 +944,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul se arrependeu de seu ciúme e reconciliou-se com Davi",
           "Saul decidiu adotar Davi como filho e herdeiro do trono",
         ],
+        reference: "1 Samuel 18:28-29",
       },
       {
         question: "O que Saul tentou fazer com sua lança enquanto Davi tocava harpa?",
@@ -847,6 +953,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Jogou a lança ao chão como sinal de ameaça e expulsou Davi",
           "Tentou ferir Davi com a lança mas errou e quebrou o instrumento",
         ],
+        reference: "1 Samuel 18:10-11",
       },
       {
         question: "Por que o amor de Mical por Davi preocupava Saul?",
@@ -855,6 +962,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul queria que Mical se casasse com um príncipe estrangeiro",
           "Saul temia que Davi se tornasse muito poderoso com o apoio da família real",
         ],
+        reference: "1 Samuel 18:21",
       },
     ],
     19: [
@@ -865,6 +973,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Escondeu Davi no porão do palácio até que os soldados saíssem",
           "Vestiu Davi com roupas de mulher para que saísse disfarçado",
         ],
+        reference: "1 Samuel 19:12-13",
       },
       {
         question: "Como Jônatas defendeu Davi diante de Saul no início do capítulo 19?",
@@ -873,6 +982,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Apresentou testemunhas que confirmavam a lealdade de Davi",
           "Disse que Davi estava doente e não podia comparecer à corte",
         ],
+        reference: "1 Samuel 19:4",
       },
       {
         question: "O que aconteceu com os mensageiros de Saul quando foram a Ramá buscar Davi?",
@@ -881,11 +991,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Samuel os impediu de entrar com um milagre de Deus",
           "Os mensageiros fugiram com medo ao ver a chama de fogo",
         ],
+        reference: "1 Samuel 19:20-21",
       },
       {
         question: "Para onde Davi fugiu após escapar de Saul com a ajuda de Mical?",
         answer: "Para Ramá, onde estava Samuel",
         distractors: ["Para a caverna de Adulão", "Para Belém, à casa de seu pai Jessé"],
+        reference: "1 Samuel 19:18",
       },
       {
         question: "O que aconteceu com Saul quando foi pessoalmente a Ramá?",
@@ -894,6 +1006,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul foi detido por um anjo que bloqueou o caminho para Ramá",
           "Samuel saiu ao encontro de Saul e o repreendeu publicamente",
         ],
+        reference: "1 Samuel 19:23-24",
       },
       {
         question: "Quem disse a Mical que Davi deveria ser morto naquela noite?",
@@ -902,6 +1015,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Um servidor fiel avisou Mical do plano secreto de Saul",
           "Jônatas enviou um recado secreto para Mical sobre o perigo",
         ],
+        reference: "1 Samuel 19:11",
       },
     ],
     20: [
@@ -912,6 +1026,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se atirasse três flechas para o norte, significava que Saul planejava matar Davi",
           "Se uma flecha acertasse um alvo específico, Davi poderia retornar à corte",
         ],
+        reference: "1 Samuel 20:21-22",
       },
       {
         question: "Por que Davi ficaria ausente da mesa do rei na festa da lua nova?",
@@ -920,6 +1035,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Davi estava em missão militar nas fronteiras de Israel",
           "Davi alegaria estar doente e impossibilitado de comparecer",
         ],
+        reference: "1 Samuel 20:6, 28-29",
       },
       {
         question: "O que Saul fez quando Jônatas defendeu Davi à mesa?",
@@ -928,6 +1044,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Expulsou Jônatas da mesa e o proibiu de ver Davi",
           "Ordenou que Jônatas fosse preso por trair seu pai",
         ],
+        reference: "1 Samuel 20:33",
       },
       {
         question: "Como foi a despedida de Jônatas e Davi no campo?",
@@ -936,6 +1053,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Não puderam se despedir pois Saul mandou espiões ao campo",
           "Jônatas não pode ir ao encontro e apenas enviou as flechas",
         ],
+        reference: "1 Samuel 20:41",
       },
       {
         question: "Qual aliança Jônatas renovou com Davi antes de sua fuga?",
@@ -944,6 +1062,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Jônatas abdicaria do trono em favor de Davi quando Saul morresse",
           "Que Davi enviaria presentes anuais para os filhos de Jônatas",
         ],
+        reference: "1 Samuel 20:14-17, 23, 42",
       },
       {
         question: "Por que Saul ficou irado com a ausência de Davi na festa da lua nova?",
@@ -952,6 +1071,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul achou que Davi estava conspirando com os inimigos de Israel",
           "Saul queria presentear Davi publicamente com terras naquela festa",
         ],
+        reference: "1 Samuel 20:30-31",
       },
     ],
     21: [
@@ -962,6 +1082,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Pão comum e carne seca que o sacerdote guardava para viajantes",
           "Uma parte do sacrifício de paz que havia sido oferecido naquele dia",
         ],
+        reference: "1 Samuel 21:4-6",
       },
       {
         question: "Qual arma Davi recebeu de Aimeleque em Nobe?",
@@ -970,6 +1091,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Uma lança do arsenal do tabernáculo consagrada ao Senhor",
           "O arco de guerra que pertencia ao filho mais velho de Eli",
         ],
+        reference: "1 Samuel 21:8-9",
       },
       {
         question: "Como Davi se apresentou a Aimeleque em Nobe?",
@@ -978,6 +1100,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se apresentou como refugiado pedindo asilo sagrado no tabernáculo",
           "Disse que vinha buscar provisões para uma cerimônia especial",
         ],
+        reference: "1 Samuel 21:2",
       },
       {
         question: "Diante de quem Davi fingiu loucura?",
@@ -986,6 +1109,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Diante dos príncipes filisteus na entrada da cidade de Gaza",
           "Diante dos guardas do rei de Ecrom na fronteira",
         ],
+        reference: "1 Samuel 21:12-15",
       },
       {
         question: "Quem estava em Nobe naquele dia e viu Davi com Aimeleque?",
@@ -994,6 +1118,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Abner, o chefe do exército de Saul, que passava por ali",
           "Um dos filhos de Saul que reconheceu Davi imediatamente",
         ],
+        reference: "1 Samuel 21:7",
       },
       {
         question: "Por que Davi foi a Gate entre os filisteus?",
@@ -1002,6 +1127,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para negociar uma aliança com os filisteus contra os amonitas",
           "Para encontrar mercadores e comprar armas para seu bando",
         ],
+        reference: "1 Samuel 21:10",
       },
     ],
     22: [
@@ -1012,6 +1138,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Quatrocentos soldados veteranos que desertaram do exército de Saul",
           "Trezentos guerreiros levitas que reconheceram Davi como ungido",
         ],
+        reference: "1 Samuel 22:1-2",
       },
       {
         question: "O que Saul ordenou a Doegue, o edomita, quando os israelitas se recusaram a matar os sacerdotes?",
@@ -1020,6 +1147,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que prendesse os sacerdotes e os trouxesse a Gibeá para julgamento",
           "Que queimasse o tabernáculo de Nobe como punição",
         ],
+        reference: "1 Samuel 22:17-18",
       },
       {
         question: "Quantos sacerdotes de Nobe Saul mandou matar?",
@@ -1028,11 +1156,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Cinquenta e dois sacerdotes que haviam ajudado Davi",
           "Setenta sacerdotes junto com suas famílias",
         ],
+        reference: "1 Samuel 22:18",
       },
       {
         question: "Quem escapou do massacre de Nobe e fugiu para Davi?",
         answer: "Abiatar, filho de Aimeleque",
         distractors: ["Doegue, o edomita, que se arrependeu do massacre", "Aimeloque, o irmão de Aimeleque"],
+        reference: "1 Samuel 22:20",
       },
       {
         question: "O que Davi disse a Abiatar quando soube do massacre?",
@@ -1041,6 +1171,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Prometeu vingar a morte dos sacerdotes logo que pudesse",
           "Disse que Saul pagaria por esse crime diante do Senhor",
         ],
+        reference: "1 Samuel 22:22",
       },
       {
         question: "Por que os israelitas se recusaram a matar os sacerdotes de Nobe a mando de Saul?",
@@ -1049,6 +1180,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Tinham medo de serem amaldiçoados por matar homens sagrados",
           "Sabiam que Davi era inocente e os sacerdotes não tinham culpa",
         ],
+        reference: "1 Samuel 22:17",
       },
     ],
     23: [
@@ -1059,6 +1191,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para recrutar mais homens para seu bando na região",
           "Para esconder-se dos soldados de Saul naquela cidade murada",
         ],
+        reference: "1 Samuel 23:1-5",
       },
       {
         question: "O que Jônatas foi fazer a Davi no bosque de Horés?",
@@ -1067,6 +1200,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Trouxe mantimentos e informações sobre os planos de Saul",
           "Foi avisar Davi sobre a traição iminente dos homens de Queila",
         ],
+        reference: "1 Samuel 23:16-17",
       },
       {
         question: "O que os zifeus fizeram que colocou Davi em perigo?",
@@ -1075,6 +1209,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Negaram-se a dar comida ao bando de Davi e o denunciaram",
           "Fecharam os portões da cidade para impedir Davi de fugir",
         ],
+        reference: "1 Samuel 23:19",
       },
       {
         question: "Como Deus livrou Davi quando Saul o estava cercando no capítulo 23?",
@@ -1083,11 +1218,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Um terremoto separou o exército de Saul e os homens de Davi",
           "Uma névoa espessa desceu sobre as montanhas impedindo o avanço de Saul",
         ],
+        reference: "1 Samuel 23:27-28",
       },
       {
         question: "Que nome foi dado ao lugar onde Davi quase foi capturado por Saul?",
         answer: "Sela-Hama-Lecoté, que significa rochedo das separações",
         distractors: ["Ebenézer, em memória da salvação divina naquele lugar", "Mispa de Judá, por ser o ponto mais elevado da região"],
+        reference: "1 Samuel 23:28",
       },
       {
         question: "O que Davi perguntou ao Senhor sobre os homens de Queila?",
@@ -1096,6 +1233,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Se devia atacar os filisteus que estavam sitiando Queila",
           "Se devia aceitar a oferta dos homens de Queila de fazer-lhe rei",
         ],
+        reference: "1 Samuel 23:11-12",
       },
     ],
     24: [
@@ -1106,11 +1244,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "No acampamento de Saul em Mispa enquanto todos dormiam",
           "Num desfiladeiro estreito perto do Monte Carmelo",
         ],
+        reference: "1 Samuel 24:1-3",
       },
       {
         question: "O que Davi fez secretamente quando Saul estava na caverna?",
         answer: "Cortou a orla do manto de Saul",
         distractors: ["Tirou a espada de Saul do coldre enquanto dormia", "Tomou o cantil de água e o pão de Saul"],
+        reference: "1 Samuel 24:4",
       },
       {
         question: "Por que Davi se arrependeu de ter cortado a orla do manto de Saul?",
@@ -1119,6 +1259,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Temeu que Saul reconhecesse o corte e soubesse que Davi estava na caverna",
           "Reconheceu que era errado tocar em qualquer pertence de um rei",
         ],
+        reference: "1 Samuel 24:5-6",
       },
       {
         question: "O que Davi disse a Saul após sair da caverna e mostrar-lhe a orla do manto?",
@@ -1127,6 +1268,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que tinha poupadoSaul porque os homens de Davi foram testemunhas",
           "Que o Senhor havia ordenado a Davi que não tocasse em Saul",
         ],
+        reference: "1 Samuel 24:8-11",
       },
       {
         question: "Como Saul reagiu quando Davi lhe mostrou a orla do manto?",
@@ -1135,6 +1277,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ficou com raiva e jurou que mataria Davi por ter entrado na caverna",
           "Caiu de joelhos e pediu perdão a Davi por tê-lo perseguido",
         ],
+        reference: "1 Samuel 24:16-17",
       },
       {
         question: "O que Saul pediu a Davi quando reconheceu sua justiça?",
@@ -1143,6 +1286,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que voltasse ao palácio e fosse novamente seu músico e conselheiro",
           "Que prometesse reinar com misericórdia sobre a tribo de Benjamim",
         ],
+        reference: "1 Samuel 24:21",
       },
     ],
     25: [
@@ -1150,6 +1294,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Quem morreu no início do capítulo 25?",
         answer: "Samuel, e todo Israel se ajuntou e o pranteou, e o sepultaram em Ramá",
         distractors: ["Eli, o sacerdote que havia criado Samuel", "Jônatas, numa batalha contra os filisteus"],
+        reference: "1 Samuel 25:1",
       },
       {
         question: "Por que Davi ficou irritado com Nabal?",
@@ -1158,6 +1303,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Nabal insultou Davi chamando-o de servo fugitivo e rebelde",
           "Nabal delatou a localização de Davi aos mensageiros de Saul",
         ],
+        reference: "1 Samuel 25:10-11",
       },
       {
         question: "O que Abigail trouxe para aplacar a ira de Davi?",
@@ -1166,6 +1312,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Ouro, prata e joias do tesouro de Nabal",
           "Animais para sacrifício e mantimentos para uma semana",
         ],
+        reference: "1 Samuel 25:18",
       },
       {
         question: "O que aconteceu com Nabal quando Abigail lhe contou o que havia feito?",
@@ -1174,6 +1321,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Nabal ficou com tanta raiva que teve um acesso de fúria e morreu",
           "Nabal saiu para confrontar Davi e foi morto pelos servos de Davi",
         ],
+        reference: "1 Samuel 25:37-38",
       },
       {
         question: "Com quem Davi se casou após a morte de Nabal?",
@@ -1182,6 +1330,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Apenas com Abigail, após um período de luto adequado",
           "Com Mical novamente, pois Saul desfez o segundo casamento dela",
         ],
+        reference: "1 Samuel 25:39-43",
       },
       {
         question: "O que Saul fez com Mical depois que Davi fugiu?",
@@ -1190,6 +1339,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Mandou Mical de volta para a casa de seu pai",
           "Condenou Mical a nunca mais se casar por ter traído Saul",
         ],
+        reference: "1 Samuel 25:44",
       },
     ],
     26: [
@@ -1197,6 +1347,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Quem acompanhou Davi ao acampamento de Saul na noite descrita no capítulo 26?",
         answer: "Abisai, filho de Zeruiá, irmão de Joabe",
         distractors: ["Abiatar, o sacerdote que carregava o éfode", "Eleazar, um dos valentes de Davi"],
+        reference: "1 Samuel 26:6",
       },
       {
         question: "O que Davi tomou do acampamento de Saul enquanto todos dormiam?",
@@ -1205,6 +1356,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "O manto real de Saul e sua coroa de ouro",
           "O anel com o selo real e o escudo de Saul",
         ],
+        reference: "1 Samuel 26:11-12",
       },
       {
         question: "Por que todos no acampamento de Saul dormiam tão profundamente?",
@@ -1213,11 +1365,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Davi havia colocado ervas soporíferas na água do acampamento",
           "Eles estavam exaustos após uma longa jornada naquele dia",
         ],
+        reference: "1 Samuel 26:12",
       },
       {
         question: "A quem Davi gritou do alto do monte após sair do acampamento de Saul?",
         answer: "A Abner, o chefe do exército de Saul",
         distractors: ["Diretamente a Saul, acordando-o do sono", "Aos anciãos de Israel que acompanhavam o rei"],
+        reference: "1 Samuel 26:13-14",
       },
       {
         question: "O que Davi disse a Abner ao repreendê-lo?",
@@ -1226,6 +1380,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Abner era covarde por não ter saído pessoalmente a perseguir Davi",
           "Que Abner havia traído Saul ao deixar Davi entrar no acampamento",
         ],
+        reference: "1 Samuel 26:15-16",
       },
       {
         question: "Qual foi a resposta de Saul quando reconheceu a voz de Davi no capítulo 26?",
@@ -1234,6 +1389,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul ficou em silêncio com vergonha e voltou para Gibeá",
           "Saul prometeu que jamais voltaria a perseguir Davi",
         ],
+        reference: "1 Samuel 26:21",
       },
     ],
     27: [
@@ -1244,16 +1400,19 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Para espionar os filisteus a mando do profeta Gade",
           "Porque tinha parentes entre os filisteus de Gate",
         ],
+        reference: "1 Samuel 27:1",
       },
       {
         question: "Que cidade Aquis deu a Davi para morar?",
         answer: "Ziclague",
         distractors: ["Gate", "Ecrom"],
+        reference: "1 Samuel 27:6",
       },
       {
         question: "Por quanto tempo Davi viveu na terra dos filisteus antes de Saul morrer?",
         answer: "Um ano e quatro meses",
         distractors: ["Seis meses", "Dois anos e meio"],
+        reference: "1 Samuel 27:7",
       },
       {
         question: "Contra quem Davi fazia razias enquanto vivia entre os filisteus?",
@@ -1262,6 +1421,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Contra as cidades de Israel que eram leais a Saul",
           "Contra os edomitas e moabitas nas fronteiras do sul",
         ],
+        reference: "1 Samuel 27:8",
       },
       {
         question: "O que Davi dizia a Aquis quando voltava das razias?",
@@ -1270,14 +1430,16 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que havia atacado e derrotado tribos inimigas de Aquis",
           "Que estava reconhecendo o território para futuras batalhas",
         ],
+        reference: "1 Samuel 27:10",
       },
       {
         question: "Por que Davi matava todos nas cidades que atacava?",
-        answer: "Para que ninguém ficasse vivo para contar a Aquis onde realmente havia atacado",
+        answer: "Para que ninguém ficasse vivo para contar a Aquis onde really havia atacado",
         distractors: [
           "Por ordem divina de destruição total como nas guerras santas",
           "Para evitar que prisioneiros revelassem os planos de ataque",
         ],
+        reference: "1 Samuel 27:11",
       },
     ],
     28: [
@@ -1288,11 +1450,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saul não sabia que ela era feiticeira quando foi consultá-la",
           "Um servo de Saul o levou lá sem que ele soubesse o que era",
         ],
+        reference: "1 Samuel 28:5-7",
       },
       {
         question: "Onde morava a feiticeira que Saul foi consultar?",
         answer: "Em Endor",
         distractors: ["Em Ramá", "Em Nobe"],
+        reference: "1 Samuel 28:7",
       },
       {
         question: "O que o espírito de Samuel disse a Saul sobre o resultado da batalha?",
@@ -1301,6 +1465,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Saul deveria fugir para além do Jordão para sobreviver",
           "Que se Saul se arrependesse, o Senhor poderia mudar o destino",
         ],
+        reference: "1 Samuel 28:16-19",
       },
       {
         question: "Como Saul reagiu às palavras do espírito de Samuel?",
@@ -1309,6 +1474,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Saiu correndo para seu acampamento sem dizer uma palavra",
           "Ficou em silêncio por horas, depois ordenou que voltassem",
         ],
+        reference: "1 Samuel 28:20",
       },
       {
         question: "O que a feiticeira de Endor fez por Saul após a revelação?",
@@ -1317,6 +1483,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Deu-lhe uma poção para que pudesse dormir antes da batalha",
           "Ungiu Saul com óleos e fez orações para que sobrevivesse",
         ],
+        reference: "1 Samuel 28:24-25",
       },
       {
         question: "O que o espírito de Samuel disse que Deus faria com o reino de Saul?",
@@ -1325,6 +1492,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Dividiria o reino entre os filhos de Saul após sua morte",
           "Entregaria o reino ao filho mais velho de Saul, Jônatas",
         ],
+        reference: "1 Samuel 28:17",
       },
     ],
     29: [
@@ -1335,6 +1503,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Sabiam que Davi era israelita e não queriam dividir os espólios",
           "Tinham medo que Davi fosse um espião de Samuel em seus acampamentos",
         ],
+        reference: "1 Samuel 29:3-4",
       },
       {
         question: "O que Aquis disse a Davi ao mandá-lo de volta para Ziclague?",
@@ -1343,6 +1512,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que Davi havia traído sua confiança ao ser descoberto espionando",
           "Que as leis dos filisteus proibiam estrangeiros em batalhas sagradas",
         ],
+        reference: "1 Samuel 29:6-9",
       },
       {
         question: "Onde estavam acampados os filisteus quando os príncipes recusaram Davi?",
@@ -1351,11 +1521,13 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Em Micmás, próximo ao local da batalha anterior",
           "Em Asdode, antes de marchar para o norte",
         ],
+        reference: "1 Samuel 29:1, 11",
       },
       {
         question: "Qual era o título dado a Davi pelos príncipes filisteus ao recusá-lo?",
         answer: "O servo de Saul",
         distractors: ["O fugitivo hebraico", "O traidor de Israel"],
+        reference: "1 Samuel 29:3",
       },
       {
         question: "Como Davi respondeu quando Aquis lhe disse que devia voltar?",
@@ -1364,6 +1536,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Agradeceu a Aquis pela proteção e voltou sem questionar",
           "Ficou calado e partiu imediatamente para Ziclague",
         ],
+        reference: "1 Samuel 29:8",
       },
       {
         question: "Quando Davi e seus homens chegaram a Ziclague no terceiro dia?",
@@ -1382,6 +1555,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Mataram todos os homens e idosos mas deixaram as mulheres e crianças",
           "Saquearam os tesouros mas não feriram nenhum habitante",
         ],
+        reference: "1 Samuel 30:1-3",
       },
       {
         question: "Como Davi reagiu pessoalmente à situação em Ziclague?",
@@ -1390,6 +1564,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Caiu em depressão profunda e recusou-se a sair de sua tenda",
           "Ficou com raiva e jurou vingança contra todos os amalequitas",
         ],
+        reference: "1 Samuel 30:6",
       },
       {
         question: "Quem guiou Davi até o acampamento dos amalequitas?",
@@ -1398,6 +1573,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Um profeta enviado por Deus para guiar Davi ao inimigo",
           "Um dos homens de Ziclague que havia fugido e observado a rota",
         ],
+        reference: "1 Samuel 30:11-15",
       },
       {
         question: "Com quantos homens Davi perseguiu os amalequitas?",
@@ -1406,6 +1582,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Com seiscentos homens, todo o seu bando",
           "Com trezentos homens, deixando cem para guardar Ziclague",
         ],
+        reference: "1 Samuel 30:9-10",
       },
       {
         question: "Qual regra Davi estabeleceu sobre a divisão do butim?",
@@ -1414,6 +1591,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Que os mais valentes receberiam o dobro dos outros combatentes",
           "Que os duzentos que ficaram para trás não teriam direito ao butim",
         ],
+        reference: "1 Samuel 30:24-25",
       },
       {
         question: "O que Davi recuperou na batalha contra os amalequitas?",
@@ -1422,6 +1600,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Apenas suas duas esposas e alguns dos rebanhos de Ziclague",
           "A maioria dos cativos, mas não conseguiu recuperar todo o gado",
         ],
+        reference: "1 Samuel 30:18-19",
       },
     ],
     31: [
@@ -1429,6 +1608,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
         question: "Onde Saul e seus filhos morreram na batalha final?",
         answer: "No monte Gilboa",
         distractors: ["No vale de Jezreel", "No monte Carmelo"],
+        reference: "1 Samuel 31:1",
       },
       {
         question: "Quais filhos de Saul morreram junto com ele na batalha?",
@@ -1437,6 +1617,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Isbe-Benobe, Saph e um gigante sem nome",
           "Armoni, Mefiboséte e Jônatas",
         ],
+        reference: "1 Samuel 31:2",
       },
       {
         question: "Por que Saul pediu ao seu escudeiro que o atravessasse com a espada?",
@@ -1445,6 +1626,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Porque estava gravemente ferido e não conseguia mais se mover",
           "Para cumprir um voto que havia feito antes da batalha",
         ],
+        reference: "1 Samuel 31:4",
       },
       {
         question: "O que os filisteus fizeram com o corpo de Saul após a batalha?",
@@ -1453,6 +1635,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Enterraram Saul com honras militares por ter sido um rei valente",
           "Queimaram o corpo de Saul e espalharam as cinzas pelo campo de batalha",
         ],
+        reference: "1 Samuel 31:8-10",
       },
       {
         question: "Quem resgatou os corpos de Saul e seus filhos e o que fez com eles?",
@@ -1461,6 +1644,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Davi enviou seus homens para resgatar os corpos quando soube da notícia",
           "Os sacerdotes de Israel foram de noite e trouxeram os corpos para sepultura em Gibeá",
         ],
+        reference: "1 Samuel 31:11-13",
       },
       {
         question: "Como Saul morreu efetivamente?",
@@ -1469,6 +1653,7 @@ export const QUIZ_BANK_1SAM: Record<string, Record<number, BankQuestion[]>> = {
           "Foi atingido por uma flecha filisteia no pescoço durante a fuga",
           "Pediu a um jovem amalequita que o matasse, e ele o fez",
         ],
+        reference: "1 Samuel 31:4-5",
       },
     ],
   },

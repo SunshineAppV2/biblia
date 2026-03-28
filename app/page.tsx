@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { ReadingTimer } from "@/components/ReadingTimer";
 import { cn, calculateStreak } from "@/lib/utils";
 import Link from "next/link";
-import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem } from "lucide-react";
+import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem, Download } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { completeChapter, isChapterCompleted } from "@/lib/progress";
 import { Leaderboard } from "@/components/Leaderboard";
 import { getNextUserChapter } from "@/lib/progression-service";
@@ -37,6 +38,7 @@ import WelcomePage from "@/components/WelcomePage";
 
 export default function Home() {
     const { user, profile, loading, loginWithGoogle, refreshProfile } = useAuth();
+    const { isInstallable, installPWA } = usePWAInstall();
     const { showToast } = useToast();
 
     // UI States
@@ -556,6 +558,27 @@ export default function Home() {
                             transition={{ duration: 0.4, ease: "easeOut" }}
                             className="space-y-6"
                         >
+                            {/* PWA Install Button */}
+                            {isInstallable && (
+                                <motion.button
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    onClick={installPWA}
+                                    className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-secondary to-secondary/80 text-white font-black shadow-xl shadow-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all group"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                                            <Download className="w-5 h-5" />
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-xs opacity-90 uppercase tracking-widest font-black">App Instalável</p>
+                                            <p className="text-sm">Instale para acesso rápido</p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </motion.button>
+                            )}
+
                             {/* Mascote Biblio */}
                             <div className="flex justify-center pt-4">
                                 <Biblio mood={profile?.streak && profile.streak > 2 ? "excited" : "happy"} size={90} />
@@ -654,27 +677,30 @@ export default function Home() {
 
                             {/* Stats grid */}
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="rounded-2xl border border-secondary/30 bg-white/70 backdrop-blur p-4 space-y-3">
+                                <div className="rounded-2xl border border-secondary/30 bg-white/70 backdrop-blur p-4 space-y-3 shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center">
                                             <Trophy className="w-3.5 h-3.5 text-secondary" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Sua Liga</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ciclo Atual</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
-                                        {profile?.currentLeague || "BRONZE"}
+                                        Volta {profile?.cycle || 1}
                                     </div>
                                 </div>
 
-                                <div className="rounded-2xl border border-accent/30 bg-white/70 backdrop-blur p-4 space-y-3">
+                                <div className="rounded-2xl border border-accent/30 bg-white/70 backdrop-blur p-4 space-y-3 shadow-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
                                             <BookOpen className="w-3.5 h-3.5 text-accent" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Capítulos Lidos</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Progresso</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
-                                        {profile?.totalChapters || 0}
+                                        {Math.round(((profile?.totalReadInCycle || 0) / 1189) * 100)}%
+                                        <span className="text-[10px] font-normal text-muted-foreground ml-1">
+                                            ({profile?.totalReadInCycle || 0}/1189)
+                                        </span>
                                     </div>
                                 </div>
 

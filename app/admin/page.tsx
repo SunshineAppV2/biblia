@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
     return (
         <div className="p-8 max-w-5xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white">Painel Admin — BibleQuest</h1>
+                <h1 className="text-3xl font-bold text-white">Painel Admin — AnoBíblico+</h1>
                 <p className="text-gray-400 mt-1">Visão geral do sistema</p>
             </div>
 

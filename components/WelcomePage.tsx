@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Trophy, Zap, Target, Star, Shield, Flame, Gem, ChevronRight, Play } from "lucide-react";
+import { BookOpen, Trophy, Zap, Target, Star, Shield, Flame, Gem, ChevronRight, Play, Download } from "lucide-react";
 import Link from "next/link";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 const FEATURES = [
     {
@@ -36,10 +37,12 @@ const FEATURES = [
 ];
 
 export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
+    const { isInstallable, installPWA } = usePWAInstall();
+
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans selection:bg-secondary/30">
+        <div className="min-h-screen bg-background dark:bg-slate-950 font-sans selection:bg-secondary/30">
             {/* Nav */}
-            <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-black/70 backdrop-blur-md border-b border-primary/5 px-6 py-4">
+            <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-black/80 backdrop-blur-md border-b border-secondary/15 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-secondary/20">
@@ -49,12 +52,23 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                             AnoBíblico+
                         </span>
                     </div>
-                    <button 
-                        onClick={onLogin}
-                        className="px-5 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all"
-                    >
-                        Acessar Conta
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {isInstallable && (
+                            <button 
+                                onClick={installPWA}
+                                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary text-xs font-black hover:bg-secondary/20 transition-all border border-secondary/20"
+                            >
+                                <Download className="w-3.5 h-3.5" />
+                                INSTALAR APP
+                            </button>
+                        )}
+                        <button 
+                            onClick={onLogin}
+                            className="px-5 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all outline outline-offset-2 outline-transparent hover:outline-primary/20"
+                        >
+                            Acessar Conta
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -91,12 +105,22 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                                 COMEÇAR AGORA
                                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
-                            <a 
-                                href="#recursos"
-                                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 transition-all"
-                            >
-                                CONHECER RECURSOS
-                            </a>
+                            {isInstallable ? (
+                                <button 
+                                    onClick={installPWA}
+                                    className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-primary text-white font-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all group"
+                                >
+                                    <Download className="w-5 h-5" />
+                                    INSTALAR APP
+                                </button>
+                            ) : (
+                                <a 
+                                    href="#recursos"
+                                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 transition-all"
+                                >
+                                    CONHECER RECURSOS
+                                </a>
+                            )}
                         </div>
                     </motion.div>
                 </div>
@@ -118,9 +142,9 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
-                                className="p-8 rounded-3xl bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-secondary/30 transition-all group"
+                                className="p-8 rounded-3xl bg-white/40 dark:bg-white/5 border border-secondary/15 backdrop-blur-sm hover:border-secondary/40 transition-all group shadow-sm"
                             >
-                                <div className={`w-14 h-14 ${f.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                                <div className={`w-14 h-14 ${f.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-black/5`}>
                                     <f.icon className={`w-7 h-7 ${f.color} fill-current`} />
                                 </div>
                                 <h3 className="text-xl font-black mb-3">{f.title}</h3>
@@ -135,9 +159,9 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
 
             {/* Showcase Section */}
             <section className="py-20 px-6 overflow-hidden">
-                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16 text-foreground">
                     <div className="flex-1 text-center lg:text-left">
-                        <h2 className="text-4xl sm:text-5xl font-black leading-tight mb-6">
+                        <h2 className="text-4xl sm:text-5xl font-black leading-tight mb-6 bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent italic">
                             Quizes Diários e <br />
                             <span className="text-secondary">Aprendizado</span> Real
                         </h2>
