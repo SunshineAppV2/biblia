@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
     Users, Trophy, Zap, Target, Star, Shield, 
     Flame, Gem, ChevronRight, Play, Download, 
-    MapPin, RefreshCw, BookOpen, Crown 
+    MapPin, RefreshCw, BookOpen, Crown, Info
 } from "lucide-react";
 import Link from "next/link";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
@@ -270,8 +270,17 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                         onClick={onLogin}
                         className="px-16 py-7 rounded-[32px] bg-secondary text-primary font-black text-2xl shadow-[0_20px_60px_rgba(184,130,10,0.4)] hover:scale-105 active:scale-95 transition-all group"
                     >
-                        INICIAR GRATUITAMENTE
+                        ACESSAR ANOBÍBLICO+
                     </button>
+                    
+                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 mb-12 border border-white/10 max-w-2xl mx-auto">
+                        <p className="text-[11px] font-bold text-white/50 leading-relaxed uppercase tracking-widest">
+                            <Info className="w-3.5 h-3.5 inline mr-2 opacity-40" />
+                            O AnoBíblico+ é mantido de forma gratuita através de anúncios e patrocínios. <br />
+                            <span className="text-secondary opacity-80">Seu apoio contribui para levar a Palavra ao mundo todo.</span>
+                        </p>
+                    </div>
+
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-12 pt-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
                         <Link href="/politica-de-privacidade" className="hover:text-secondary transition-colors">POLÍTICA DE PRIVACIDADE</Link>
                         <span className="hidden sm:block">|</span>
