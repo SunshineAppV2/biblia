@@ -17,59 +17,48 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
     const FEATURES = [
         {
             icon: Flame,
-            title: locale === "pt" ? "Ofensiva (Streak)" : "Streak",
-            description: locale === "pt" 
-                ? "Mantenha o hábito vivo. Cada dia de leitura conta para sua sequência ininterrupta."
-                : "Keep the habit alive. Each reading day counts towards your uninterrupted streak.",
+            title: t('feature_streak_title'),
+            description: t('feature_streak_desc'),
             color: "text-orange-500",
             bg: "bg-orange-500/10"
         },
         {
             icon: Users,
-            title: locale === "pt" ? "Tribos Bíblicas" : "Bible Tribes",
-            description: locale === "pt"
-                ? "Crie grupos com amigos para lerem juntos. Ranking exclusivo para tribos com 3+ membros."
-                : "Create groups with friends to read together. Exclusive ranking for tribes with 3+ members.",
+            title: t('feature_tribes_title'),
+            description: t('feature_tribes_desc'),
             color: "text-blue-500",
             bg: "bg-blue-500/10"
         },
         {
             icon: RefreshCw,
-            title: locale === "pt" ? "Reavivados Por Sua Palavra" : "Revived By His Word",
-            description: locale === "pt"
-                ? "Sincronize com o plano mundial RPSP e complete os 1.189 capítulos de forma contínua."
-                : "Synchronize with the RPSP world plan and complete the 1,189 chapters continuously.",
+            title: t('feature_rpsp_title'),
+            description: t('feature_rpsp_desc'),
             color: "text-secondary",
             bg: "bg-secondary/10"
         },
         {
             icon: Trophy,
-            title: locale === "pt" ? "Ligas Globais" : "Global Leagues",
-            description: locale === "pt"
-                ? "Suba de liga, do Jaspe ao Diamante, competindo saudavelmente com outros leitores."
-                : "Climb the leagues, from Jasper to Diamond, competing healthily with other readers.",
+            title: t('feature_leagues_title'),
+            description: t('feature_leagues_desc'),
             color: "text-amber-500",
             bg: "bg-amber-500/10"
         },
         {
             icon: Gem,
-            title: locale === "pt" ? "Gemas e Recompensas" : "Gems and Rewards",
-            description: locale === "pt"
-                ? "Ganhe gemas ao ler e usar em quizzes para desbloquear itens e proteções."
-                : "Earn gems by reading and use them in quizzes to unlock items and protections.",
+            title: t('feature_gems_title'),
+            description: t('feature_gems_desc'),
             color: "text-blue-400",
             bg: "bg-blue-400/10"
         },
         {
             icon: Target,
-            title: locale === "pt" ? "Metas Diárias" : "Daily Goals",
-            description: locale === "pt"
-                ? "Defina seus objetivos e acompanhe seu progresso com métricas precisas."
-                : "Define your goals and track your progress with precise metrics.",
+            title: t('feature_goals_title'),
+            description: t('feature_goals_desc'),
             color: "text-emerald-500",
             bg: "bg-emerald-500/10"
         }
     ];
+
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#0E1B5C] font-sans selection:bg-secondary/30 overflow-x-hidden">
@@ -113,14 +102,14 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                                 className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-secondary/10 text-secondary text-[11px] font-black hover:bg-secondary/20 transition-all border border-secondary/20 tracking-widest uppercase"
                             >
                                 <Download className="w-4 h-4" />
-                                INSTALAR APP
+                                {t('welcome.install')}
                             </button>
                         )}
                         <button 
                             onClick={onLogin}
                             className="px-6 py-2.5 rounded-2xl bg-primary text-white text-[11px] font-black shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all outline outline-offset-2 outline-transparent hover:outline-primary/20 uppercase tracking-widest"
                         >
-                            ACESSAR
+                            {t('welcome.access')}
                         </button>
                     </div>
                 </div>
@@ -141,12 +130,12 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             className="inline-flex items-center gap-2 px-5 py-2 mb-8 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] font-black uppercase tracking-[0.2em]"
                         >
                             <Star className="w-3.5 h-3.5 fill-current" />
-                            A Experiência Bíblica Definitiva
+                            {t('welcome.exp_title')}
                         </motion.div>
                         
                         <h1 className="text-6xl sm:text-8xl font-black leading-[0.9] mb-10 tracking-tighter">
-                            Toda a Bíblia. <br />
-                            <span className="text-primary italic">Todos os dias.</span>
+                            {t('welcome.hero1')} <br />
+                            <span className="text-primary italic">{t('welcome.hero2')}</span>
                         </h1>
                         
                         <p className="text-xl sm:text-2xl text-[#455A80] font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
@@ -160,7 +149,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 <Play className="w-6 h-6 fill-current" />
-                                INICIAR JORNADA
+                                {t('welcome.start')}
                                 <ChevronRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
                             </button>
                             
@@ -170,7 +159,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                                     className="w-full sm:w-auto px-12 py-6 rounded-[32px] bg-white border-2 border-primary/10 text-primary font-black text-lg flex items-center justify-center gap-3 hover:bg-primary/5 active:scale-95 transition-all"
                                 >
                                     <Download className="w-6 h-6" />
-                                    BAIXAR APP
+                                    {t('welcome.download')}
                                 </button>
                             )}
                         </div>
@@ -229,13 +218,13 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                     <div className="flex-1 space-y-10">
                         <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary text-white text-[10px] font-black uppercase tracking-widest italic shadow-xl shadow-primary/20">
                             <Users className="w-4 h-4" />
-                            Novo: Tribos e Ranking
+                            {t('welcome.new_tribes')}
                         </div>
                         <h2 className="text-5xl sm:text-7xl font-black leading-[1] italic bg-gradient-to-br from-[#0E1B5C] to-[#42A5F5] bg-clip-text text-transparent">
-                            Juntos no Caminho da <span className="text-secondary underline underline-offset-8 decoration-secondary/30">Luz.</span>
+                            {t('welcome.together_title')} <span className="text-secondary underline underline-offset-8 decoration-secondary/30">{t('welcome.together_light')}</span>
                         </h2>
                         <p className="text-xl text-[#455A80] font-medium leading-relaxed">
-                            A leitura individual agora faz parte de um todo. Ganhe XP para sua **Tribo** e suba no ranking mundial. Após cada capítulo, um quiz flash solidifica seu aprendizado.
+                            {t('welcome.together_desc')}
                         </p>
                         
                         <div className="grid grid-cols-2 gap-6 pt-4">
@@ -243,13 +232,13 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                                 <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
                                     <Crown className="w-5 h-5 text-secondary" />
                                 </div>
-                                <span className="font-black text-sm uppercase tracking-widest italic">Liga Diamante</span>
+                                <span className="font-black text-sm uppercase tracking-widest italic">{t('welcome.diamond_league')}</span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                                     <Zap className="w-5 h-5 text-primary" />
                                 </div>
-                                <span className="font-black text-sm uppercase tracking-widest italic">Aceleração Real</span>
+                                <span className="font-black text-sm uppercase tracking-widest italic">{t('welcome.real_accel')}</span>
                             </div>
                         </div>
                     </div>
@@ -305,7 +294,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                         whileInView={{ opacity: 1 }}
                         className="text-5xl sm:text-7xl font-black tracking-tighter italic"
                     >
-                        Redescubra a Bíblia <br /> como <span className="text-secondary underline decoration-secondary/30 underline-offset-8">nunca</span> antes.
+                        {t('welcome.rediscover')} <br /> {t('welcome.never_before')}
                     </motion.h2>
                     <button 
                         onClick={onLogin}
@@ -336,7 +325,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             {t('welcome.support')}
                         </a>
                     </div>
-                    <p>© 2026 ANOBÍBLICO+. TODOS OS DIREITOS RESERVADOS.</p>
+                    <p>© 2026 {t('welcome.title')}. {t('welcome.rights')}</p>
                 </div>
             </footer>
         </div>

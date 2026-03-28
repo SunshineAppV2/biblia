@@ -115,6 +115,14 @@ export async function updateUserVersion(uid: string, version: string): Promise<v
     });
 }
 
+export async function updateUserLanguage(uid: string, locale: string): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+        language: locale,
+        lastActive: serverTimestamp(),
+    });
+}
+
 export async function buyStreakFreeze(uid: string, gemCost: number): Promise<void> {
     const userRef = doc(db, "users", uid);
     await updateDoc(userRef, {

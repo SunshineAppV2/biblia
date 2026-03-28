@@ -3,6 +3,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { locales, LocaleKey, Dictionary } from "@/lib/i18n";
 import { useAuth } from "./AuthProvider";
+import { updateUserLanguage } from "@/lib/firestore";
+import { useRef } from "react";
 
 interface LanguageContextType {
     locale: LocaleKey;
@@ -21,6 +23,7 @@ export const useLanguage = () => useContext(LanguageContext);
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const { profile } = useAuth();
     const [locale, setLocale] = useState<LocaleKey>("pt");
+    const isFirstLoad = useRef(true);
 
     useEffect(() => {
         const stored = localStorage.getItem("biblia_locale") as LocaleKey;
@@ -37,13 +40,26 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (profile?.language && locales[profile.language as LocaleKey]) {
-            setLocale(profile.language as LocaleKey);
+            // Only overwrite if it's the first time we load the profile 
+            // OR if the profile language actually changed on the server
+            if (isFirstLoad.current || profile.language !== locale) {
+                console.log("Updating locale from profile:", profile.language);
+                setLocale(profile.language as LocaleKey);
+                isFirstLoad.current = false;
+            }
         }
     }, [profile?.language]);
 
-    const changeLocale = (l: LocaleKey) => {
+    const changeLocale = async (l: LocaleKey) => {
         setLocale(l);
         localStorage.setItem("biblia_locale", l);
+        if (profile?.uid) {
+            try {
+                await updateUserLanguage(profile.uid, l);
+            } catch (err) {
+                console.error("Failed to update user language in firestore", err);
+            }
+        }
     };
 
     const t = (key: string, variables?: Record<string, any>) => {
