@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import Link from "next/link";
+import { MobileNav } from "@/components/MobileNav";
 
 export default function TribesPage() {
     const { user, profile, refreshProfile } = useAuth();
