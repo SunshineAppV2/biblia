@@ -300,4 +300,7 @@ export async function searchUserByEmail(email: string): Promise<UserProfile | nu
     return snap.docs[0].data() as UserProfile;
 }
 
-
+export async function adminUpdateUserData(uid: string, data: Partial<UserProfile>): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, data);
+}
