@@ -293,4 +293,11 @@ export async function adminResetUser(uid: string): Promise<void> {
     });
 }
 
+export async function searchUserByEmail(email: string): Promise<UserProfile | null> {
+    const q = query(collection(db, "users"), where("email", "==", email.toLowerCase()));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    return snap.docs[0].data() as UserProfile;
+}
+
 

@@ -15,7 +15,8 @@ import { cn, getLocalDateString, calculateStreak } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
-import { buyStreakFreeze, UserProfile, redeemReferralCode, adminSetUserXp, adminResetUser } from "@/lib/firestore";
+import { buyStreakFreeze, UserProfile, redeemReferralCode, adminSetUserXp, adminResetUser, searchUserByEmail } from "@/lib/firestore";
+import { Search, UserMinus } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import { MobileNav } from "@/components/MobileNav";
@@ -27,6 +28,24 @@ export default function ProfilePage() {
     const [notifyEnabled, setNotifyEnabled] = useState(false);
     const [buying, setBuying] = useState(false);
     useEffect(() => { setNotifyEnabled(isNotificationsEnabled()); }, []);
+
+    const [searchEmail, setSearchEmail] = useState("");
+    const [foundUser, setFoundUser] = useState<UserProfile | null>(null);
+    const [searching, setSearching] = useState(false);
+
+    const handleSearch = async () => {
+        if (!searchEmail) return;
+        setSearching(true);
+        try {
+            const result = await searchUserByEmail(searchEmail);
+            setFoundUser(result);
+            if(!result) showToast("Usuário não encontrado.", "error");
+        } catch (e) {
+            showToast("Erro ao buscar usuário.", "error");
+        } finally {
+            setSearching(false);
+        }
+    };
 
     const handleBuyFreeze = async () => {
         if (!user || (profile?.gems ?? 0) < 50 || buying) return;
@@ -455,6 +474,69 @@ export default function ProfilePage() {
                              <p className="text-[10px] text-red-800 font-bold leading-tight">
                                 Este painel é visível apenas para admins (seu email: {user.email}). Use para testar bloqueios de nível e fluxo de conquistas.
                              </p>
+                        </div>
+
+                        {/* SEARCH AND RESET OTHER USERS */}
+                        <div className="pt-6 border-t border-red-500/20 space-y-4">
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-red-600">Gerenciar Outros Usuários</h4>
+                            <div className="flex gap-2">
+                                <input 
+                                    type="email"
+                                    value={searchEmail}
+                                    placeholder="Email do usuário..."
+                                    onChange={(e) => setSearchEmail(e.target.value)}
+                                    className="flex-1 bg-white border border-red-500/20 rounded-xl px-4 py-2 text-xs font-bold text-red-900 focus:outline-none focus:border-red-500"
+                                />
+                                <button 
+                                    onClick={handleSearch}
+                                    disabled={searching}
+                                    className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 active:scale-95 transition-all text-xs font-black uppercase flex items-center gap-2"
+                                >
+                                    <Search className="w-4 h-4" />
+                                    {searching ? "..." : "BUSCAR"}
+                                </button>
+                            </div>
+
+                            {foundUser && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white border-2 border-red-500/40 p-5 rounded-3xl shadow-xl space-y-4"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-2xl bg-red-100 flex items-center justify-center text-red-600 font-bold text-lg">
+                                            {foundUser.displayName?.[0]}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-red-900">{foundUser.displayName}</p>
+                                            <p className="text-[10px] text-red-500 font-medium">{foundUser.email}</p>
+                                            <p className="text-[10px] font-black uppercase text-red-400 mt-1">XP: {foundUser.xp} | Gemas: {foundUser.gems}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-2">
+                                         <button 
+                                            onClick={async () => {
+                                                if(confirm(`Tem certeza que quer ZERAR o usuário ${foundUser.displayName}?`)) {
+                                                    await adminResetUser(foundUser.uid);
+                                                    showToast("Usuário resetado com sucesso!", "success");
+                                                    setFoundUser(null);
+                                                    setSearchEmail("");
+                                                }
+                                            }}
+                                            className="w-full bg-red-600 text-white font-black py-3 rounded-xl text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-black transition-colors"
+                                         >
+                                            <UserMinus className="w-4 h-4" /> ZERAR CONTA
+                                         </button>
+                                         <button 
+                                            onClick={() => setFoundUser(null)}
+                                            className="w-full bg-red-100 text-red-600 font-black py-3 rounded-xl text-[10px] uppercase"
+                                         >
+                                            CANCELAR
+                                         </button>
+                                    </div>
+                                </motion.div>
+                            )}
                         </div>
                     </section>
                 )}
