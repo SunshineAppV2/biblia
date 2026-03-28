@@ -68,7 +68,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             wisdomPoints: 0,
             isAdmin: user.email === "aseabra2005@gmail.com",
             activePlanId: "rpsp",
-            planStartDate: serverTimestamp() as Timestamp,
+            planStartDate: Timestamp.now(),
             referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
             referralsCount: 0,
             groupId: null,

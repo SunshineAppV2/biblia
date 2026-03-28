@@ -62,17 +62,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(true);
         try {
             const provider = new GoogleAuthProvider();
-            const credential = await signInWithPopup(auth, provider);
-            if (credential.user) {
-                setUser(credential.user);
-                const userProfile = await createOrUpdateUser(credential.user);
-                setProfile(userProfile);
-                setLoading(false);
-            }
+            await signInWithPopup(auth, provider);
         } catch (error: unknown) {
             const err = error as { code?: string; message?: string };
             console.error("Login failed:", err.code, err.message);
-            showToast("Não foi possível completar o login. Tente novamente.", "error");
+            showToast("Não foi possível completar o login.", "error");
+            setLoading(false);
         }
     };
 

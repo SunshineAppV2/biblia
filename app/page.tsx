@@ -464,6 +464,15 @@ export default function Home() {
         );
     }
 
+    if (user && !profile) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <p className="text-sm font-bold text-muted-foreground animate-pulse">Preparando seu perfil...</p>
+            </div>
+        );
+    }
+
     if (!user && !loading) {
         return <WelcomePage onLogin={loginWithGoogle} />;
     }
