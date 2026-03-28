@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Brain, AlertTriangle, Zap, X } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface QuizOfferModalProps {
     isOpen: boolean;
@@ -11,7 +12,8 @@ interface QuizOfferModalProps {
     onDecline: () => void;
 }
 
-export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline }: QuizOfferModalProps) {
+export function QuizOfferModal({ isOpen, bookId, chapter, onAccept, onDecline }: any) {
+    const { t } = useLanguage();
     if (!isOpen) return null;
 
     return (
@@ -35,12 +37,12 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                         <Brain className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-foreground">Teste de Conhecimento!</h3>
+                        <h3 className="text-xl font-black text-foreground">{t('quiz.offer_title')}</h3>
                         <p className="text-sm text-cyan-500 font-bold mt-1 uppercase tracking-tighter">
-                            Apenas sobre o que você acabou de ler:
+                            {t('quiz.offer_subtitle')}
                         </p>
                         <p className="font-black text-lg text-secondary mt-0.5">
-                            {bookName} {chapter}
+                            {t(`books.${bookId}` as any)} {chapter}
                         </p>
                     </div>
                 </div>
@@ -51,12 +53,12 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                         <div className="flex-1 rounded-2xl p-3 text-center"
                             style={{ background: "rgba(13,71,161,0.10)", border: "1px solid rgba(13,71,161,0.22)" }}>
                             <div className="font-black text-lg" style={{ color: "var(--accent)" }}>+30 XP</div>
-                            <div className="text-[10px] uppercase tracking-wide font-bold" style={{ color: "var(--accent)", opacity: 0.75 }}>por acerto</div>
+                            <div className="text-[10px] uppercase tracking-wide font-bold" style={{ color: "var(--accent)", opacity: 0.75 }}>{t('quiz.per_correct')}</div>
                         </div>
                         <div className="flex-1 rounded-2xl p-3 text-center"
                             style={{ background: "rgba(220,38,38,0.10)", border: "1px solid rgba(220,38,38,0.22)" }}>
                             <div className="font-black text-lg text-red-500">−15 XP</div>
-                            <div className="text-[10px] uppercase tracking-wide font-bold text-red-500/75">por erro</div>
+                            <div className="text-[10px] uppercase tracking-wide font-bold text-red-500/75">{t('quiz.per_error')}</div>
                         </div>
                     </div>
 
@@ -64,7 +66,7 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                         style={{ background: "rgba(184,130,10,0.10)", border: "1px solid rgba(184,130,10,0.22)" }}>
                         <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "var(--secondary)" }} />
                         <p className="text-xs leading-relaxed" style={{ color: "var(--secondary)" }}>
-                            <strong>Atenção:</strong> respostas erradas <strong>descontam XP</strong> do seu total. Só aceite se leu com atenção!
+                            <strong>{t('quiz.warning')}</strong> {t('quiz.warning_text')}
                         </p>
                     </div>
                 </div>
@@ -76,7 +78,7 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                         className="flex-1 py-3 rounded-full text-sm font-bold transition-colors flex items-center justify-center gap-2"
                         style={{ border: "1px solid rgba(184,130,10,0.25)", color: "var(--muted-foreground)" }}
                     >
-                        <X className="w-4 h-4" /> Dispensar
+                        <X className="w-4 h-4" /> {t('quiz.decline')}
                     </button>
                     <button
                         onClick={onAccept}
@@ -86,7 +88,7 @@ export function QuizOfferModal({ isOpen, bookName, chapter, onAccept, onDecline 
                             boxShadow: "0 4px 20px rgba(184,130,10,0.45)",
                         }}
                     >
-                        <Zap className="w-4 h-4 fill-current" /> Aceitar!
+                        <Zap className="w-4 h-4 fill-current" /> {t('quiz.accept')}
                     </button>
                 </div>
             </motion.div>

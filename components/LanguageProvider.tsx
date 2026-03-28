@@ -7,7 +7,7 @@ import { useAuth } from "./AuthProvider";
 interface LanguageContextType {
     locale: LocaleKey;
     setLocale: (l: LocaleKey) => void;
-    t: (key: string) => any;
+    t: (key: string, variables?: Record<string, any>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
@@ -46,7 +46,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("biblia_locale", l);
     };
 
-    const t = (key: string) => {
+    const t = (key: string, variables?: Record<string, any>) => {
         const dictionary = locales[locale];
         const keys = key.split(".");
         let result: any = dictionary;
@@ -58,7 +58,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
                 return key;
             }
         }
-        return result;
+
+        if (typeof result === "string" && variables) {
+            Object.entries(variables).forEach(([name, value]) => {
+                result = result.replace(`{${name}}`, String(value));
+            });
+        }
+
+        return String(result);
     };
 
     return (

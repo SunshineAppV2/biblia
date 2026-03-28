@@ -6,6 +6,8 @@ import { ChevronDown, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { useLanguage } from "@/components/LanguageProvider";
+
 interface VersionSelectorProps {
     currentVersion: string;
     onVersionChange: (versionId: string) => void;
@@ -13,8 +15,14 @@ interface VersionSelectorProps {
 }
 
 export function VersionSelector({ currentVersion, onVersionChange, className }: VersionSelectorProps) {
+    const { locale, t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
 
+    // Only show versions for the current language
+    const availableVersions = VERSIONS.filter(v => v.language === locale);
+    
+    // If currentVersion is not in availableVersions (e.g. language switched), 
+    // we still show its name, but it might be better to force a change in parent.
     const currentVersionName = VERSIONS.find(v => v.id === currentVersion)?.name || "Almeida";
 
     return (
@@ -40,13 +48,13 @@ export function VersionSelector({ currentVersion, onVersionChange, className }: 
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-secondary/25 shadow-xl z-20 overflow-hidden"
+                            className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-secondary/25 shadow-xl z-20 overflow-hidden"
                         >
                             <div className="px-3 py-2 border-b border-primary/8">
-                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Versão da Bíblia</p>
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t('profile.version')}</p>
                             </div>
                             <div className="p-2 space-y-0.5">
-                                {VERSIONS.map((v) => {
+                                {availableVersions.map((v) => {
                                     const isActive = currentVersion === v.id;
                                     return (
                                         <button
@@ -59,11 +67,11 @@ export function VersionSelector({ currentVersion, onVersionChange, className }: 
                                                     : "hover:bg-primary/6 border border-transparent"
                                             )}
                                         >
-                                            <div>
+                                            <div className="flex-1 min-w-0">
                                                 <div className={cn("font-black text-sm", isActive ? "text-secondary" : "text-primary")}>
                                                     {v.id}
                                                 </div>
-                                                <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">{v.name}</div>
+                                                <div className="text-[10px] text-muted-foreground leading-tight mt-0.5 truncate">{v.name}</div>
                                             </div>
                                             {isActive && (
                                                 <div className="shrink-0 w-5 h-5 rounded-full bg-secondary flex items-center justify-center">

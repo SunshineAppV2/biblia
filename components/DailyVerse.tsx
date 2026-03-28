@@ -3,22 +3,24 @@
 import { motion } from "framer-motion";
 import { Sun, Quote } from "lucide-react";
 import { getDailyVerse } from "@/lib/daily-verse";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export function DailyVerse() {
     const verse = getDailyVerse();
+    const { t } = useLanguage();
 
     return (
         <motion.section
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            aria-label="Versículo do Dia"
+            aria-label={t('dashboard.daily_verse')}
         >
             {/* Header */}
             <div className="flex items-center gap-2 px-1 mb-3">
                 <Sun className="w-4 h-4 text-secondary fill-secondary/30" />
                 <h3 className="text-base font-black text-primary uppercase tracking-widest">
-                    Versículo do Dia
+                    {t('dashboard.daily_verse')}
                 </h3>
             </div>
 

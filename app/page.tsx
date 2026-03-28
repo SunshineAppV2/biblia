@@ -60,7 +60,7 @@ export default function Home() {
     // Quiz States
     const [showQuizOffer, setShowQuizOffer] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
-    const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number; bookName: string } | null>(null);
+    const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number } | null>(null);
 
     // Version State — local so it updates immediately without waiting for Firebase
     const [currentVersion, setCurrentVersion] = useState("ARC");
@@ -321,7 +321,7 @@ export default function Home() {
             if (!wasNew) {
                 setWasAlreadyRead(true);
                 setIsCompletedNow(true);
-                showToast("Capítulo já registrado anteriormente.", "info");
+                showToast(t('dashboard.already_read'), "info");
                 return;
             }
 
@@ -329,7 +329,7 @@ export default function Home() {
             await finishChapter(0);
         } catch (error) {
             console.error("Failed to complete chapter", error);
-            showToast("Erro ao salvar progresso. Tente novamente.", "error");
+            showToast(t('dashboard.save_error'), "error");
             setIsCompletedNow(true);
         }
     };
@@ -383,7 +383,6 @@ export default function Home() {
                 setQuizTarget({
                     bookId,
                     chapter,
-                    bookName: chapterContent?.bookName ?? "",
                 });
                 setShowQuizOffer(true);
                 return;
@@ -435,7 +434,7 @@ export default function Home() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
                 <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                <p className="text-sm font-bold text-muted-foreground animate-pulse">Carregando sua jornada...</p>
+                <p className="text-sm font-bold text-muted-foreground animate-pulse">{t('dashboard.loading_journey')}</p>
             </div>
         );
     }
@@ -461,10 +460,10 @@ export default function Home() {
                         <button
                             onClick={handleNextChapter}
                             className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 hover:border-secondary/50 text-muted-foreground hover:text-secondary transition-all text-xs font-bold"
-                            title="Pular para o próximo capítulo"
+                            title={t('dashboard.next')}
                         >
                             <SkipForward className="w-3 h-3" />
-                            <span className="hidden sm:inline">Próximo</span>
+                            <span className="hidden sm:inline">{t('dashboard.next')}</span>
                         </button>
                     )}
                 </div>
@@ -535,7 +534,7 @@ export default function Home() {
                                         {user.displayName?.[0]}
                                     </div>
                                 )}
-                                <span className="text-[10px] font-black uppercase tracking-tighter text-primary">Perfil</span>
+                                <span className="text-[10px] font-black uppercase tracking-tighter text-primary">{t('dashboard.profile_short')}</span>
                             </Link>
                         </>
                     ) : (
@@ -543,7 +542,7 @@ export default function Home() {
                             onClick={loginWithGoogle}
                             className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/20 transition-all text-xs uppercase tracking-wider"
                         >
-                            <LogIn className="w-4 h-4" /> Entrar
+                            <LogIn className="w-4 h-4" /> {t('dashboard.login')}
                         </button>
                     )}
                 </div>
@@ -595,7 +594,7 @@ export default function Home() {
                                     {user ? `${t('dashboard.greeting')}, ${user.displayName?.split(" ")[0]}` : t('dashboard.greeting_anonymous')}
                                 </h2>
                                 <p className="text-muted-foreground text-sm">
-                                    {user ? (locale === "pt" ? "Sua jornada continua. Que tal ler um pouco agora?" : "Your journey continues. How about reading some now?") : (locale === "pt" ? "Faça login para salvar suas conquistas." : "Log in to save your achievements.")}
+                                    {user ? t('dashboard.journey_continue') : t('dashboard.login_save')}
                                 </p>
                             </div>
 
@@ -697,9 +696,9 @@ export default function Home() {
                                         <div className="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center">
                                             <Trophy className="w-3.5 h-3.5 text-secondary" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ciclo Atual</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('dashboard.current_cycle')}</span>
                                     </div>
-                                    <div className="font-black text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-1">PLANO MUNDIAL</div>
+                                    <div className="font-black text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-1">{t('dashboard.global_plan')}</div>
                                     <div className="font-black text-xs text-primary leading-tight tracking-tight mt-1">
                                         {t('dashboard.rpsp')}
                                     </div>
@@ -710,7 +709,7 @@ export default function Home() {
                                         <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
                                             <BookOpen className="w-3.5 h-3.5 text-accent" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Progresso</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('dashboard.progress')}</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
                                         {Math.round(((profile?.totalReadInCycle || 0) / 1189) * 100)}%
@@ -728,7 +727,7 @@ export default function Home() {
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ofensiva</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
-                                        {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">dias</span>
+                                        {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">{t('dashboard.days')}</span>
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('dashboard.ofensiva')}</span>
                                     </div>
                                     <div className="text-2xl font-black text-primary italic">{profile?.streak || 0}d</div>
@@ -798,16 +797,16 @@ export default function Home() {
                             {loadingContent ? (
                                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                                    <p className="text-muted-foreground">Abrindo pergaminhos...</p>
+                                    <p className="text-muted-foreground">{t('reading.open_pergaminhos')}</p>
                                 </div>
                             ) : chapterContent ? (
                                 <>
                                     <article className="reading-surface rounded-2xl shadow-2xl px-6 py-10 max-w-none mb-32 border border-[#C5A059]/20">
                                         <h2 className="text-center text-4xl font-serif mb-3 tracking-tight text-primary">
-                                            {chapterContent.bookName} {chapterContent.chapter}
+                                            {t(`books.${chapterContent.bookId}` as any)} {chapterContent.chapter}
                                         </h2>
                                         <p className="text-center text-xs mb-4 uppercase tracking-widest font-semibold text-muted-foreground">
-                                            {chapterContent.version} • {chapterContent.totalVerses} versículos • ~{Math.round(chapterContent.estimatedSeconds / 60)} min
+                                            {chapterContent.version} • {chapterContent.totalVerses} {t('reading.versiculos')} • ~{Math.round(chapterContent.estimatedSeconds / 60)} min
                                         </p>
 
                                         {/* Font size controls */}
@@ -848,12 +847,12 @@ export default function Home() {
                                             </p>
                                         ))}
                                         <p className="text-center text-[10px] text-muted-foreground/50 mt-6 uppercase tracking-widest">
-                                            Pressione e segure um versículo para marcar
+                                            {t('reading.hold_to_mark')}
                                         </p>
 
                                         {/* DISCRETE CHAPTER AD */}
                                         <div className="mt-12 mb-4 border-t border-primary/5 pt-8">
-                                            <p className="text-[9px] text-center font-black uppercase tracking-[0.4em] text-primary/30 mb-4">Recomendação de Estudo</p>
+                                            <p className="text-[9px] text-center font-black uppercase tracking-[0.4em] text-primary/30 mb-4">{t('reading.study_recommendation')}</p>
                                             <AdBanner 
                                                 adSlot="CHAPTER_END" 
                                                 adFormat="horizontal" 
@@ -875,13 +874,13 @@ export default function Home() {
                                                     <div className="flex flex-col">
                                                         {wasAlreadyRead ? (
                                                             <>
-                                                                <span className="text-lg text-muted-foreground">Capítulo já lido</span>
-                                                                <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">Avance para o próximo</span>
+                                                                <span className="text-lg text-muted-foreground">{t('reading.already_read_banner')}</span>
+                                                                <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">{t('reading.advance_next')}</span>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <span className="text-lg text-accent">Leitura Concluída!</span>
-                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">+50 XP • Quiz Disponível ao Avançar</span>
+                                                                <span className="text-lg text-accent">{t('reading.reading_complete')}</span>
+                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">{t('reading.xp_quiz_info')}</span>
                                                             </>
                                                         )}
                                                     </div>
@@ -910,8 +909,8 @@ export default function Home() {
                                 </>
                             ) : (
                                 <div className="text-center py-20">
-                                    <p className="text-red-400">Conteúdo indisponível para este capítulo ainda.</p>
-                                    <button onClick={handleBack} className="mt-4 underline text-sm">Voltar</button>
+                                    <p className="text-red-400">{t('reading.content_unavailable' as any) || "Conteúdo indisponível para este capítulo ainda."}</p>
+                                    <button onClick={handleBack} className="mt-4 underline text-sm">{t('common.back' as any) || "Voltar"}</button>
                                 </div>
                             )}
                         </motion.div>
@@ -921,7 +920,7 @@ export default function Home() {
 
             <QuizOfferModal
                 isOpen={showQuizOffer}
-                bookName={quizTarget?.bookName ?? ""}
+                bookId={quizTarget?.bookId ?? "genesis"}
                 chapter={quizTarget?.chapter ?? 1}
                 onAccept={handleQuizAccept}
                 onDecline={handleQuizDecline}
@@ -930,7 +929,6 @@ export default function Home() {
             <QuizModal
                 isOpen={showQuiz}
                 bookId={quizTarget?.bookId ?? "genesis"}
-                bookName={quizTarget?.bookName ?? ""}
                 chapter={quizTarget?.chapter ?? 1}
                 onComplete={handleQuizComplete}
             />

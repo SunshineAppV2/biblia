@@ -16,9 +16,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import Link from "next/link";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function TribesPage() {
     const { user, profile, refreshProfile } = useAuth();
+    const { t } = useLanguage();
     const [group, setGroup] = useState<UserGroup | null>(null);
     const [ranking, setRanking] = useState<UserGroup[]>([]);
     const [loading, setLoading] = useState(true);
@@ -112,12 +114,12 @@ export default function TribesPage() {
                              
                              <div className="flex justify-between items-start mb-8 relative z-10">
                                 <div>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">Sua Tribo</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">{t('tribes.my_tribe')}</span>
                                     <h2 className="text-4xl font-black italic mt-4 tracking-tighter">{group.name}</h2>
                                     <p className="text-sm opacity-60 mt-2 font-medium max-w-[280px] leading-snug">{group.description}</p>
                                 </div>
                                 <div className="bg-white/10 backdrop-blur-xl p-4 rounded-3xl border border-white/15 flex flex-col items-center min-w-[80px] shadow-lg">
-                                    <span className="text-[10px] font-bold uppercase opacity-60 tracking-widest">Membros</span>
+                                    <span className="text-[10px] font-bold uppercase opacity-60 tracking-widest">{t('tribes.members')}</span>
                                     <span className="text-2xl font-black mt-1">{group.memberCount}</span>
                                 </div>
                              </div>
@@ -126,7 +128,7 @@ export default function TribesPage() {
                                 <div className="bg-white/5 backdrop-blur-md p-5 rounded-[28px] border border-white/10 hover:bg-white/10 transition-all">
                                     <p className="text-[10px] font-bold uppercase opacity-60 flex items-center gap-2 mb-2 tracking-widest">
                                         <Flame className="w-3.5 h-3.5 text-secondary fill-current" />
-                                        XP Global
+                                        XP
                                     </p>
                                     <p className="text-3xl font-black text-white">{group.totalXpWeek}</p>
                                 </div>
@@ -136,17 +138,17 @@ export default function TribesPage() {
                                         <div className="flex items-start gap-2.5 text-secondary">
                                             <Info className="w-4 h-4 shrink-0 mt-0.5" />
                                             <div>
-                                                <p className="text-[10px] font-black uppercase leading-tight tracking-wider">Inativa no Ranking</p>
-                                                <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">Convide mais {3 - group.memberCount} amigos para entrar no ranking global.</p>
+                                                <p className="text-[10px] font-black uppercase leading-tight tracking-wider">{t('tribes.inactive')}</p>
+                                                <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">{t('tribes.need_more', { count: 3 - group.memberCount })}</p>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className="text-emerald-400">
                                             <p className="text-[10px] font-black uppercase flex items-center gap-2 tracking-widest">
                                                 <Shield className="w-3.5 h-3.5 fill-current" />
-                                                Elegível
+                                                {t('tribes.eligible')}
                                             </p>
-                                            <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">Sua tribo está pronta para lutar pela glória!</p>
+                                            <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">{t('tribes.ready')}</p>
                                         </div>
                                     )}
                                 </div>
@@ -158,7 +160,7 @@ export default function TribesPage() {
                                     className="flex items-center gap-2 text-[10px] font-black text-white/30 hover:text-red-300 transition-all uppercase tracking-[0.2em]"
                                 >
                                     <LogOut className="w-3.5 h-3.5" />
-                                    Abandonar Tribo
+                                    {t('tribes.leave')}
                                 </button>
                                 <div className="text-[9px] font-black text-secondary/60 italic">ID: {group.id.split('_')[1]}</div>
                              </div>
@@ -168,7 +170,7 @@ export default function TribesPage() {
                         <div className="bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-secondary/10 rounded-[32px] p-8 shadow-sm">
                             <h3 className="text-sm font-black text-primary uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                                 <Users className="w-5 h-5 text-secondary" />
-                                Guerreiros Ativos
+                                {t('tribes.warriors')}
                             </h3>
                             <div className="grid gap-3">
                                 {group.members.map((m, i) => (
@@ -180,14 +182,14 @@ export default function TribesPage() {
                                             <div>
                                                 <span className="text-sm font-black text-primary block truncate max-w-[140px]">
                                                     {m === group.leaderUid && <Crown className="w-3.5 h-3.5 inline mr-1.5 text-secondary fill-current" />}
-                                                    Membro {m.slice(0, 6)}
+                                                    {t('tribes.member')} {m.slice(0, 6)}
                                                 </span>
-                                                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Guerreiro da Fé</span>
+                                                <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">{t('tribes.warrior_faith')}</span>
                                             </div>
                                         </div>
                                         <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 text-[10px] font-black flex items-center gap-1.5">
                                             <Zap className="w-3 h-3 fill-current" />
-                                            ONLINE
+                                            {t('tribes.online')}
                                         </div>
                                     </div>
                                 ))}
@@ -208,23 +210,23 @@ export default function TribesPage() {
                                     <div className="w-24 h-24 bg-secondary/10 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-inner">
                                         <Users className="w-12 h-12 text-secondary" />
                                     </div>
-                                    <h2 className="text-3xl font-black text-primary italic tracking-tight">Você ainda não <br />pertence a uma Tribo.</h2>
+                                    <h2 className="text-3xl font-black text-primary italic tracking-tight">{t('tribes.no_tribe_title')}</h2>
                                     <p className="text-sm text-muted-foreground mt-4 px-6 font-medium leading-relaxed">
-                                        A caminhada é melhor acompanhada. Funde uma nova tribo para seus amigos ou entre em uma existente. 
-                                        <br /><span className="text-secondary font-bold mt-2 block">Mínimo de 3 membros para habilitar o ranking.</span>
+                                        {t('tribes.no_tribe_desc')}
+                                        <br /><span className="text-secondary font-bold mt-2 block">{t('tribes.min_members')}</span>
                                     </p>
                                     <button 
                                         onClick={() => setIsCreating(true)}
                                         className="mt-10 w-full py-5 rounded-[24px] bg-secondary text-white font-black text-lg flex items-center justify-center gap-3 shadow-2xl shadow-secondary/30 hover:scale-[1.03] active:scale-95 transition-all group"
                                     >
                                         <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-                                        FUNDAR MINHA TRIBO
+                                        {t('tribes.create_tribe')}
                                     </button>
                                 </div>
                                 <div className="text-center p-6 bg-secondary/5 rounded-3xl border border-secondary/10 border-dashed">
                                     <p className="text-xs text-secondary font-bold flex items-center justify-center gap-2">
                                         <Info className="w-4 h-4" />
-                                        Dica: Peça o ID para um líder amigo para entrar.
+                                        {t('tribes.tip')}
                                     </p>
                                 </div>
                             </div>
@@ -236,27 +238,27 @@ export default function TribesPage() {
                                 className="bg-white shadow-2xl border border-secondary/15 rounded-[48px] p-10 space-y-8"
                             >
                                 <div className="text-center">
-                                    <h2 className="text-2xl font-black text-primary uppercase tracking-[0.2em] italic">Nova Fundação</h2>
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase mt-2">Dê um nome forte ao seu grupo de leitura</p>
+                                    <h2 className="text-2xl font-black text-primary uppercase tracking-[0.2em] italic">{t('tribes.new_foundation')}</h2>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase mt-2">{t('tribes.new_foundation_desc')}</p>
                                 </div>
                                 
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1 mb-2 block">Nome da Tribo</label>
+                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1 mb-2 block">{t('tribes.tribe_name')}</label>
                                         <input 
                                             value={newName}
                                             onChange={e => setNewName(e.target.value)}
-                                            placeholder="Ex: Aliança do Pacto"
+                                            placeholder={t('tribes.name_placeholder')}
                                             className="w-full p-5 rounded-2xl bg-[#FDFBF7] border border-secondary/15 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 font-black text-base transition-all"
                                             required
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1 mb-2 block">Descrição / Visão</label>
+                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1 mb-2 block">{t('tribes.description')}</label>
                                         <textarea 
                                             value={newDesc}
                                             onChange={e => setNewDesc(e.target.value)}
-                                            placeholder="Qual o objetivo principal do grupo?"
+                                            placeholder={t('tribes.desc_placeholder')}
                                             className="w-full p-5 rounded-2xl bg-[#FDFBF7] border border-secondary/15 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 font-bold text-sm h-32 resize-none transition-all"
                                         />
                                     </div>
@@ -268,13 +270,13 @@ export default function TribesPage() {
                                         onClick={() => setIsCreating(false)}
                                         className="flex-1 py-5 rounded-2xl bg-muted/20 text-muted-foreground font-black text-xs uppercase tracking-widest hover:bg-muted/30 transition-colors"
                                     >
-                                        VOLTAR
+                                        {t('tribes.back')}
                                     </button>
                                     <button 
                                         type="submit"
                                         className="flex-[2] py-5 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all"
                                     >
-                                        CRISTALIZAR TRIBO
+                                        {t('tribes.crystallize')}
                                     </button>
                                 </div>
                             </motion.form>
@@ -288,9 +290,9 @@ export default function TribesPage() {
                 <div>
                   <h2 className="text-xl font-black text-primary uppercase tracking-[0.2em] italic flex items-center gap-3">
                       <Trophy className="w-6 h-6 text-secondary" />
-                      Ranking Mundial
+                      {t('tribes.ranking_title')}
                   </h2>
-                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">Apenas tribos completas (3+ membros)</p>
+                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">{t('tribes.ranking_subtitle')}</p>
                 </div>
                 <div className="shrink-0 flex -space-x-2">
                   {[1,2,3].map(i => (

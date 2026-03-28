@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield, Gem } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield, Gem, Star } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -19,10 +19,12 @@ import { buyStreakFreeze } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import { MobileNav } from "@/components/MobileNav";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function ProfilePage() {
     const { user, profile, logout, refreshProfile } = useAuth();
     const { showToast } = useToast();
+    const { t, locale, setLocale } = useLanguage();
     const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
     const [notifyEnabled, setNotifyEnabled] = useState(false);
     const [buying, setBuying] = useState(false);
@@ -34,10 +36,10 @@ export default function ProfilePage() {
         try {
             await buyStreakFreeze(user.uid, 50);
             await refreshProfile();
-            showToast("🛡️ Bloqueio de ofensiva adquirido!", "achievement");
+            showToast(t('profile.bought_freeze'), "achievement");
         } catch (error) {
             console.error("Failed to buy freeze", error);
-            showToast("Erro ao processar compra.", "error");
+            showToast(t('profile.buy_error'), "error");
         } finally {
             setBuying(false);
         }
@@ -171,98 +173,96 @@ export default function ProfilePage() {
 
                 {/* Stats Grid */}
                 <section className="grid grid-cols-2 gap-4">
-                    <div className="glass-card p-4 space-y-2 border-l-4 border-secondary/50">
-                        <div className="text-secondary flex items-center gap-2">
-                            <Flame className="w-4 h-4 fill-current" />
-                            <span className="text-xs uppercase font-black">Ofensiva</span>
-                        </div>
-                        <div className="text-2xl font-black text-primary">{calculateStreak(localReadDates)} dias</div>
-                        <ShareButton type="streak" value={profile.streak} />
+                    <div className="bg-white/40 border border-secondary/10 rounded-2xl p-4 shadow-sm">
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1 mb-2 italic">
+                            {t('profile.xp_total')}
+                        </p>
+                        <p className="text-2xl font-black text-primary">{profile?.xp || 0}</p>
                     </div>
-                    <div className="glass-card p-4 space-y-2 border-l-4 border-accent/50">
-                        <div className="text-accent flex items-center gap-2">
-                            <Trophy className="w-4 h-4 fill-current" />
-                            <span className="text-xs uppercase font-black">XP Semanal</span>
+                    <div className="bg-white/40 border border-secondary/10 rounded-2xl p-4 shadow-sm">
+                        <div className="flex items-center gap-2 text-blue-500">
+                            <Gem className="w-4 h-4 fill-current" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{t('profile.gems')}</span>
                         </div>
-                        <div className="text-2xl font-black text-primary">{profile.weeklyXp} XP</div>
+                        <p className="text-2xl font-black text-primary mt-1">{profile?.gems || 0}</p>
                     </div>
-                    <div className="glass-card p-4 space-y-2 border-l-4 border-primary/50">
-                        <div className="text-primary flex items-center gap-2">
+                    <div className="bg-white/40 border border-secondary/10 rounded-2xl p-4 shadow-sm">
+                        <div className="flex items-center gap-2 text-emerald-500">
                             <BookOpen className="w-4 h-4" />
-                            <span className="text-xs uppercase font-black">Capítulos</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">{t('profile.chapters')}</span>
                         </div>
-                        <div className="text-2xl font-black text-primary">{profile.totalChapters || 0}</div>
+                        <p className="text-2xl font-black text-primary mt-1">{profile?.totalChapters || 0}</p>
                     </div>
-                    <div className="glass-card p-4 space-y-2 border-l-4 border-secondary/50">
-                        <div className="text-secondary flex items-center gap-2">
-                            <Zap className="w-4 h-4 fill-current" />
-                            <span className="text-xs uppercase font-black">Conquistas</span>
+                    <div className="bg-white/40 border border-secondary/10 rounded-2xl p-4 shadow-sm">
+                        <div className="flex items-center gap-2 text-orange-500">
+                            <Flame className="w-4 h-4 fill-current" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{t('profile.streak')}</span>
                         </div>
-                        <div className="text-2xl font-black text-primary">
-                            {unlockedCount}/{totalAchievements}
-                        </div>
+                        <p className="text-2xl font-black text-primary mt-1">{profile?.streak || 0}d</p>
                     </div>
-                </section>
-
-                {/* Quick links */}
-                <section className="grid grid-cols-2 gap-3">
-                    <Link
-                        href="/favoritos"
-                        className="glass-card p-4 flex items-center gap-3 hover:border-secondary/40 transition-colors"
-                    >
-                        <div className="w-9 h-9 rounded-xl bg-secondary/15 border border-secondary/25 flex items-center justify-center shrink-0">
-                            <Bookmark className="w-4 h-4 text-secondary fill-secondary" />
-                        </div>
-                        <div>
-                            <p className="text-xs font-black text-primary uppercase tracking-wider leading-none">Favoritos</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">Versículos salvos</p>
-                        </div>
-                    </Link>
-                    <Link
-                        href="/conquistas"
-                        className="glass-card p-4 flex items-center gap-3 hover:border-secondary/40 transition-colors"
-                    >
-                        <div className="w-9 h-9 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center shrink-0">
-                            <Award className="w-4 h-4 text-accent" />
-                        </div>
-                        <div>
-                            <p className="text-xs font-black text-primary uppercase tracking-wider leading-none">Conquistas</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{unlockedCount}/{totalAchievements} desbloqueadas</p>
-                        </div>
-                    </Link>
                 </section>
 
                 {/* Reading Heatmap */}
-                <ReadingHeatmap userId={user.uid} />
+                <section className="mb-10">
+                    <h2 className="text-lg font-black text-primary italic mb-4 px-1">{t('profile.history')}</h2>
+                    <div className="bg-white border border-secondary/10 rounded-3xl p-6 shadow-sm overflow-x-auto">
+                        <ReadingHeatmap userId={user.uid} />
+                    </div>
+                </section>
 
-                {/* Streak Freezes — Feature request: Bloqueio de ofensiva */}
-                <section className="glass-card p-4 flex items-center justify-between border-blue-400/30 bg-blue-500/5 relative overflow-hidden group">
-                    <div className="absolute -right-4 -top-4 w-16 h-16 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
-                    <div className="flex items-center gap-3 relative z-10">
-                        <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0 border border-blue-200 dark:border-blue-800">
-                             <Shield className="w-5 h-5 text-blue-500 shadow-sm" />
+                <section className="mb-20">
+                    <h2 className="text-lg font-black text-primary italic mb-4 px-1">{t('profile.settings')}</h2>
+                    <div className="space-y-3">
+                        {/* Language Selector in Profile */}
+                        <div className="bg-white border border-secondary/10 rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                    <Star className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-black text-primary">{t('profile.language')}</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                        {locale === "pt" ? "Português" : "English"}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-secondary/5 p-1 rounded-xl border border-secondary/10 shadow-inner">
+                                <button 
+                                    onClick={() => setLocale("pt")}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${locale === "pt" ? "bg-secondary text-primary shadow-sm" : "text-primary/40 hover:text-primary"}`}
+                                >
+                                    PT
+                                </button>
+                                <button 
+                                    onClick={() => setLocale("en")}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black transition-all ${locale === "en" ? "bg-secondary text-primary shadow-sm" : "text-primary/40 hover:text-primary"}`}
+                                >
+                                    EN
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-xs font-black text-primary uppercase tracking-wider">Bloqueio de Ofensiva</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">
-                                 {profile.streakFreezes && profile.streakFreezes > 0 
-                                     ? `Você possui ${profile.streakFreezes} bloqueio(s) ativo(s).`
-                                     : "Proteja sua ofensiva se você esquecer de ler um dia."}
-                            </p>
+
+                        <div className="bg-white border border-secondary/10 rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
+                                    <Shield className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-black text-primary">{t('profile.streak_freeze')}</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                        {profile?.streakFreezes || 0} {t('profile.available')}
+                                    </p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={handleBuyFreeze}
+                                disabled={buying || (profile?.gems ?? 0) < 50}
+                                className="px-4 py-2 bg-secondary text-primary font-black text-[10px] rounded-xl hover:opacity-90 transition-all shadow-sm shadow-secondary/20 disabled:opacity-50 uppercase tracking-widest"
+                            >
+                                {buying ? "..." : (profile?.gems ?? 0) >= 50 ? t('profile.buy_freeze', { price: 50 }) : t('profile.insufficient_gems')}
+                            </button>
                         </div>
                     </div>
-                    <button
-                        onClick={handleBuyFreeze}
-                        disabled={buying || (profile.gems || 0) < 50}
-                        className={cn(
-                             "px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border shadow-lg relative z-10",
-                             (profile.gems || 0) >= 50 
-                                 ? "bg-blue-500 border-blue-600 text-white hover:bg-blue-600 hover:shadow-blue-500/20 active:scale-95" 
-                                 : "bg-muted border-muted text-muted-foreground cursor-not-allowed opacity-60"
-                        )}
-                    >
-                        {buying ? "..." : (profile.gems || 0) >= 50 ? "Comprar (50 Gemas)" : "Gemas Insuficientes"}
-                    </button>
                 </section>
 
                 {/* Notifications */}
@@ -272,23 +272,23 @@ export default function ProfilePage() {
                             {notifyEnabled ? <Bell className="w-4 h-4 text-accent" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
                         </div>
                         <div>
-                            <p className="text-xs font-black text-primary uppercase tracking-wider">Lembretes Diários</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{notifyEnabled ? "Ativo — você receberá lembretes" : "Desativado"}</p>
+                            <p className="text-xs font-black text-primary uppercase tracking-wider">{t('profile.notifications')}</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{notifyEnabled ? t('profile.notifications_on') : t('profile.notifications_off')}</p>
                         </div>
                     </div>
                     <button
                         onClick={toggleNotifications}
                         className={cn("px-3 py-1.5 rounded-full text-xs font-bold transition-all border", notifyEnabled ? "bg-red-400/10 border-red-400/25 text-red-400 hover:bg-red-400/20" : "bg-accent/10 border-accent/25 text-accent hover:bg-accent/20")}
                     >
-                        {notifyEnabled ? "Desativar" : "Ativar"}
+                        {notifyEnabled ? t('profile.deactivate') : t('profile.activate')}
                     </button>
                 </section>
 
                 {/* Share Level */}
                 <section className="glass-card p-4 flex items-center justify-between">
                     <div>
-                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Compartilhar</p>
-                        <p className="text-sm font-bold text-primary">Nível {levelInfo.currentLevel} — {levelInfo.title}</p>
+                        <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{t('profile.share')}</p>
+                        <p className="text-sm font-bold text-primary">{t('profile.level')} {levelInfo.currentLevel} — {levelInfo.title}</p>
                     </div>
                     <ShareButton type="level" value={levelInfo.currentLevel} />
                 </section>
@@ -299,12 +299,12 @@ export default function ProfilePage() {
                         <div className="flex items-center gap-3">
                             <span className="text-3xl">🕊️</span>
                             <div>
-                                <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">Leitura Contemplativa</span>
+                                <span className="text-[10px] font-black text-secondary uppercase tracking-[0.2em]">{t('profile.wisdom_title')}</span>
                                 <h3 className="text-xl font-black text-primary">
-                                    {profile.wisdomPoints} Pontos de Sabedoria
+                                    {profile.wisdomPoints} Points
                                 </h3>
                                 <p className="text-xs text-muted-foreground mt-0.5">
-                                    Conquistados após atingir o nível máximo
+                                    {t('profile.wisdom_desc')}
                                 </p>
                             </div>
                         </div>
@@ -343,11 +343,11 @@ export default function ProfilePage() {
                 <section className="glass-card p-6 flex items-center gap-6 bg-gradient-to-br from-primary/10 to-primary/5 border-secondary/30">
                     <LeagueBadge tier={profile.currentLeague as LeagueTier} size="lg" />
                     <div className="flex-1 space-y-1">
-                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Liga Atual</span>
+                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{t('profile.league_title')}</span>
                         <h3 className="text-2xl font-black text-primary uppercase italic tracking-tight">
-                            Liga {profile.currentLeague}
+                            {profile.currentLeague}
                         </h3>
-                        <p className="text-xs text-muted-foreground">{leagueConfig.description}</p>
+                        <p className="text-xs text-muted-foreground">{t('profile.league_desc')}</p>
                     </div>
                 </section>
 
