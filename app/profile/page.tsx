@@ -18,7 +18,6 @@ import { ShareButton } from "@/components/ShareButton";
 import { buyStreakFreeze } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
-import { MobileNav } from "@/components/MobileNav";
 import { useLanguage } from "@/components/LanguageProvider";
 
 export default function ProfilePage() {
@@ -400,7 +399,6 @@ export default function ProfilePage() {
                 </section>
                 <div className="h-24" />
             </main>
-            <MobileNav />
         </div>
     );
 }

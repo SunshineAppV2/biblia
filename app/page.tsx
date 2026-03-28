@@ -33,7 +33,6 @@ import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
 import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChapter } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
-import { MobileNav } from "@/components/MobileNav";
 import WelcomePage from "@/components/WelcomePage";
 import { useLanguage } from "@/components/LanguageProvider";
 
@@ -956,7 +955,6 @@ export default function Home() {
                             Política de Privacidade
                         </Link>
                     </div>
-                    <MobileNav />
                 </>
             )}
         </div>

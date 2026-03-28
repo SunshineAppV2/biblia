@@ -11,15 +11,26 @@ import { useLanguage } from "./LanguageProvider";
 
 export function MobileNav() {
     const pathname = usePathname();
-    const { logout } = useAuth();
-    const { locale } = useLanguage();
+    const { user, logout } = useAuth();
+    const { locale, t } = useLanguage();
 
     const NAV_ITEMS = [
-        { label: locale === "pt" ? "Home" : "Home", icon: Home, href: "/" },
+        { label: locale === "pt" ? "Início" : "Home", icon: Home, href: "/" },
         { label: locale === "pt" ? "Plano" : "Plan", icon: Book, href: "/planos" },
         { label: locale === "pt" ? "Tribos" : "Tribes", icon: Trophy, href: "/tribos" },
         { label: locale === "pt" ? "Perfil" : "Profile", icon: User, href: "/profile" },
     ];
+
+    // Auto-hide logic
+    if (!user) return null;
+    if (pathname.startsWith("/admin")) return null;
+    
+    // Check if we are in reading mode (only on home page when isReading is managed externally)
+    // Actually, we can't easily know isReading from here if it's local state.
+    // But we can check if the user is on certain paths.
+    
+    // If the user wants the menu to STAY even after clicked, it means it should always be visible 
+    // on these main pages.
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
