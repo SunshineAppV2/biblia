@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Providers } from "./Providers";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import { SplashScreen } from "@/components/SplashScreen";
 import "./globals.css";
 

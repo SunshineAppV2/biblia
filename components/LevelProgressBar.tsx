@@ -27,8 +27,8 @@ export function LevelProgressBar({
             {showLabel && (
                 <div className="flex items-center justify-between text-xs">
                     <div className="flex flex-col">
-                        <span className="font-bold text-white">
-                            Nível {level}
+                        <span className="font-bold text-white uppercase tracking-widest">
+                            {localStorage.getItem("biblia_locale") === "en" ? "Level" : "Nível"} {level}
                         </span>
                         {title && (
                             <span className="text-[10px] text-primary uppercase tracking-widest font-bold">

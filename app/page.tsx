@@ -35,9 +35,11 @@ import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChap
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 import { MobileNav } from "@/components/MobileNav";
 import WelcomePage from "@/components/WelcomePage";
+import { useLanguage } from "@/components/LanguageProvider";
 
 export default function Home() {
     const { user, profile, loading, loginWithGoogle, refreshProfile } = useAuth();
+    const { t, locale, setLocale } = useLanguage();
     const { isInstallable, installPWA } = usePWAInstall();
     const { showToast } = useToast();
 
@@ -571,8 +573,8 @@ export default function Home() {
                                             <Download className="w-5 h-5" />
                                         </div>
                                         <div className="text-left">
-                                            <p className="text-xs opacity-90 uppercase tracking-widest font-black">App Instalável</p>
-                                            <p className="text-sm">Instale para acesso rápido</p>
+                                            <p className="text-xs opacity-90 uppercase tracking-widest font-black">{t('dashboard.install_pwa')}</p>
+                                            <p className="text-sm">{t('dashboard.install_desc')}</p>
                                         </div>
                                     </div>
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -590,10 +592,10 @@ export default function Home() {
                                     {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
                                 </p>
                                 <h2 className="text-4xl font-black text-primary tracking-tight">
-                                    {user ? `Olá, ${user.displayName?.split(" ")[0]}` : "Olá, Viajante"}
+                                    {user ? `${t('dashboard.greeting')}, ${user.displayName?.split(" ")[0]}` : t('dashboard.greeting_anonymous')}
                                 </h2>
                                 <p className="text-muted-foreground text-sm">
-                                    {user ? "Sua jornada continua. Que tal ler um pouco agora?" : "Faça login para salvar suas conquistas."}
+                                    {user ? (locale === "pt" ? "Sua jornada continua. Que tal ler um pouco agora?" : "Your journey continues. How about reading some now?") : (locale === "pt" ? "Faça login para salvar suas conquistas." : "Log in to save your achievements.")}
                                 </p>
                             </div>
 
@@ -697,8 +699,9 @@ export default function Home() {
                                         </div>
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ciclo Atual</span>
                                     </div>
+                                    <div className="font-black text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-1">PLANO MUNDIAL</div>
                                     <div className="font-black text-xs text-primary leading-tight tracking-tight mt-1">
-                                        REAVIVADOS POR SUA PALAVRA (RPSP)
+                                        {t('dashboard.rpsp')}
                                     </div>
                                 </div>
 
@@ -726,22 +729,34 @@ export default function Home() {
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
                                         {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">dias</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('dashboard.ofensiva')}</span>
                                     </div>
+                                    <div className="text-2xl font-black text-primary italic">{profile?.streak || 0}d</div>
                                 </div>
 
-                                <div className="rounded-2xl border border-primary/20 bg-white/70 backdrop-blur p-4 space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                                            <Zap className="w-3.5 h-3.5 text-primary fill-current" />
-                                        </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">XP Semanal</span>
+                                <div className="glass-card p-6 flex flex-col justify-between border-l-4 border-accent relative overflow-hidden group">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Zap className="w-4 h-4 text-accent fill-current" />
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('dashboard.xp_weekly')}</span>
                                     </div>
-                                    <div className="font-black text-xl text-primary tracking-tight">
-                                        {profile?.weeklyXp || 0}
-                                    </div>
+                                    <div className="text-2xl font-black text-primary italic">{profile?.weeklyXp || 0} XP</div>
                                 </div>
                             </div>
 
+                            {/* Ranking Card */}
+                            <div className="glass-card overflow-hidden">
+                                <div className="p-6 border-b border-secondary/10 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-primary tracking-tight italic">{t('dashboard.ranking_week')}</h3>
+                                    <Trophy className="w-5 h-5 text-secondary" />
+                                </div>
+                                <Leaderboard />
+                            </div>
+
+                            {/* Other stuff using translations if needed... */}
+                            <div className="p-6 flex items-center justify-between">
+                                <h3 className="text-lg font-black text-primary tracking-tight italic">{t('dashboard.plans')}</h3>
+                                <BookOpen className="w-5 h-5 text-secondary" />
+                            </div>
                             {/* Reading Goal */}
                             {user && <ReadingGoal />}
 
@@ -756,20 +771,6 @@ export default function Home() {
 
                             {/* Daily Missions */}
                             {user && <DailyMissions />}
-
-                            {user && (
-                                <div>
-                                    <div className="flex items-center justify-between px-1 mb-3">
-                                        <h3 className="text-base font-black text-primary uppercase tracking-widest flex items-center gap-2">
-                                            <Trophy className="w-4 h-4 text-secondary" /> Ranking da Semana
-                                        </h3>
-                                        <Link href="/progresso" className="text-xs text-accent font-bold hover:underline flex items-center gap-1">
-                                            <BookOpen className="w-3 h-3" /> Meu Progresso
-                                        </Link>
-                                    </div>
-                                    <Leaderboard />
-                                </div>
-                            )}
 
                             {/* DISCRETE DASHBOARD AD (Bottom) */}
                             <motion.div 
@@ -889,8 +890,20 @@ export default function Home() {
                                                     onClick={handleNextChapter}
                                                     className="px-6 py-3 bg-accent text-accent-foreground font-bold rounded-full hover:opacity-90 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(66,165,245,0.4)]"
                                                 >
-                                                    Próximo Capítulo <ArrowRight className="w-4 h-4" />
                                                 </button>
+                                                {profile && (() => {
+                                                    const levelInfo = getLevelInfo(profile.xp);
+                                                    return (
+                                                        <LevelProgressBar 
+                                                            level={levelInfo.currentLevel}
+                                                            progressPercentage={levelInfo.progressPercentage}
+                                                            xpInCurrentLevel={levelInfo.xpInCurrentLevel}
+                                                            xpRequiredForNextLevel={levelInfo.xpRequiredForNextLevel}
+                                                            title={levelInfo.title}
+                                                            className="mt-6"
+                                                        />
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     )}

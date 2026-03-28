@@ -7,16 +7,19 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthProvider";
 
-const NAV_ITEMS = [
-    { label: "Home", icon: Home, href: "/" },
-    { label: "Plano", icon: Book, href: "/planos" },
-    { label: "Tribos", icon: Trophy, href: "/tribos" },
-    { label: "Perfil", icon: User, href: "/profile" },
-];
+import { useLanguage } from "./LanguageProvider";
 
 export function MobileNav() {
     const pathname = usePathname();
     const { logout } = useAuth();
+    const { locale } = useLanguage();
+
+    const NAV_ITEMS = [
+        { label: locale === "pt" ? "Home" : "Home", icon: Home, href: "/" },
+        { label: locale === "pt" ? "Plano" : "Plan", icon: Book, href: "/planos" },
+        { label: locale === "pt" ? "Tribos" : "Tribes", icon: Trophy, href: "/tribos" },
+        { label: locale === "pt" ? "Perfil" : "Profile", icon: User, href: "/profile" },
+    ];
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
@@ -60,7 +63,9 @@ export function MobileNav() {
                     className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 rounded-2xl text-red-400/70 hover:text-red-400"
                 >
                     <LogOut className="w-5 h-5 stroke-[1.5px]" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter">Sair</span>
+                    <span className="text-[10px] font-black uppercase tracking-tighter">
+                        {locale === "pt" ? "Sair" : "Logout"}
+                    </span>
                 </button>
             </div>
             

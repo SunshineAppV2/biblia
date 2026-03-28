@@ -5,6 +5,7 @@ import { User, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut 
 import { auth } from "@/lib/firebase";
 import { createOrUpdateUser, getUserProfile, UserProfile } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
     user: User | null;
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const { showToast } = useToast();
+    const router = useRouter();
 
     useEffect(() => {
         if (!auth || typeof auth.onAuthStateChanged !== "function") {
@@ -74,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const logout = async () => {
         await signOut(auth);
         setProfile(null);
+        router.push("/");
     };
 
     const refreshProfile = async () => {

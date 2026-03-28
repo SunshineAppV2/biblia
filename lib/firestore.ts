@@ -18,6 +18,8 @@ export interface UserProfile {
     streakFreezes: number; // Quantidade de bloqueios de ofensiva disponíveis
     gems: number; // Moeda virtual para compras
     preferredVersion?: string;
+    groupId?: string | null;
+    language?: string;
     achievements?: string[];
     wisdomPoints?: number;
     isAdmin?: boolean;
@@ -25,7 +27,6 @@ export interface UserProfile {
     totalReadInCycle?: number;
     cycleStartChapter?: { bookId: string; chapter: number } | null;
     cycleStartDate?: Timestamp | null;
-    groupId?: string | null;
 }
 
 export interface UserGroup {
