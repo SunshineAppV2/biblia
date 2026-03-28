@@ -1,5 +1,6 @@
 import { db } from "./firebase";
 import { BIBLE_BOOKS } from "./bible-books";
+import { getTodaysPlanChapter } from "./reading-plan";
 import { doc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 /**
@@ -11,7 +12,10 @@ export async function getNextUserChapter(userId: string): Promise<{ bookId: stri
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
         
-        if (!userSnap.exists()) return { bookId: "genesis", chapter: 1 };
+        if (!userSnap.exists()) {
+            const today = getTodaysPlanChapter();
+            return { bookId: today.bookId, chapter: today.chapter };
+        }
         
         const data = userSnap.data();
         const cycle = data.cycle || 1;
@@ -42,6 +46,11 @@ export async function getNextUserChapter(userId: string): Promise<{ bookId: stri
         let startIndex = 0;
         if (cycleStart) {
             startIndex = allChapters.findIndex(c => c.bookId === cycleStart.bookId && c.chapter === cycleStart.chapter);
+            if (startIndex === -1) startIndex = 0;
+        } else {
+            // If no cycle start, default to today's plan chapter
+            const today = getTodaysPlanChapter();
+            startIndex = allChapters.findIndex(c => c.bookId === today.bookId && c.chapter === today.chapter);
             if (startIndex === -1) startIndex = 0;
         }
 

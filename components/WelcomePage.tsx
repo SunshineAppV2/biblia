@@ -1,7 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Trophy, Zap, Target, Star, Shield, Flame, Gem, ChevronRight, Play, Download } from "lucide-react";
+import { 
+    Users, Trophy, Zap, Target, Star, Shield, 
+    Flame, Gem, ChevronRight, Play, Download, 
+    MapPin, RefreshCw, BookOpen, Crown 
+} from "lucide-react";
 import Link from "next/link";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 
@@ -9,30 +13,44 @@ const FEATURES = [
     {
         icon: Flame,
         title: "Ofensiva (Streak)",
-        description: "Mantenha o hábito vivo. Cada dia de leitura conta para sua sequência.",
+        description: "Mantenha o hábito vivo. Cada dia de leitura conta para sua sequência ininterrupta.",
         color: "text-orange-500",
         bg: "bg-orange-500/10"
     },
     {
-        icon: Trophy,
-        title: "Ligas e Ranking",
-        description: "Suba de liga, do Jaspe ao Diamante, competindo saudavelmente com outros leitores.",
-        color: "text-secondary",
-        bg: "bg-secondary/10"
-    },
-    {
-        icon: Gem,
-        title: "Recompensas",
-        description: "Ganhe gemas por leituras e quizes. Use para proteger sua ofensiva ou desbloquear itens.",
+        icon: Users,
+        title: "Tribos Bíblicas",
+        description: "Crie grupos com amigos para lerem juntos. Ranking exclusivo para tribos com 3+ membros.",
         color: "text-blue-500",
         bg: "bg-blue-500/10"
     },
     {
+        icon: RefreshCw,
+        title: "Ciclo Circular (RPP)",
+        description: "Leia todos os 1.189 capítulos. O plano se adapta ao seu início e recomeça automaticamente.",
+        color: "text-secondary",
+        bg: "bg-secondary/10"
+    },
+    {
+        icon: Trophy,
+        title: "Ligas Globais",
+        description: "Suba de liga, do Jaspe ao Diamante, competindo saudavelmente com outros leitores.",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10"
+    },
+    {
+        icon: Gem,
+        title: "Recompensas",
+        description: "Ganhe gemas por leituras e quizes. Proteja sua ofensiva ou desbloqueie itens raros.",
+        color: "text-indigo-500",
+        bg: "bg-indigo-500/10"
+    },
+    {
         icon: Target,
         title: "Metas Semanais",
-        description: "Defina quantos capítulos quer ler por semana e acompanhe seu progresso em tempo real.",
-        color: "text-green-500",
-        bg: "bg-green-500/10"
+        description: "Defina seus objetivos e acompanhe sua evolução com estatísticas reais.",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10"
     }
 ];
 
@@ -40,115 +58,122 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
     const { isInstallable, installPWA } = usePWAInstall();
 
     return (
-        <div className="min-h-screen bg-background dark:bg-slate-950 font-sans selection:bg-secondary/30">
+        <div className="min-h-screen bg-[#FDFBF7] text-[#0E1B5C] font-sans selection:bg-secondary/30 overflow-x-hidden">
+            {/* Soft Ambient Background blobs */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+                <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-secondary/5 blur-[120px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[120px]" />
+            </div>
+
             {/* Nav */}
-            <nav className="fixed top-0 w-full z-50 bg-white/70 dark:bg-black/80 backdrop-blur-md border-b border-secondary/15 px-6 py-4">
+            <nav className="fixed top-0 w-full z-50 bg-[#FDFBF7]/80 backdrop-blur-xl border-b border-secondary/10 px-6 py-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-secondary/20">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#0E1B5C] rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-primary/20 rotate-3">
                             A
                         </div>
-                        <span className="text-xl font-black bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-                            AnoBíblico+
+                        <span className="text-2xl font-black italic tracking-tighter text-primary">
+                            AnoBíblico<span className="text-secondary">+</span>
                         </span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                         {isInstallable && (
                             <button 
                                 onClick={installPWA}
-                                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary text-xs font-black hover:bg-secondary/20 transition-all border border-secondary/20"
+                                className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-secondary/10 text-secondary text-[11px] font-black hover:bg-secondary/20 transition-all border border-secondary/20 tracking-widest uppercase"
                             >
-                                <Download className="w-3.5 h-3.5" />
+                                <Download className="w-4 h-4" />
                                 INSTALAR APP
                             </button>
                         )}
                         <button 
                             onClick={onLogin}
-                            className="px-5 py-2 rounded-full bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all outline outline-offset-2 outline-transparent hover:outline-primary/20"
+                            className="px-6 py-2.5 rounded-2xl bg-primary text-white text-[11px] font-black shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all outline outline-offset-2 outline-transparent hover:outline-primary/20 uppercase tracking-widest"
                         >
-                            Acessar Conta
+                            ACESSAR
                         </button>
                     </div>
                 </div>
             </nav>
 
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-full pointer-events-none opacity-20 dark:opacity-40">
-                    <div className="absolute top-20 right-0 w-96 h-96 bg-secondary rounded-full blur-[120px]" />
-                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary rounded-full blur-[120px]" />
-                </div>
-
-                <div className="max-w-4xl mx-auto text-center relative z-10">
+            <section className="relative pt-40 pb-24 px-6">
+                <div className="max-w-5xl mx-auto text-center relative z-10">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
                     >
-                        <span className="inline-block px-4 py-1.5 mb-6 rounded-full bg-secondary/15 text-secondary text-xs font-black uppercase tracking-widest">
-                            ✨ A Experiência Bíblica Definitiva
-                        </span>
-                        <h1 className="text-5xl sm:text-7xl font-black leading-[1.1] mb-8 bg-gradient-to-b from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
-                            Sua jornada de fé, <br />
-                            <span className="text-secondary italic">elevada</span> ao próximo nível.
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="inline-flex items-center gap-2 px-5 py-2 mb-8 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] font-black uppercase tracking-[0.2em]"
+                        >
+                            <Star className="w-3.5 h-3.5 fill-current" />
+                            A Experiência Bíblica Definitiva
+                        </motion.div>
+                        
+                        <h1 className="text-6xl sm:text-8xl font-black leading-[0.9] mb-10 tracking-tighter">
+                            Toda a Bíblia. <br />
+                            <span className="text-primary italic">Todos os dias.</span>
                         </h1>
-                        <p className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                            O <strong>AnoBíblico+</strong> combina a profundidade das Escrituras com a mecânica da gamificação para ajudar você a ler a Bíblia toda em um ano, com prazer e consistência.
+                        
+                        <p className="text-xl sm:text-2xl text-[#455A80] font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
+                            O <strong>AnoBíblico+</strong> sincroniza sua leitura com o plano global (RPP) <br className="hidden sm:block" />
+                            e motiva sua caminhada com <span className="text-secondary font-bold">gamificação, tribos e recompensas.</span>
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <button 
                                 onClick={onLogin}
-                                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-secondary text-white font-black flex items-center justify-center gap-2 shadow-2xl shadow-secondary/30 hover:scale-105 active:scale-95 transition-all group"
+                                className="w-full sm:w-auto px-12 py-6 rounded-[32px] bg-primary text-white font-black text-lg flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(14,27,92,0.3)] hover:scale-[1.03] active:scale-95 transition-all group overflow-hidden relative"
                             >
-                                <Play className="w-5 h-5 fill-current" />
-                                COMEÇAR AGORA
-                                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                                <Play className="w-6 h-6 fill-current" />
+                                INICIAR JORNADA
+                                <ChevronRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
                             </button>
-                            {isInstallable ? (
+                            
+                            {isInstallable && (
                                 <button 
                                     onClick={installPWA}
-                                    className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-primary text-white font-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all group"
+                                    className="w-full sm:w-auto px-12 py-6 rounded-[32px] bg-white border-2 border-primary/10 text-primary font-black text-lg flex items-center justify-center gap-3 hover:bg-primary/5 active:scale-95 transition-all"
                                 >
-                                    <Download className="w-5 h-5" />
-                                    INSTALAR APP
+                                    <Download className="w-6 h-6" />
+                                    BAIXAR APP
                                 </button>
-                            ) : (
-                                <a 
-                                    href="#recursos"
-                                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-bold hover:bg-slate-50 transition-all"
-                                >
-                                    CONHECER RECURSOS
-                                </a>
                             )}
                         </div>
                     </motion.div>
                 </div>
             </section>
 
-            {/* Features Grid */}
-            <section id="recursos" className="py-20 px-6 bg-white dark:bg-slate-950/50">
+            {/* Features Showcase */}
+            <section className="py-32 px-6 bg-white shadow-[0_-40px_100px_rgba(184,130,10,0.05)] rounded-[60px] relative z-10">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl sm:text-4xl font-black mb-4">Por que o AnoBíblico+?</h2>
-                        <p className="text-slate-500">Mais que um leitor, um companheiro de disciplina espiritual.</p>
+                    <div className="text-center mb-24">
+                        <h2 className="text-4xl sm:text-6xl font-black mb-6 tracking-tighter italic">O que te espera na <span className="text-secondary">vanguarda</span>?</h2>
+                        <div className="w-24 h-1.5 bg-secondary/30 mx-auto rounded-full mb-6" />
+                        <p className="text-[#455A80] font-bold text-sm uppercase tracking-widest">Ferramentas de elite para sua disciplina espiritual</p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {FEATURES.map((f, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
-                                className="p-8 rounded-3xl bg-white/40 dark:bg-white/5 border border-secondary/15 backdrop-blur-sm hover:border-secondary/40 transition-all group shadow-sm"
+                                className="p-10 rounded-[40px] bg-[#FDFBF7] border border-secondary/10 hover:border-secondary/40 transition-all group shadow-xl shadow-secondary/5 relative overflow-hidden"
                             >
-                                <div className={`w-14 h-14 ${f.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-black/5`}>
-                                    <f.icon className={`w-7 h-7 ${f.color} fill-current`} />
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary/5 to-transparent rounded-full -mr-12 -mt-12" />
+                                <div className={`w-16 h-16 ${f.bg} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg shadow-black/5`}>
+                                    <f.icon className={`w-8 h-8 ${f.color} fill-current`} />
                                 </div>
-                                <h3 className="text-xl font-black mb-3">{f.title}</h3>
-                                <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                                <h3 className="text-2xl font-black mb-4 italic tracking-tight">{f.title}</h3>
+                                <p className="text-base leading-relaxed text-[#455A80] font-medium">
                                     {f.description}
                                 </p>
                             </motion.div>
@@ -157,76 +182,100 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                 </div>
             </section>
 
-            {/* Showcase Section */}
-            <section className="py-20 px-6 overflow-hidden">
-                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16 text-foreground">
-                    <div className="flex-1 text-center lg:text-left">
-                        <h2 className="text-4xl sm:text-5xl font-black leading-tight mb-6 bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent italic">
-                            Quizes Diários e <br />
-                            <span className="text-secondary">Aprendizado</span> Real
+            {/* Interactive Section: Tribes & Quizzes */}
+            <section className="py-32 px-6">
+                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-24">
+                    <div className="flex-1 space-y-10">
+                        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary text-white text-[10px] font-black uppercase tracking-widest italic shadow-xl shadow-primary/20">
+                            <Users className="w-4 h-4" />
+                            Novo: Tribos e Ranking
+                        </div>
+                        <h2 className="text-5xl sm:text-7xl font-black leading-[1] italic bg-gradient-to-br from-[#0E1B5C] to-[#42A5F5] bg-clip-text text-transparent">
+                            Juntos no Caminho da <span className="text-secondary underline underline-offset-8 decoration-secondary/30">Luz.</span>
                         </h2>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-                            Não apenas leia. Compreenda. Após cada capítulo, teste seu conhecimento com quizes rápidos e ganhe bônus de XP para subir no ranking global. Seu progresso é salvo automaticamente na nuvem.
+                        <p className="text-xl text-[#455A80] font-medium leading-relaxed">
+                            A leitura individual agora faz parte de um todo. Ganhe XP para sua **Tribo** e suba no ranking mundial. Após cada capítulo, um quiz flash solidifica seu aprendizado.
                         </p>
-                        <ul className="space-y-4 text-left max-w-sm mx-auto lg:mx-0">
-                            {[
-                                "Quizes baseados no capítulo lido",
-                                "Conheça o Biblio, seu mascote guia",
-                                "Suba da Liga Jaspe ao Diamante",
-                                "Medalhas por desempenho perfeito"
-                            ].map((item, i) => (
-                                <li key={i} className="flex items-center gap-3 font-bold text-sm">
-                                    <div className="w-5 h-5 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center text-[10px]">✓</div>
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
+                        
+                        <div className="grid grid-cols-2 gap-6 pt-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                                    <Crown className="w-5 h-5 text-secondary" />
+                                </div>
+                                <span className="font-black text-sm uppercase tracking-widest italic">Liga Diamante</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                    <Zap className="w-5 h-5 text-primary" />
+                                </div>
+                                <span className="font-black text-sm uppercase tracking-widest italic">Aceleração Real</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Visual UI Preview */}
-                    <div className="flex-1 relative">
-                        <div className="absolute inset-0 bg-secondary/20 blur-[100px] rounded-full" />
-                        <div className="relative p-2 rounded-[40px] border-[12px] border-slate-900 bg-slate-100 dark:bg-slate-900 shadow-2xl aspect-[9/16] w-full max-w-[320px] mx-auto overflow-hidden">
-                           <div className="absolute inset-0 bg-gradient-to-b from-primary to-secondary opacity-10" />
-                           {/* Mini UI Mockup */}
-                           <div className="p-4 space-y-4">
-                              <div className="h-6 w-3/4 bg-white/50 rounded-lg animate-pulse" />
-                              <div className="aspect-[4/3] w-full bg-white/30 rounded-2xl animate-pulse" />
-                              <div className="space-y-2">
-                                 <div className="h-4 w-full bg-white/20 rounded" />
-                                 <div className="h-4 w-5/6 bg-white/20 rounded" />
-                                 <div className="h-4 w-4/6 bg-white/20 rounded" />
-                              </div>
-                              <div className="grid grid-cols-2 gap-3 mt-8">
-                                 <div className="h-20 bg-orange-500/20 rounded-2xl flex flex-col items-center justify-center gap-1">
-                                    <Flame className="w-5 h-5 text-orange-500" />
-                                    <div className="h-2 w-8 bg-orange-500/30 rounded" />
-                                 </div>
-                                 <div className="h-20 bg-blue-500/20 rounded-2xl flex flex-col items-center justify-center gap-1">
-                                    <Trophy className="w-5 h-5 text-blue-500" />
-                                    <div className="h-2 w-8 bg-blue-500/30 rounded" />
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                    <div className="flex-1 relative perspective-1000">
+                        <motion.div 
+                            animate={{ 
+                                rotateY: [0, 5, 0],
+                                rotateX: [0, -5, 0],
+                            }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            className="relative p-3 rounded-[50px] border-[14px] border-[#0E1B5C] bg-[#FDFBF7] shadow-[0_50px_100px_rgba(14,27,92,0.25)] aspect-[9/16] w-full max-w-[340px] mx-auto overflow-hidden ring-1 ring-white/20"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-secondary/10" />
+                            {/* Mockup Content */}
+                            <div className="p-6 space-y-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10 h-10 bg-secondary/20 rounded-xl" />
+                                    <div className="w-24 h-4 bg-primary/10 rounded-full" />
+                                </div>
+                                <div className="aspect-square w-full bg-primary/5 rounded-[40px] flex items-center justify-center border-2 border-dashed border-primary/10">
+                                   <BookOpen className="w-20 h-20 text-primary opacity-20" />
+                                </div>
+                                <div className="space-y-3">
+                                   <div className="h-6 w-3/4 bg-primary/20 rounded-lg" />
+                                   <div className="h-4 w-full bg-primary/10 rounded-md" />
+                                   <div className="h-4 w-1/2 bg-primary/10 rounded-md" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 mt-8">
+                                   <div className="h-24 bg-secondary/10 rounded-3xl p-4 flex flex-col justify-between">
+                                      <Zap className="w-5 h-5 text-secondary" />
+                                      <div className="h-3 w-10 bg-secondary/20 rounded-full" />
+                                   </div>
+                                   <div className="h-24 bg-primary/10 rounded-3xl p-4 flex flex-col justify-between">
+                                      <Trophy className="w-5 h-5 text-primary" />
+                                      <div className="h-3 w-10 bg-primary/20 rounded-full" />
+                                   </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                        {/* decorative elements */}
+                        <div className="absolute -z-10 -bottom-10 -right-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl" />
+                        <div className="absolute -z-10 -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-pulse" />
                     </div>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-20 px-6 border-t border-slate-200 dark:border-slate-900">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-4xl font-black mb-8">Pronto para começar sua transformação?</h2>
+            {/* Final CTA */}
+            <footer className="py-40 px-6 border-t border-secondary/10 bg-[#0E1B5C] text-white rounded-t-[80px]">
+                <div className="max-w-4xl mx-auto text-center space-y-12">
+                    <motion.h2 
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        className="text-5xl sm:text-7xl font-black tracking-tighter italic"
+                    >
+                        Redescubra a Bíblia <br /> como <span className="text-secondary underline decoration-secondary/30 underline-offset-8">nunca</span> antes.
+                    </motion.h2>
                     <button 
                         onClick={onLogin}
-                        className="px-12 py-5 rounded-2xl bg-primary text-white font-black text-xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all mb-12"
+                        className="px-16 py-7 rounded-[32px] bg-secondary text-primary font-black text-2xl shadow-[0_20px_60px_rgba(184,130,10,0.4)] hover:scale-105 active:scale-95 transition-all group"
                     >
-                        ACESSAR ANOBÍBLICO+
+                        INICIAR GRATUITAMENTE
                     </button>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-slate-500 font-medium">
-                        <Link href="/politica-de-privacidade">Privacidade</Link>
-                        <span>·</span>
-                        <p>© 2026 AnoBíblico+. Todos os direitos reservados.</p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-12 pt-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+                        <Link href="/politica-de-privacidade" className="hover:text-secondary transition-colors">POLÍTICA DE PRIVACIDADE</Link>
+                        <span className="hidden sm:block">|</span>
+                        <p>© 2026 ANOBÍBLICO+. TODOS OS DIREITOS RESERVADOS.</p>
                     </div>
                 </div>
             </footer>

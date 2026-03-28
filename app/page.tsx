@@ -757,6 +757,19 @@ export default function Home() {
                                     <Leaderboard />
                                 </div>
                             )}
+
+                            {/* DISCRETE DASHBOARD AD (Bottom) */}
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="mt-8 flex justify-center border-t border-primary/5 pt-6 pb-2"
+                            >
+                                <AdBanner 
+                                    adSlot="DASHBOARD_BOTTOM" 
+                                    adFormat="horizontal" 
+                                    className="max-h-[60px] w-full overflow-hidden rounded-xl opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700" 
+                                />
+                            </motion.div>
                         </motion.div>
                     ) : (
                         <motion.div
@@ -823,6 +836,16 @@ export default function Home() {
                                         <p className="text-center text-[10px] text-muted-foreground/50 mt-6 uppercase tracking-widest">
                                             Pressione e segure um versículo para marcar
                                         </p>
+
+                                        {/* DISCRETE CHAPTER AD */}
+                                        <div className="mt-12 mb-4 border-t border-primary/5 pt-8">
+                                            <p className="text-[9px] text-center font-black uppercase tracking-[0.4em] text-primary/30 mb-4">Recomendação de Estudo</p>
+                                            <AdBanner 
+                                                adSlot="CHAPTER_END" 
+                                                adFormat="horizontal" 
+                                                className="max-h-[80px] rounded-xl overflow-hidden opacity-80" 
+                                            />
+                                        </div>
                                     </article>
 
                                     {!isCompletedNow ? (
@@ -886,18 +909,6 @@ export default function Home() {
                 onComplete={handleQuizComplete}
             />
 
-            {/* Ad Banner — discreto, fixo no rodapé, apenas no dashboard */}
-            {!isReading && (
-                <div className="fixed bottom-0 left-0 right-0 z-40">
-                    <div className="max-w-2xl mx-auto">
-                        <AdBanner
-                            adSlot={process.env.NEXT_PUBLIC_ADSENSE_SLOT || ""}
-                            adFormat="auto"
-                            className="min-h-[50px]"
-                        />
-                    </div>
-                </div>
-            )}
 
             <LevelUpModal
                 isOpen={showLevelUp}

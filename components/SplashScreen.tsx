@@ -234,20 +234,21 @@ export function SplashScreen() {
                         </motion.div>
 
                         {/* Title */}
-                        <motion.div className="text-center space-y-1.5"
-                            initial={{ opacity: 0, y: 18 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, delay: 0.35 }}>
-                            <h1 className="text-5xl font-black tracking-tight leading-none"
+                        <motion.div className="text-center space-y-2.5"
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}>
+                            <h1 className="text-6xl font-black tracking-tighter italic leading-none"
                                 style={{
-                                    background: "linear-gradient(135deg, #C5A059 0%, #1A237E 45%, #42A5F5 100%)",
+                                    background: "linear-gradient(135deg, #B8820A 0%, #1A237E 50%, #0E1B5C 100%)",
                                     WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+                                    filter: "drop-shadow(0 10px 20px rgba(184,130,10,0.1))"
                                 }}>
-                                AnoBíblico+
+                                AnoBíblico<span style={{ color: "#B8820A", WebkitTextFillColor: "#B8820A" }}>+</span>
                             </h1>
-                            <p className="text-sm font-semibold tracking-[0.28em] uppercase"
-                                style={{ color: "#455A80" }}>
-                                Sua jornada bíblica
+                            <p className="text-[11px] font-black tracking-[0.4em] uppercase opacity-70"
+                                style={{ color: "#0E1B5C" }}>
+                                A Jornada da Palavra
                             </p>
                         </motion.div>
 

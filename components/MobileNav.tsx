@@ -20,8 +20,8 @@ export function MobileNav() {
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
-            {/* Glass effect background */}
-            <div className="absolute inset-x-0 bottom-0 h-[72px] bg-white/80 dark:bg-black/90 backdrop-blur-xl border-t border-primary/10" />
+            {/* Dark/Navy Glass background for better contrast with "letras claras" */}
+            <div className="absolute inset-x-0 bottom-0 h-[72px] bg-[#0E1B5C]/95 backdrop-blur-2xl border-t border-white/5 shadow-[0_-8px_30px_rgba(0,0,0,0.3)]" />
             
             <div className="relative h-[72px] max-w-md mx-auto flex items-center justify-around px-2">
                 {NAV_ITEMS.map((item) => {
@@ -33,10 +33,10 @@ export function MobileNav() {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "flex flex-col items-center justify-center gap-1.5 transition-all duration-300 relative py-2 px-3 rounded-2xl",
+                                "flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 rounded-2xl",
                                 active 
                                     ? "text-secondary scale-110" 
-                                    : "text-foreground/40 hover:text-foreground/70"
+                                    : "text-white/40 hover:text-white/70"
                             )}
                         >
                             {active && (
@@ -47,8 +47,8 @@ export function MobileNav() {
                             )}
                             <Icon className={cn("w-5 h-5", active ? "stroke-[2.5px] drop-shadow-[0_0_8px_rgba(212,164,48,0.5)]" : "stroke-[1.5px]")} />
                             <span className={cn(
-                                "text-[9px] font-bold uppercase tracking-widest",
-                                active ? "text-secondary" : "text-foreground/50"
+                                "text-[10px] font-black uppercase tracking-tighter",
+                                active ? "text-secondary" : "text-white/60"
                             )}>{item.label}</span>
                         </Link>
                     );
@@ -57,15 +57,16 @@ export function MobileNav() {
                 {/* Logout Button */}
                 <button
                     onClick={logout}
-                    className="flex flex-col items-center justify-center gap-1.5 transition-all duration-300 relative py-2 px-3 rounded-2xl text-red-500/60 hover:text-red-500"
+                    className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 rounded-2xl text-red-400/70 hover:text-red-400"
                 >
                     <LogOut className="w-5 h-5 stroke-[1.5px]" />
-                    <span className="text-[9px] font-bold uppercase tracking-widest">Sair</span>
+                    <span className="text-[10px] font-black uppercase tracking-tighter">Sair</span>
                 </button>
             </div>
             
-            {/* Safe area spacer for mobile notches */}
-            <div className="h-[env(safe-area-inset-bottom)] bg-white/80 dark:bg-black/90 backdrop-blur-xl" />
+            {/* Safe area spacer */}
+            <div className="h-[env(safe-area-inset-bottom)] bg-[#0E1B5C]/95 backdrop-blur-2xl" />
         </nav>
     );
 }
+

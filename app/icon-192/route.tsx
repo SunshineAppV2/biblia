@@ -57,7 +57,7 @@ export async function GET() {
                     letterSpacing: -1, lineHeight: 1,
                     fontFamily: "sans-serif",
                 }}>
-                    BibleQuest
+                    AnoBíblico+
                 </div>
             </div>
         ),

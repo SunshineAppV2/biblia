@@ -1,5 +1,5 @@
 /**
- * Levelling System for BibleQuest
+ * Levelling System for AnoBíblico+
  *
  * Formula: XP(n) = 30 × (n − 1)²    →  Level(xp) = floor(√(xp / 30)) + 1
  *

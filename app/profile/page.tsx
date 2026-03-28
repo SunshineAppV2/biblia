@@ -17,6 +17,7 @@ import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
 import { buyStreakFreeze } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
+import { AdBanner } from "@/components/AdBanner";
 import { MobileNav } from "@/components/MobileNav";
 
 export default function ProfilePage() {
@@ -158,6 +159,15 @@ export default function ProfilePage() {
                         <span className="text-sm font-black text-primary">{profile.gems || 0} Gemas</span>
                     </div>
                 </section>
+
+                {/* AD BANNER (Location 4) */}
+                <div className="py-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-1000">
+                    <AdBanner 
+                        adSlot="PROFILE_TOP" 
+                        adFormat="horizontal" 
+                        className="max-h-[60px] rounded-xl overflow-hidden" 
+                    />
+                </div>
 
                 {/* Stats Grid */}
                 <section className="grid grid-cols-2 gap-4">

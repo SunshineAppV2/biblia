@@ -14,6 +14,7 @@ import {
 import { Trophy, Users, Plus, Shield, LogOut, ChevronRight, Crown, Info, BookOpen, Flame, Zap, Target, Star, Gem, Play, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/Toast";
+import { AdBanner } from "@/components/AdBanner";
 import Link from "next/link";
 
 export default function TribesPage() {
@@ -298,6 +299,16 @@ export default function TribesPage() {
                     </div>
                   ))}
                 </div>
+            </div>
+
+            {/* AD BANNER (Location 2) */}
+            <div className="mt-12 mb-2 p-4 border-2 border-dashed border-secondary/10 rounded-3xl bg-secondary/5">
+                <p className="text-[8px] text-center font-black uppercase tracking-[0.5em] text-secondary/40 mb-3 underline decoration-secondary/10 underline-offset-4">Patrocinado pela Comunidade</p>
+                <AdBanner 
+                    adSlot="TRIBES_RANKING_TOP" 
+                    adFormat="horizontal" 
+                    className="max-h-[60px] rounded-xl overflow-hidden opacity-70 grayscale hover:grayscale-0 transition-all pointer-events-auto" 
+                />
             </div>
 
             {/* Ranking List */}
