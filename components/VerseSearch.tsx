@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { BIBLE_BOOKS } from "@/lib/bible-books";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, BookOpen, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface VerseSearchProps {
     isOpen: boolean;
@@ -12,6 +13,7 @@ interface VerseSearchProps {
 }
 
 export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
+    const { t } = useLanguage();
     const [query, setQuery] = useState("");
     const [selectedBook, setSelectedBook] = useState<typeof BIBLE_BOOKS[0] | null>(null);
 
@@ -19,10 +21,10 @@ export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
         if (!query.trim()) return BIBLE_BOOKS.slice(0, 10);
         const q = query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         return BIBLE_BOOKS.filter(b => {
-            const name = b.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return name.includes(q);
+            const localizedName = t(`books.${b.id}` as any).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return localizedName.includes(q);
         }).slice(0, 8);
-    }, [query]);
+    }, [query, t]);
 
     const handleSelect = (bookId: string, chapter: number) => {
         onNavigate(bookId, chapter);
@@ -51,7 +53,7 @@ export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
                         autoFocus
                         value={query}
                         onChange={e => { setQuery(e.target.value); setSelectedBook(null); }}
-                        placeholder="Buscar livro... (ex: João, Salmos, Gênesis)"
+                        placeholder={t('reading.search_placeholder' as any) || "Buscar livro..."}
                         className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
                     />
                     {query && (
@@ -66,7 +68,7 @@ export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
                     {!selectedBook && (
                         <div className="p-2">
                             {filteredBooks.length === 0 && (
-                                <p className="text-center text-sm text-muted-foreground py-6">Nenhum livro encontrado</p>
+                                <p className="text-center text-sm text-muted-foreground py-6">{t('common.no_results' as any) || "Nenhum resultado"}</p>
                             )}
                             {filteredBooks.map(book => (
                                 <button
@@ -79,8 +81,8 @@ export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
                                             <BookOpen className="w-3.5 h-3.5 text-primary" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-foreground">{book.name}</p>
-                                            <p className="text-[10px] text-muted-foreground">{book.chapters} capítulos · {book.testament}</p>
+                                            <p className="text-sm font-bold text-foreground">{t(`books.${book.id}` as any)}</p>
+                                            <p className="text-[10px] text-muted-foreground">{book.chapters} {t('reading.chapters' as any) || "capítulos"}</p>
                                         </div>
                                     </div>
                                     <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 group-hover:text-secondary transition-colors" />
@@ -96,10 +98,10 @@ export function VerseSearch({ isOpen, onClose, onNavigate }: VerseSearchProps) {
                                 onClick={() => setSelectedBook(null)}
                                 className="flex items-center gap-1.5 text-xs text-secondary font-bold mb-3 hover:opacity-80"
                             >
-                                ← {selectedBook.name}
+                                ← {t(`books.${selectedBook.id}` as any)}
                             </button>
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-2 px-1">
-                                Escolha o capítulo
+                                {t('reading.choose_chapter' as any) || "Escolha o capítulo"}
                             </p>
                             <div className="grid grid-cols-8 gap-1">
                                 {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map(ch => (
