@@ -1,71 +1,57 @@
 import { db } from "./firebase";
-import { BIBLE_BOOKS } from "./bible-books";
-import { getTodaysPlanChapter } from "./reading-plan";
+import { getPlanChapter, getPlanSequence } from "./reading-plan";
 import { doc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 /**
- * Returns the next unread chapter for the user across all 1189 chapters,
- * respecting the circular reading cycle.
+ * Returns the next unread chapter for the user based on their active plan.
+ * For RPSP, it respects the circular reading cycle starting from the current RPSP date for new users.
+ * For other plans, it follows the plan's specific sequence.
  */
 export async function getNextUserChapter(userId: string): Promise<{ bookId: string; chapter: number }> {
     try {
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
         
-        if (!userSnap.exists()) {
-            const today = getTodaysPlanChapter();
-            return { bookId: today.bookId, chapter: today.chapter };
+        // Default plan settings
+        let activePlanId = "rpsp";
+        let planStartDate = undefined;
+
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            activePlanId = data.activePlanId || "rpsp";
+            planStartDate = data.planStartDate?.toDate();
         }
-        
-        const data = userSnap.data();
-        const cycle = data.cycle || 1;
-        const cycleStart = data.cycleStartChapter; // { bookId, chapter }
 
-        // Get completed chapters for CURRENT cycle
+        // 1. Get current plan chapter
+        const currentTarget = getPlanChapter(activePlanId, planStartDate);
+
+        // 2. Get completed chapters for this user (performance could be tuned later with a subcollection limit)
         const progressRef = collection(db, "users", userId, "reading_progress");
-        const cycleQuery = query(progressRef, where("cycle", "==", cycle));
-        const snapshot = await getDocs(cycleQuery);
-
+        const snapshot = await getDocs(progressRef);
         const completed = new Set<string>();
         snapshot.forEach(doc => {
             const d = doc.data();
-            if (d.bookId && d.chapterId) {
-                completed.add(`${d.bookId}_${d.chapterId}`);
-            }
+            completed.add(`${d.bookId}_${d.chapterId}`);
         });
 
-        // 1.189 Bible chapters in canonical order
-        const allChapters: { bookId: string; chapter: number }[] = [];
-        for (const book of BIBLE_BOOKS) {
-            for (let ch = 1; ch <= book.chapters; ch++) {
-                allChapters.push({ bookId: book.id, chapter: ch });
-            }
-        }
+        // 3. Get plan sequence
+        const sequence = getPlanSequence(activePlanId);
 
-        // If cycleStart exists, we shift the array to start from it
-        let startIndex = 0;
-        if (cycleStart) {
-            startIndex = allChapters.findIndex(c => c.bookId === cycleStart.bookId && c.chapter === cycleStart.chapter);
-            if (startIndex === -1) startIndex = 0;
-        } else {
-            // If no cycle start, default to today's plan chapter
-            const today = getTodaysPlanChapter();
-            startIndex = allChapters.findIndex(c => c.bookId === today.bookId && c.chapter === today.chapter);
-            if (startIndex === -1) startIndex = 0;
-        }
+        // 4. Find where the user should be (current target for today)
+        let startIndex = sequence.findIndex(c => c.bookId === currentTarget.bookId && c.chapter === currentTarget.chapter);
+        if (startIndex === -1) startIndex = 0;
 
-        // Search circularly
-        for (let i = 0; i < allChapters.length; i++) {
-            const idx = (startIndex + i) % allChapters.length;
-            const target = allChapters[idx];
+        // 5. Search forward for the next unread chapter in the sequence
+        for (let i = 0; i < sequence.length; i++) {
+            const idx = (startIndex + i) % sequence.length;
+            const target = sequence[idx];
             if (!completed.has(`${target.bookId}_${target.chapter}`)) {
-                return target;
+                return { bookId: target.bookId, chapter: target.chapter };
             }
         }
 
-        // If all 1.189 are completed in this cycle, the completeChapter logic will reset the cycle
-        // and getNextUserChapter will be called again with no completed chapters for the new cycle.
-        return { bookId: "genesis", chapter: 1 };
+        // Fallback: If everything in the plan is finished, return first chapter of plan (could show a "Completed" state instead)
+        return { bookId: sequence[0].bookId, chapter: sequence[0].chapter };
 
     } catch (error) {
         console.error("Error getting next chapter:", error);

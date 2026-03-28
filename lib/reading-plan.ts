@@ -1,7 +1,3 @@
-// Plano "Reavivados por Sua Palavra"
-// 1 capítulo por dia, ordem canônica
-// Dia 1 = 17/04/2025 — Dia 343 = 1 Crônicas 5 (25/03/2026)
-
 export interface PlanChapter {
   bookId: string;
   bookName: string;
@@ -9,7 +5,16 @@ export interface PlanChapter {
   dayNumber: number;
 }
 
-const PLAN_BOOKS: { bookId: string; name: string; chapters: number }[] = [
+export interface ReadingPlan {
+  id: string;
+  name: string;
+  description: string;
+  type: "global" | "personal";
+  books: string[]; // bookIds in this plan
+  durationDays: number;
+}
+
+const ALL_BOOKS: { bookId: string; name: string; chapters: number }[] = [
   { bookId: "genesis", name: "Gênesis", chapters: 50 },
   { bookId: "exodo", name: "Êxodo", chapters: 40 },
   { bookId: "levitico", name: "Levítico", chapters: 27 },
@@ -78,42 +83,117 @@ const PLAN_BOOKS: { bookId: string; name: string; chapters: number }[] = [
   { bookId: "apocalipse", name: "Apocalipse", chapters: 22 },
 ];
 
-export const PLAN_CHAPTERS: PlanChapter[] = [];
-let dayNum = 1;
-for (const book of PLAN_BOOKS) {
-  for (let ch = 1; ch <= book.chapters; ch++) {
-    PLAN_CHAPTERS.push({ bookId: book.bookId, bookName: book.name, chapter: ch, dayNumber: dayNum++ });
+export const READING_PLANS: ReadingPlan[] = [
+  {
+    id: "rpsp",
+    name: "RPSP",
+    description: "Reavivados por Sua Palavra — Plano mundial adventista.",
+    type: "global",
+    books: ALL_BOOKS.map(b => b.bookId),
+    durationDays: 1189,
+  },
+  {
+    id: "nt3m",
+    name: "NT em 3 Meses",
+    description: "Todo o Novo Testamento em 90 dias.",
+    type: "personal",
+    books: ALL_BOOKS.slice(39).map(b => b.bookId),
+    durationDays: 90,
+  },
+  {
+    id: "sal30",
+    name: "Salmos em 30 Dias",
+    description: "Todos os Salmos em um mês.",
+    type: "personal",
+    books: ["salmos"],
+    durationDays: 30,
+  },
+  {
+    id: "pen60",
+    name: "Pentateuco em 60 Dias",
+    description: "Do Gênesis ao Deuteronômio em dois meses.",
+    type: "personal",
+    books: ["genesis", "exodo", "levitico", "numeros", "deuteronomio"],
+    durationDays: 60,
+  },
+  {
+    id: "bib1y",
+    name: "Bíblia em 1 Ano",
+    description: "Toda a Bíblia em 365 dias.",
+    type: "personal",
+    books: ALL_BOOKS.map(b => b.bookId),
+    durationDays: 365,
+  },
+];
+
+// Helper to get total chapters in a plan
+export function getPlanSequence(planId: string): PlanChapter[] {
+  const plan = READING_PLANS.find(p => p.id === planId) || READING_PLANS[0];
+  const chapters: PlanChapter[] = [];
+  
+  const planBooks = ALL_BOOKS.filter(b => plan.books.includes(b.bookId));
+  const totalChapters = planBooks.reduce((sum, b) => sum + b.chapters, 0);
+  const capsPerDay = totalChapters / plan.durationDays;
+
+  let currentCapInDay = 0;
+  for (const book of planBooks) {
+    for (let ch = 1; ch <= book.chapters; ch++) {
+      chapters.push({ 
+        bookId: book.bookId, 
+        bookName: book.name, 
+        chapter: ch, 
+        dayNumber: Math.floor(currentCapInDay / capsPerDay) + 1 
+      });
+      currentCapInDay++;
+    }
   }
+  return chapters;
 }
 
-// Dia 1 = 17/04/2025
-const PLAN_START = new Date(2025, 3, 17);
+// Global start for RPSP
+const RPSP_START = new Date(2025, 3, 17);
 
-export function getPlanDayForDate(date: Date): number {
-  const start = new Date(PLAN_START);
-  start.setHours(0, 0, 0, 0);
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const diff = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
-  if (diff <= 0) return 1;
-  return ((diff - 1) % PLAN_CHAPTERS.length) + 1;
+export function getPlanChapter(planId: string, startDate?: Date): PlanChapter {
+  const plan = READING_PLANS.find(p => p.id === planId) || READING_PLANS[0];
+  const sequence = getPlanSequence(planId);
+
+  let currentDay = 1;
+  if (plan.type === "global") {
+    const start = new Date(RPSP_START);
+    start.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diff = Math.floor((today.getTime() - start.getTime()) / 86400000) + 1;
+    currentDay = ((diff - 1) % sequence.length) + 1;
+  } else {
+    const start = startDate ? new Date(startDate) : new Date();
+    start.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    currentDay = Math.floor((today.getTime() - start.getTime()) / 86400000) + 1;
+  }
+
+  // Find the first chapter that matches this day or the last one if exceeded
+  const chaptersForDay = sequence.filter(c => c.dayNumber === currentDay);
+  if (chaptersForDay.length > 0) return chaptersForDay[0];
+  
+  return sequence[sequence.length - 1]; // Fallback to last
 }
 
-export function getTodaysPlanChapter(): PlanChapter {
-  const idx = getPlanDayForDate(new Date()) - 1;
-  return PLAN_CHAPTERS[Math.max(0, Math.min(idx, PLAN_CHAPTERS.length - 1))];
-}
-
-export function getPlanProgress(): { dayNumber: number; totalDays: number; percent: number } {
-  const dayNumber = getPlanDayForDate(new Date());
-  const totalDays = PLAN_CHAPTERS.length;
+export function getPlanProgress(planId: string, startDate?: Date) {
+  const plan = READING_PLANS.find(p => p.id === planId) || READING_PLANS[0];
+  const sequence = getPlanSequence(planId);
+  const chapter = getPlanChapter(planId, startDate);
+  
+  const dayNumber = chapter.dayNumber;
+  const totalDays = plan.durationDays;
   return { dayNumber, totalDays, percent: Math.round((dayNumber / totalDays) * 100) };
 }
 
-export function getUpcomingChapters(count = 4): PlanChapter[] {
-  const todayDay = getPlanDayForDate(new Date());
-  return Array.from({ length: count }, (_, i) => {
-    const idx = (todayDay - 1 + i) % PLAN_CHAPTERS.length;
-    return PLAN_CHAPTERS[idx];
-  });
+export function getUpcomingChapters(planId: string, startDate?: Date, count = 4): PlanChapter[] {
+  const sequence = getPlanSequence(planId);
+  const currentChapter = getPlanChapter(planId, startDate);
+  const currentIdx = sequence.findIndex(c => c.bookId === currentChapter.bookId && c.chapter === currentChapter.chapter);
+  
+  return sequence.slice(currentIdx, currentIdx + count);
 }

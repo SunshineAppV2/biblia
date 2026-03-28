@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { getLevelInfo } from "@/lib/levels";
 import { LEAGUE_CONFIGS } from "@/lib/leagues";
 import { LeagueBadge } from "@/components/LeagueBadge";
-import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield, Gem } from "lucide-react";
+import { ChevronLeft, Calendar, Award, BookOpen, Flame, Zap, Trophy, Bookmark, Bell, BellOff, Shield, Gem, Copy, Check } from "lucide-react";
 import { LeagueTier } from "@/lib/leagues";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -15,7 +15,7 @@ import { cn, getLocalDateString, calculateStreak } from "@/lib/utils";
 import { requestNotificationPermission, disableNotifications, isNotificationsEnabled } from "@/lib/notifications";
 import { ReadingHeatmap } from "@/components/ReadingHeatmap";
 import { ShareButton } from "@/components/ShareButton";
-import { buyStreakFreeze } from "@/lib/firestore";
+import { buyStreakFreeze, UserProfile, redeemReferralCode } from "@/lib/firestore";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import { MobileNav } from "@/components/MobileNav";
@@ -339,6 +339,9 @@ export default function ProfilePage() {
                     </section>
                 )}
 
+                {/* Referral System */}
+                <ReferralSection profile={profile} onRedeem={() => refreshProfile()} />
+
                 {/* League Status */}
                 <section className="glass-card p-6 flex items-center gap-6 bg-gradient-to-br from-primary/10 to-primary/5 border-secondary/30">
                     <LeagueBadge tier={profile.currentLeague as LeagueTier} size="lg" />
@@ -402,5 +405,115 @@ export default function ProfilePage() {
             </main>
             <MobileNav />
         </div>
+    );
+}
+
+interface ReferralSectionProps {
+    profile: UserProfile;
+    onRedeem: () => void;
+}
+
+function ReferralSection({ profile, onRedeem }: ReferralSectionProps) {
+    const [code, setCode] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { showToast } = useToast();
+
+    const handleRedeem = async () => {
+        if (!code) return;
+        setLoading(true);
+        try {
+            await redeemReferralCode(profile.uid, code);
+            showToast("🎉 Convite resgatado! Você ganhou 100 Gemas.", "achievement");
+            onRedeem();
+        } catch (error: any) {
+            showToast(error.message || "Erro ao resgatar código", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(profile.referralCode);
+        showToast("Código copiado!", "info");
+    };
+
+    return (
+        <section className="space-y-4">
+            <h3 className="text-sm font-black text-primary uppercase tracking-widest px-2">
+                Sistema de Convites
+            </h3>
+            
+            <div className="glass-card p-6 space-y-6">
+                {/* Your Code */}
+                <div className="space-y-3">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Seu código de embaixador</p>
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-primary/5 border border-primary/10 rounded-2xl p-4 font-black text-2xl text-primary tracking-[0.2em] text-center">
+                            {profile.referralCode}
+                        </div>
+                        <button 
+                            onClick={copyToClipboard}
+                            className="bg-secondary text-white p-4 rounded-2xl shadow-lg border-2 border-white/10 hover:scale-105 transition-transform"
+                        >
+                            <Copy className="w-6 h-6" />
+                        </button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground text-center">
+                        Compartilhe seu código e ganhe <span className="text-secondary font-bold">50 Gemas</span> por cada amigo que entrar! 
+                    </p>
+
+                    {/* Progress to reward */}
+                    <div className="pt-2">
+                        <div className="flex justify-between text-[10px] font-black uppercase mb-1.5 px-1">
+                            <span>Meta: Embaixador VIP</span>
+                            <span className="text-secondary">{profile.referralsCount || 0}/3 Convites</span>
+                        </div>
+                        <div className="h-1.5 bg-primary/10 rounded-full overflow-hidden">
+                            <motion.div 
+                                className="h-full bg-secondary"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${Math.min(100, ((profile.referralsCount || 0) / 3) * 100)}%` }}
+                            />
+                        </div>
+                        { (profile.referralsCount || 0) >= 3 && (
+                            <p className="text-[9px] text-green-500 font-bold mt-1 text-center italic">✨ Meta atingida! +500 XP bônus creditado.</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="h-px bg-primary/5" />
+
+                {/* Redeem Code */}
+                {!profile.referredBy ? (
+                    <div className="space-y-3">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Já foi convidado por alguém?</p>
+                        <div className="flex items-center gap-2">
+                            <input 
+                                type="text"
+                                value={code}
+                                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                                placeholder="CÓDIGO DO AMIGO"
+                                className="flex-1 bg-white border border-primary/10 rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-secondary transition-colors"
+                            />
+                            <button 
+                                onClick={handleRedeem}
+                                disabled={loading || !code}
+                                className="bg-primary text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
+                            >
+                                {loading ? "..." : "RESGATAR"}
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-accent font-bold text-center">
+                            Ganhe 100 Gemas bônus ao resgatar seu primeiro convite!
+                        </p>
+                    </div>
+                ) : (
+                    <div className="bg-accent/5 border border-accent/20 rounded-2xl p-4 flex items-center justify-center gap-2">
+                        <Check className="w-4 h-4 text-accent" />
+                        <span className="text-xs font-bold text-accent uppercase tracking-widest">Bônus de indicação resgatado</span>
+                    </div>
+                )}
+            </div>
+        </section>
     );
 }

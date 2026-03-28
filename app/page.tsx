@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ReadingTimer } from "@/components/ReadingTimer";
 import { cn, calculateStreak } from "@/lib/utils";
 import Link from "next/link";
-import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem, Download } from "lucide-react";
+import { BookOpen, Trophy, Flame, ChevronLeft, LogIn, CheckCircle, ArrowRight, SkipForward, Zap, Moon, Sun, Minus, Plus, Bookmark, Search, Gem, Download, Volume2, VolumeX, Pause, Play } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { completeChapter, isChapterCompleted } from "@/lib/progress";
@@ -27,6 +27,7 @@ import { useToast } from "@/components/Toast";
 import { DailyMissions, trackDailyRead, trackDailyQuiz } from "@/components/DailyMissions";
 import { DailyVerse } from "@/components/DailyVerse";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
+import { READING_PLANS } from "@/lib/reading-plan";
 import { ReadingGoal } from "@/components/ReadingGoal";
 import { Biblio } from "@/components/Biblio";
 import { StreakWeek } from "@/components/StreakWeek";
@@ -98,6 +99,27 @@ export default function Home() {
             localStorage.setItem("biblequest_theme", "light");
         }
     }, [isDark]);
+
+    // Audio Bible Logic
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const toggleAudio = () => {
+        if (typeof window === "undefined") return;
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        } else {
+            if (!chapterContent) return;
+            const textToSpeak = `${chapterContent.bookName} capítulo ${chapterContent.chapter}. ${chapterContent.text.join(". ")}`;
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = "pt-BR";
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.onend = () => setIsSpeaking(false);
+            utterance.onerror = () => setIsSpeaking(false);
+            window.speechSynthesis.speak(utterance);
+            setIsSpeaking(true);
+        }
+    };
 
     // Streak calculation consistency (from StreakWeek)
     const [localReadDates, setLocalReadDates] = useState<string[]>([]);
@@ -406,7 +428,11 @@ export default function Home() {
         }
     };
 
-    const handleBack = () => setIsReading(false);
+    const handleBack = () => {
+        if (typeof window !== "undefined") window.speechSynthesis.cancel();
+        setIsSpeaking(false);
+        setIsReading(false);
+    };
 
     const handleNavigate = async (bookId: string, chapter: number) => {
         setNextChapter({ bookId, chapter });
@@ -698,7 +724,7 @@ export default function Home() {
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ciclo Atual</span>
                                     </div>
                                     <div className="font-black text-xs text-primary leading-tight tracking-tight mt-1">
-                                        REAVIVADOS POR SUA PALAVRA (RPSP)
+                                        {READING_PLANS.find(p => p.id === (profile?.activePlanId || "rpsp"))?.name || "PLANO ATIVO"}
                                     </div>
                                 </div>
 
@@ -746,7 +772,11 @@ export default function Home() {
                             {user && <ReadingGoal />}
 
                             {/* Reading Plan */}
-                            <ReadingPlanCard onNavigate={handleNavigate} />
+                            <ReadingPlanCard 
+                                onNavigate={handleNavigate} 
+                                planId={profile?.activePlanId || "rpsp"}
+                                startDate={profile?.planStartDate?.toDate()}
+                            />
 
                             {/* Daily Verse */}
                             <DailyVerse />
@@ -825,6 +855,23 @@ export default function Home() {
                                                 className="w-7 h-7 rounded-full border border-secondary/30 flex items-center justify-center hover:bg-secondary/10 disabled:opacity-30 transition-colors"
                                             >
                                                 <Plus className="w-3 h-3 text-secondary" />
+                                            </button>
+
+                                            <div className="w-px h-4 bg-secondary/20 mx-1" />
+
+                                            <button
+                                                onClick={toggleAudio}
+                                                className={cn(
+                                                    "h-8 px-3 rounded-full flex items-center gap-1.5 transition-all",
+                                                    isSpeaking 
+                                                        ? "bg-secondary text-white shadow-lg shadow-secondary/25" 
+                                                        : "bg-secondary/10 text-secondary hover:bg-secondary/20"
+                                                )}
+                                            >
+                                                {isSpeaking ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                                <span className="text-[10px] font-black uppercase tracking-widest">
+                                                    {isSpeaking ? "Parar" : "Ouvir"}
+                                                </span>
                                             </button>
                                         </div>
 

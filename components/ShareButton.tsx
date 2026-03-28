@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackDailyShare } from "./DailyMissions";
+import { completeMissionXP } from "@/lib/progress";
+import { useAuth } from "./AuthProvider";
 
 type ShareType = "streak" | "achievement" | "level";
 
@@ -24,10 +27,17 @@ function buildText(type: ShareType, value: number | string, name?: string): stri
 }
 
 export function ShareButton({ type, value, name }: Props) {
+    const { user } = useAuth();
     const [copied, setCopied] = useState(false);
 
     const handleShare = async () => {
         const text = buildText(type, value, name);
+
+        // Mission: Share Daily
+        const bonus = trackDailyShare();
+        if (bonus > 0 && user) {
+            await completeMissionXP(user.uid, bonus);
+        }
 
         if (typeof navigator !== "undefined" && navigator.share) {
             try {

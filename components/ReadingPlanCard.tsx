@@ -2,22 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { BookOpen, ChevronRight, Flame } from "lucide-react";
-import { getTodaysPlanChapter, getPlanProgress, getUpcomingChapters, PlanChapter } from "@/lib/reading-plan";
+import Link from "next/link";
+import { getPlanChapter, getPlanProgress, getUpcomingChapters, PlanChapter, READING_PLANS } from "@/lib/reading-plan";
 
 interface ReadingPlanCardProps {
   onNavigate: (bookId: string, chapter: number) => void;
+  planId: string;
+  startDate?: Date;
 }
 
-export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
+export function ReadingPlanCard({ onNavigate, planId, startDate }: ReadingPlanCardProps) {
   const [today, setToday] = useState<PlanChapter | null>(null);
   const [progress, setProgress] = useState<{ dayNumber: number; totalDays: number; percent: number } | null>(null);
   const [upcoming, setUpcoming] = useState<PlanChapter[]>([]);
 
   useEffect(() => {
-    setToday(getTodaysPlanChapter());
-    setProgress(getPlanProgress());
-    setUpcoming(getUpcomingChapters(4));
-  }, []);
+    setToday(getPlanChapter(planId, startDate));
+    setProgress(getPlanProgress(planId, startDate));
+    setUpcoming(getUpcomingChapters(planId, startDate, 4));
+  }, [planId, startDate]);
 
   if (!today || !progress) return null;
 
@@ -43,17 +46,25 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
               Plano de Leitura
             </p>
             <p className="text-sm font-bold text-white leading-none">
-              REAVIVADOS POR SUA PALAVRA (RPSP)
+              {READING_PLANS.find(p => p.id === planId)?.name || "Plano de Leitura"}
             </p>
           </div>
         </div>
-        <div className="text-right">
-          <p className="text-xs font-black text-yellow-300">
-            Dia {progress.dayNumber}
-          </p>
-          <p className="text-[10px] text-white/50">
-            de {progress.totalDays}
-          </p>
+        <div className="text-right flex flex-col items-end gap-1">
+          <Link 
+            href="/planos"
+            className="text-[8px] font-black text-white/40 hover:text-yellow-300 uppercase tracking-widest border border-white/10 px-2 py-1 rounded-md transition-all"
+          >
+            Trocar Plano
+          </Link>
+          <div className="flex flex-col items-end">
+            <p className="text-xs font-black text-yellow-300 leading-none">
+                Dia {progress.dayNumber}
+            </p>
+            <p className="text-[10px] text-white/50 leading-none mt-1">
+                de {progress.totalDays}
+            </p>
+          </div>
         </div>
       </div>
 

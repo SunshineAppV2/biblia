@@ -26,6 +26,11 @@ export interface UserProfile {
     cycleStartChapter?: { bookId: string; chapter: number } | null;
     cycleStartDate?: Timestamp | null;
     groupId?: string | null;
+    activePlanId: string;
+    planStartDate: Timestamp;
+    referralCode: string;
+    referredBy?: string | null;
+    referralsCount: number;
 }
 
 export interface UserGroup {
@@ -62,12 +67,16 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             achievements: [],
             wisdomPoints: 0,
             isAdmin: user.email === "aseabra2005@gmail.com",
+            activePlanId: "rpsp",
+            planStartDate: serverTimestamp() as Timestamp,
+            referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+            referralsCount: 0,
         };
         await setDoc(userRef, newProfile);
         return newProfile;
     } else {
         const data = userSnap.data();
-        await updateDoc(userRef, {
+        const updateData: any = {
             displayName: user.displayName,
             email: user.email,
             photoURL: user.photoURL,
@@ -75,8 +84,16 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             // Garante campo gems exista se já fosse um usuário antigo
             gems: data.gems !== undefined ? data.gems : 100,
             isAdmin: user.email === "aseabra2005@gmail.com",
-        });
-        return { ...data, ...userSnap.data(), isAdmin: user.email === "aseabra2005@gmail.com" } as UserProfile;
+        };
+
+        // Migração: adicionar referralCode para usuários antigos
+        if (!data.referralCode) {
+            updateData.referralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            updateData.referralsCount = 0;
+        }
+
+        await updateDoc(userRef, updateData);
+        return { ...data, ...updateData, isAdmin: user.email === "aseabra2005@gmail.com" } as UserProfile;
     }
 }
 
@@ -209,6 +226,43 @@ export async function getGroupsRanking(minMembers = 3): Promise<UserGroup[]> {
     );
     const snap = await getDocs(q);
     return snap.docs.map(doc => doc.data() as UserGroup);
+}
+
+export async function redeemReferralCode(uid: string, code: string): Promise<void> {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) throw new Error("Usuário não encontrado");
+    const userData = userSnap.data() as UserProfile;
+    
+    if (userData.referredBy) throw new Error("Você já resgatou um convite");
+    if (userData.referralCode === code) throw new Error("Você não pode usar seu próprio código");
+
+    const ambassadorQuery = query(collection(db, "users"), where("referralCode", "==", code.toUpperCase()));
+    const ambassadorSnap = await getDocs(ambassadorQuery);
+
+    if (ambassadorSnap.empty) throw new Error("Código de convite inválido");
+    
+    const ambassadorDoc = ambassadorSnap.docs[0];
+    const ambassadorUid = ambassadorDoc.id;
+
+    // Atualiza o indicado (ganha 100 gemas de bônus)
+    await updateDoc(userRef, {
+        referredBy: ambassadorUid,
+        gems: increment(100)
+    });
+
+    const ambassadorData = ambassadorDoc.data() as UserProfile;
+    const currentCount = ambassadorData.referralsCount || 0;
+    const newCount = currentCount + 1;
+
+    const ambassadorUpdate: any = {
+        gems: increment(50),
+        referralsCount: increment(1)
+    };
+    if (newCount === 3) ambassadorUpdate.xp = increment(500);
+
+    // Atualiza o embaixador
+    await updateDoc(doc(db, "users", ambassadorUid), ambassadorUpdate);
 }
 
 export async function getGroupById(groupId: string): Promise<UserGroup | null> {

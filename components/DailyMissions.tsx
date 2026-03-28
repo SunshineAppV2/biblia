@@ -18,11 +18,13 @@ interface MissionState {
     quiz_perfect: boolean; // 100% no quiz
     early_bird: boolean; // Ler antes das 9h
     marathon: boolean; // Ler 5 capítulos
+    share_daily: boolean; // Compartilhar ofensiva ou progresso
+    arena_win: boolean; // Vencer duelo
     read_count?: number; // Contador interno de capítulos no dia
 }
 
 function loadMissions(): MissionState {
-    const defaultState: MissionState = { read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 };
+    const defaultState: MissionState = { read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, share_daily: false, arena_win: false, read_count: 0 };
     if (typeof window === "undefined") return defaultState;
     try {
         const raw = localStorage.getItem(`biblequest_missions_${getTodayKey()}`);
@@ -94,6 +96,34 @@ export function trackDailyQuiz(isPerfect: boolean = false): number {
     return bonus;
 }
 
+/** Call this when user shares something. */
+export function trackDailyShare(): number {
+    const state = loadMissions();
+    let bonus = 0;
+
+    if (!state.share_daily) {
+        state.share_daily = true;
+        bonus += 15;
+    }
+
+    saveMissions(state);
+    return bonus;
+}
+
+/** Call this when user wins an arena duel. */
+export function trackArenaWin(): number {
+    const state = loadMissions();
+    let bonus = 0;
+
+    if (!state.arena_win) {
+        state.arena_win = true;
+        bonus += 40;
+    }
+
+    saveMissions(state);
+    return bonus;
+}
+
 // ─── Mission definitions ────────────────────────────────────────────────────
 
 interface Mission {
@@ -154,6 +184,22 @@ const MISSIONS: Mission[] = [
         xp: 60,
         color: "text-red-500",
     },
+    {
+        id: "share_daily",
+        icon: Target,
+        title: "Evangelista Digital",
+        description: "Compartilhe seu progresso hoje",
+        xp: 15,
+        color: "text-purple-500",
+    },
+    {
+        id: "arena_win",
+        icon: Zap,
+        title: "Guerreiro da Arena",
+        description: "Vença 1 duelo na Arena",
+        xp: 40,
+        color: "text-amber-500",
+    },
 ];
 
 function getMissionsForToday(): Mission[] {
@@ -175,7 +221,7 @@ function getMissionsForToday(): Mission[] {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function DailyMissions() {
-    const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 });
+    const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, share_daily: false, arena_win: false, read_count: 0 });
     const [activeMissions, setActiveMissions] = useState<Mission[]>([]);
 
     useEffect(() => {

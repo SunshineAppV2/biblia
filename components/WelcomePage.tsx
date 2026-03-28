@@ -26,8 +26,8 @@ const FEATURES = [
     },
     {
         icon: RefreshCw,
-        title: "Reavivados Por Sua Palavra",
-        description: "Sincronize com o plano mundial RPSP e complete os 1.189 capítulos de forma contínua.",
+        title: "Diversos Planos",
+        description: "Escolha entre RPSP, NT em 3 meses, Salmos em 30 dias e mais. Cada um com seu ritmo.",
         color: "text-secondary",
         bg: "bg-secondary/10"
     },

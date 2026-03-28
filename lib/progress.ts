@@ -167,6 +167,15 @@ export async function completeChapter(
     }
 }
 
+export async function completeMissionXP(userId: string, xpAmount: number): Promise<void> {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+        xp: increment(xpAmount),
+        weeklyXp: increment(xpAmount),
+        lastActive: serverTimestamp(),
+    });
+}
+
 export async function isChapterCompleted(
     userId: string,
     bookId: string,
