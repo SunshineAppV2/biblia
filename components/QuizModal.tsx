@@ -417,16 +417,19 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
                 ) : (
                     <motion.div
                         key="results"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                        className="w-full max-w-sm p-8 text-center space-y-6 rounded-2xl shadow-2xl"
-                        style={{ background: "var(--card)", border: "1px solid rgba(255,255,255,0.08)" }}
+                        className="w-full max-w-sm p-10 text-center space-y-8 rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.4)] relative overflow-hidden"
+                        style={{ background: "#FDFBF7", border: "1px solid rgba(14,27,92,0.1)" }}
                     >
+                        {/* Decorative top shape */}
+                        <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+
                         {/* Result emoji + message */}
-                        <div className="space-y-3">
+                        <div className="space-y-4 relative z-10">
                             <motion.div
-                                className="text-6xl"
+                                className="text-7xl mb-2 drop-shadow-xl"
                                 animate={isPerfect
                                     ? { rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }
                                     : isZero
@@ -439,80 +442,84 @@ export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTes
                             </motion.div>
 
                             <h3 className={cn(
-                                "text-2xl font-black",
-                                isPerfect ? "text-yellow-500" : isZero ? "text-red-400" : "text-gray-900 dark:text-white"
+                                "text-3xl font-black italic uppercase tracking-tighter leading-none",
+                                isPerfect ? "text-secondary" : isZero ? "text-red-500" : "text-primary"
                             )}>
-                                {isTest ? `Teste: ${correctCount}/${questions.length}` : isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 corretas`}
+                                {isTest ? `Resultado: ${correctCount}/${questions.length}` : isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 Corretas`}
                             </h3>
 
-                            <p className="text-sm text-muted-foreground leading-relaxed">
+                            <p className="text-sm text-[#455A80] font-medium leading-relaxed px-4">
                                 {isPerfect
                                     ? "Incrível! Você leu com total atenção e dominou o capítulo. Parabéns!"
                                     : correctCount === 2
-                                        ? "Muito bem! Só faltou um pouquinho. Continue assim!"
+                                        ? "Muito bem! Só faltou um pouquinho de atenção. Continue assim!"
                                         : correctCount === 1
-                                            ? "Leia com mais atenção da próxima vez. Você consegue!"
-                                            : "Que tristeza... Que tal reler o capítulo antes de continuar?"}
+                                            ? "Leia com mais calma da próxima vez para fixar melhor a Palavra."
+                                            : "Que pena... Que tal reler o capítulo antes de continuar a jornada?"}
                             </p>
                         </div>
 
-                        {/* Results breakdown */}
-                        <div className="flex justify-center gap-2">
+                        {/* Results breakdown dots */}
+                        <div className="flex justify-center gap-3 relative z-10">
                             {results.map((r, i) => (
-                                <div
+                                <motion.div
                                     key={i}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.5 + i * 0.1 }}
                                     className={cn(
-                                        "w-10 h-10 rounded-full flex items-center justify-center",
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg border-2",
                                         r === "correct"
-                                            ? "bg-emerald-50 dark:bg-emerald-500/20 border border-emerald-400"
-                                            : "bg-red-50 dark:bg-red-500/20 border border-red-400"
+                                            ? "bg-white border-green-500 text-green-500 shadow-green-500/10"
+                                            : "bg-white border-red-500 text-red-500 shadow-red-500/10"
                                     )}
                                 >
                                     {r === "correct"
-                                        ? <CheckCircle className="w-5 h-5 text-emerald-500" />
-                                        : <XCircle className="w-5 h-5 text-red-500" />
+                                        ? <CheckCircle className="w-6 h-6 stroke-[3]" />
+                                        : <XCircle className="w-6 h-6 stroke-[3]" />
                                     }
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
 
-                        {/* XP result */}
+                        {/* Premium XP result card */}
                         <div className={cn(
-                            "rounded-2xl p-4 border space-y-1",
+                            "rounded-[32px] p-6 border-b-4 relative z-10 overflow-hidden",
                             xpDelta > 0
-                                ? "bg-accent/10 border-accent/20"
-                                : xpDelta < 0
-                                    ? "bg-red-500/10 border-red-500/20"
-                                    : "bg-primary/15 border-secondary/10"
+                                ? "bg-white border-primary/20 shadow-xl shadow-primary/5"
+                                : "bg-white border-red-500/20 shadow-xl shadow-red-500/5"
                         )}>
-                            <div className="flex items-center justify-center gap-2">
-                                <Trophy className={cn(
-                                    "w-5 h-5",
-                                    xpDelta > 0 ? "text-accent" : xpDelta < 0 ? "text-red-400" : "text-muted-foreground"
-                                )} />
-                                <span className={cn(
-                                    "text-2xl font-black",
-                                    xpDelta > 0 ? "text-accent" : xpDelta < 0 ? "text-red-400" : "text-muted-foreground"
-                                )}>
-                                    {xpDelta > 0 ? "+" : ""}{xpDelta} XP
-                                </span>
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12" />
+                            <div className="flex flex-col items-center gap-1 relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <Trophy className={cn(
+                                        "w-5 h-5",
+                                        xpDelta > 0 ? "text-primary" : xpDelta < 0 ? "text-red-500" : "text-muted-foreground"
+                                    )} />
+                                    <span className={cn(
+                                        "text-4xl font-black italic tracking-tighter",
+                                        xpDelta > 0 ? "text-primary" : xpDelta < 0 ? "text-red-500" : "text-muted-foreground"
+                                    )}>
+                                        {xpDelta > 0 ? "+" : ""}{xpDelta} XP
+                                    </span>
+                                </div>
+                                <p className="text-[10px] font-black uppercase text-[#455A80]/50 tracking-widest mt-1">
+                                    + 50 XP pela leitura = <strong className="text-secondary">{50 + xpDelta} XP Total</strong>
+                                </p>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                + 50 XP pela leitura = <strong>{50 + xpDelta} XP</strong> total neste capítulo
-                            </p>
                         </div>
 
                         <motion.button
-                            whileTap={{ scale: 0.97 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={handleFinish}
                             className={cn(
-                                "w-full py-3 font-bold rounded-full transition-colors",
+                                "w-full py-5 font-black uppercase tracking-widest text-sm rounded-[24px] transition-all shadow-2xl relative z-10 active:scale-95",
                                 isPerfect
-                                    ? "bg-secondary text-secondary-foreground hover:opacity-90 shadow-[0_0_20px_rgba(197,160,89,0.5)]"
-                                    : "bg-accent text-accent-foreground hover:opacity-90"
+                                    ? "bg-secondary text-white shadow-secondary/30 hover:bg-secondary/90"
+                                    : "bg-primary text-white shadow-primary/30 hover:bg-primary/90"
                             )}
                         >
-                            {isPerfect ? "🎉 Continuar!" : "Continuar"}
+                            {isPerfect ? "🚀 Continuar Jornada!" : "Continuar"}
                         </motion.button>
                     </motion.div>
                 )}

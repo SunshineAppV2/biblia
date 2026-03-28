@@ -122,47 +122,55 @@ export default function ArenaPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-8 pt-10"
                         >
-                            <div className="glass-card p-10 text-center space-y-6 relative overflow-hidden">
+                            <div className="bg-white/5 backdrop-blur-3xl p-10 text-center space-y-8 rounded-[48px] border border-white/10 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                                 {isLocked && (
-                                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center p-6 text-center">
-                                        <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                                            <Lock className="w-8 h-8 text-primary" />
+                                    <div className="absolute inset-0 bg-[#0E1B5C]/80 backdrop-blur-md z-10 flex flex-col items-center justify-center p-8 text-center">
+                                        <div className="w-20 h-20 bg-white/10 rounded-[32px] flex items-center justify-center mb-6 border border-white/20 shadow-2xl">
+                                            <Lock className="w-10 h-10 text-secondary" />
                                         </div>
-                                        <h2 className="text-2xl font-black uppercase">Bloqueado</h2>
-                                        <p className="text-sm text-white/60">
-                                            Alcance o <span className="text-primary font-black">Nível 10</span> para enfrentar outros leitores!
+                                        <h2 className="text-3xl font-black italic uppercase tracking-tighter">Arena Trancada</h2>
+                                        <p className="text-white/60 text-sm mt-2 font-medium">
+                                            Alcance o <span className="text-secondary font-black">Nível 10</span> para enfrentar rivais nesta arena épica!
                                         </p>
                                     </div>
                                 )}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-                                <div className="w-24 h-24 bg-primary/10 rounded-[32px] mx-auto flex items-center justify-center border-4 border-primary/20">
-                                    <BookOpen className="w-12 h-12 text-primary" />
-                                </div>
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-black italic uppercase">Duelo da Semana</h2>
-                                    <p className="text-white/40 text-sm leading-relaxed">
-                                        Perguntas baseadas no seu plano:<br/>
-                                        <span className="text-secondary font-black">{activePlan?.name}</span>
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full -mr-24 -mt-24 blur-3xl" />
+                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full -ml-24 -mb-24 blur-3xl" />
+                                
+                                <motion.div 
+                                    animate={{ y: [0, -10, 0] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                    className="w-28 h-28 bg-[#0E1B5C] rounded-[40px] mx-auto flex items-center justify-center border-4 border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+                                >
+                                    <BookOpen className="w-14 h-14 text-secondary" />
+                                </motion.div>
+                                <div className="space-y-3 relative z-10">
+                                    <h2 className="text-4xl font-black italic uppercase tracking-tighter">Duelo da <span className="text-secondary">Semana</span></h2>
+                                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest leading-relaxed">
+                                        Baseado no plano:<br/>
+                                        <span className="text-white">{activePlan?.name}</span>
                                     </p>
                                 </div>
                                 <button 
                                     onClick={startSearch}
                                     disabled={isLocked}
-                                    className="w-full bg-primary hover:bg-primary/90 disabled:bg-white/10 text-white font-black py-5 rounded-3xl shadow-2xl shadow-primary/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+                                    className="w-full bg-secondary hover:bg-secondary/90 disabled:bg-white/5 text-primary font-black py-6 rounded-3xl shadow-[0_15px_30px_rgba(184,130,10,0.3)] transition-all flex items-center justify-center gap-4 active:scale-95 text-lg uppercase italic tracking-tighter"
                                 >
-                                    <Zap className="w-6 h-6 fill-current" />
-                                    {isLocked ? "BLOQUEADO" : "ENCONTRAR RIVAL"}
+                                    <Zap className="w-7 h-7 fill-current" />
+                                    {isLocked ? "ARENA BLOQUEADA" : "ENCONTRAR RIVAL"}
                                 </button>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 border border-white/5 p-4 rounded-3xl text-center">
-                                    <p className="text-[10px] font-black uppercase text-white/30 mb-1">Duelos Hoje</p>
-                                    <p className="text-2xl font-black">5</p>
+                                <div className="bg-white/10 border border-white/10 p-6 rounded-[32px] text-center shadow-lg relative overflow-hidden group">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
+                                    <p className="text-[10px] font-black uppercase text-white/40 mb-1 tracking-[0.2em]">Duelos Hoje</p>
+                                    <p className="text-3xl font-black italic tracking-tighter">5</p>
                                 </div>
-                                <div className="bg-white/5 border border-white/5 p-4 rounded-3xl text-center">
-                                    <p className="text-[10px] font-black uppercase text-white/30 mb-1">Win Rate</p>
-                                    <p className="text-2xl font-black text-green-400">80%</p>
+                                <div className="bg-white/10 border border-white/10 p-6 rounded-[32px] text-center shadow-lg relative overflow-hidden group">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-secondary/20" />
+                                    <p className="text-[10px] font-black uppercase text-white/40 mb-1 tracking-[0.2em]">Taxa de Vitória</p>
+                                    <p className="text-3xl font-black italic tracking-tighter text-secondary">80%</p>
                                 </div>
                             </div>
                         </motion.div>

@@ -502,22 +502,53 @@ function ReferralSection({ profile, onRedeem }: ReferralSectionProps) {
             
             <div className="glass-card p-6 space-y-6">
                 {/* Your Code */}
-                <div className="space-y-3">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Seu código de embaixador</p>
-                    <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-primary/5 border border-primary/10 rounded-2xl p-4 font-black text-2xl text-primary tracking-[0.2em] text-center">
-                            {profile.referralCode}
+                    <div className="space-y-4">
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Convide amigos e ganhe <span className="text-secondary">Gemas</span></p>
+                        
+                        <div className="flex flex-col gap-3">
+                             <div className="flex items-center gap-2">
+                                <div className="flex-1 bg-primary/5 border border-primary/10 rounded-2xl p-5 font-black text-3xl text-primary tracking-[0.2em] text-center shadow-inner">
+                                    {profile.referralCode}
+                                </div>
+                                <button 
+                                    onClick={copyToClipboard}
+                                    title="Copiar Código"
+                                    className="bg-white border-2 border-primary/20 text-primary p-5 rounded-3xl shadow-lg hover:bg-primary/5 transition-all active:scale-90"
+                                >
+                                    <Copy className="w-6 h-6" />
+                                </button>
+                             </div>
+
+                             <button 
+                                onClick={async () => {
+                                    const url = `${window.location.origin}/?ref=${profile.referralCode}`;
+                                    const text = `Vem ler a Bíblia comigo no AnoBíblico+! 📖\n\nUse meu código ${profile.referralCode} para ganhar 100 gemas de bônus!\n\nEntre por aqui: ${url}`;
+                                    
+                                    if (navigator.share) {
+                                        try {
+                                            await navigator.share({
+                                                title: 'AnoBíblico+',
+                                                text: text,
+                                                url: url,
+                                            });
+                                        } catch (err) {
+                                            console.log("Share cancelled");
+                                        }
+                                    } else {
+                                        navigator.clipboard.writeText(text);
+                                        showToast("Link e convite copiados!", "success");
+                                    }
+                                }}
+                                className="w-full bg-primary text-white font-black py-5 rounded-[24px] shadow-2xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 transition-all text-xs uppercase tracking-widest italic"
+                             >
+                                <Zap className="w-5 h-5 fill-current text-secondary" />
+                                Compartilhar Link de Convite
+                             </button>
                         </div>
-                        <button 
-                            onClick={copyToClipboard}
-                            className="bg-secondary text-white p-4 rounded-2xl shadow-lg border-2 border-white/10 hover:scale-105 transition-transform"
-                        >
-                            <Copy className="w-6 h-6" />
-                        </button>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground text-center">
-                        Compartilhe seu código e ganhe <span className="text-secondary font-bold">50 Gemas</span> por cada amigo que entrar! 
-                    </p>
+
+                        <p className="text-[10px] text-muted-foreground text-center font-medium leading-relaxed px-4">
+                            Você ganha <span className="text-secondary font-black">50 Gemas</span> por cada amigo que entrar. Seus amigos já começam com <span className="text-primary font-black">100 Gemas bônus</span>! 
+                        </p>
 
                     {/* Progress to reward */}
                     <div className="pt-2">
