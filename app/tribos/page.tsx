@@ -375,6 +375,7 @@ export default function TribesPage() {
                     <li className="flex gap-3"><span className="text-secondary">●</span> O ranking reseta semanalmente para novas disputas.</li>
                 </ul>
             </div>
+            <MobileNav />
         </div>
     );
 }

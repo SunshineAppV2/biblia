@@ -964,7 +964,7 @@ export default function Home() {
                                             onComplete={handleComplete}
                                         />
                                     ) : (
-                                        <div className="fixed bottom-0 left-0 w-full glass border-t border-accent/30 p-4 animate-in slide-in-from-bottom z-50">
+                                        <div className="fixed bottom-24 left-0 w-full glass border-t border-accent/30 p-4 animate-in slide-in-from-bottom z-50">
                                             <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                                                 <div className="flex items-center gap-3 font-bold">
                                                     <CheckCircle className="w-6 h-6 text-accent" />
@@ -1035,16 +1035,7 @@ export default function Home() {
             />
 
             {/* Footer */}
-            {!isReading && (
-                <>
-                    <div className="pb-32 pt-4 text-center">
-                        <Link href="/politica-de-privacidade" className="text-xs text-muted-foreground hover:text-primary transition-colors">
-                            Política de Privacidade
-                        </Link>
-                    </div>
-                    <MobileNav />
-                </>
-            )}
+            <MobileNav />
         </div>
     );
 }

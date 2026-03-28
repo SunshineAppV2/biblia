@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 export interface UserProfile {
@@ -146,11 +146,8 @@ export async function createGroup(uid: string, name: string, description: string
     const userData = userSnap.data() as UserProfile;
     if (userData.groupId) throw new Error("User already in a group");
 
-    const groupId = `group_${Date.now()}_${uid}`;
-    const groupRef = doc(db, "groups", groupId);
-
+    const groupsRef = collection(db, "groups");
     const newGroup = {
-        id: groupId,
         name,
         description: description || "Sem descrição",
         leaderUid: uid,
@@ -160,10 +157,11 @@ export async function createGroup(uid: string, name: string, description: string
         members: [uid]
     };
 
-    await setDoc(groupRef, newGroup);
-    await updateDoc(userRef, { groupId });
+    const docRef = await addDoc(groupsRef, newGroup);
+    await updateDoc(docRef, { id: docRef.id }); // Mantenha o ID interno para consistência
+    await updateDoc(userRef, { groupId: docRef.id });
 
-    return groupId;
+    return docRef.id;
 }
 
 export async function joinGroup(uid: string, groupId: string): Promise<void> {

@@ -59,12 +59,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const loginWithGoogle = async () => {
+        setLoading(true);
         try {
             const provider = new GoogleAuthProvider();
             const credential = await signInWithPopup(auth, provider);
             if (credential.user) {
+                setUser(credential.user);
                 const userProfile = await createOrUpdateUser(credential.user);
                 setProfile(userProfile);
+                setLoading(false);
             }
         } catch (error: unknown) {
             const err = error as { code?: string; message?: string };
