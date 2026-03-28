@@ -7,30 +7,16 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthProvider";
 
-import { useLanguage } from "./LanguageProvider";
+const NAV_ITEMS = [
+    { label: "Home", icon: Home, href: "/" },
+    { label: "Plano", icon: Book, href: "/planos" },
+    { label: "Tribos", icon: Trophy, href: "/tribos" },
+    { label: "Perfil", icon: User, href: "/profile" },
+];
 
 export function MobileNav() {
     const pathname = usePathname();
-    const { user, logout } = useAuth();
-    const { locale, t } = useLanguage();
-
-    const NAV_ITEMS = [
-        { label: locale === "pt" ? "Início" : "Home", icon: Home, href: "/" },
-        { label: locale === "pt" ? "Plano" : "Plan", icon: Book, href: "/planos" },
-        { label: locale === "pt" ? "Tribos" : "Tribes", icon: Trophy, href: "/tribos" },
-        { label: locale === "pt" ? "Perfil" : "Profile", icon: User, href: "/profile" },
-    ];
-
-    // Auto-hide logic
-    if (!user) return null;
-    if (pathname.startsWith("/admin")) return null;
-    
-    // Check if we are in reading mode (only on home page when isReading is managed externally)
-    // Actually, we can't easily know isReading from here if it's local state.
-    // But we can check if the user is on certain paths.
-    
-    // If the user wants the menu to STAY even after clicked, it means it should always be visible 
-    // on these main pages.
+    const { logout } = useAuth();
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
@@ -47,22 +33,24 @@ export function MobileNav() {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 rounded-2xl",
+                                "flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3",
                                 active 
                                     ? "text-secondary scale-110" 
                                     : "text-white/40 hover:text-white/70"
                             )}
                         >
-                            {active && (
-                                <motion.div 
-                                    layoutId="nav-glow"
-                                    className="absolute inset-0 bg-secondary/15 rounded-2xl blur-md" 
-                                />
-                            )}
-                            <Icon className={cn("w-5 h-5", active ? "stroke-[2.5px] drop-shadow-[0_0_8px_rgba(212,164,48,0.5)]" : "stroke-[1.5px]")} />
+                            <div className="relative">
+                                <Icon className={cn("w-6 h-6 transition-all duration-500", active ? "stroke-[2.5px] drop-shadow-[0_0_12px_rgba(184,130,10,0.6)]" : "stroke-[1.5px] opacity-60")} />
+                                {active && (
+                                    <motion.div 
+                                        layoutId="active-dot"
+                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-secondary shadow-[0_0_8px_rgba(184,130,10,0.8)]"
+                                    />
+                                )}
+                            </div>
                             <span className={cn(
-                                "text-[10px] font-black uppercase tracking-tighter",
-                                active ? "text-secondary" : "text-white/60"
+                                "text-[10px] font-black uppercase tracking-[0.1em]",
+                                active ? "text-secondary opacity-100" : "text-white/40 opacity-60"
                             )}>{item.label}</span>
                         </Link>
                     );
@@ -71,12 +59,10 @@ export function MobileNav() {
                 {/* Logout Button */}
                 <button
                     onClick={logout}
-                    className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 rounded-2xl text-red-400/70 hover:text-red-400"
+                    className="flex flex-col items-center justify-center gap-1 transition-all duration-300 relative py-2 px-3 text-red-400/50 hover:text-red-400"
                 >
-                    <LogOut className="w-5 h-5 stroke-[1.5px]" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter">
-                        {locale === "pt" ? "Sair" : "Logout"}
-                    </span>
+                    <LogOut className="w-6 h-6 stroke-[1.5px]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.1em] opacity-60">Sair</span>
                 </button>
             </div>
             

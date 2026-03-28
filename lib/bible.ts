@@ -16,18 +16,13 @@ export interface ChapterContent {
     estimatedSeconds: number;
 }
 
+// Version mapping to bolls.life API codes
+// bolls.life Portuguese translations: ARC, ARA, NTPT
 export const VERSIONS = [
-    // Portuguese
-    { id: "ARC",  name: "Almeida Revista e Corrigida",  apiCode: "ARC",  language: "pt" },
-    { id: "ARA",  name: "Almeida Revista e Atualizada",  apiCode: "ARA",  language: "pt" },
-    { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", apiCode: "NTLH", language: "pt" },
-    { id: "NAA",  name: "Nova Almeida Atualizada",       apiCode: "NAA",  language: "pt" },
-    // English
-    { id: "KJV",  name: "King James Version",           apiCode: "KJV",  language: "en" },
-    { id: "RSV",  name: "Revised Standard Version",      apiCode: "RSV",  language: "en" },
-    { id: "WEB",  name: "World English Bible",           apiCode: "WEB",  language: "en" },
-    // Spanish
-    { id: "RVR",  name: "Reina-Valera 1960",            apiCode: "RVR1960", language: "es" },
+    { id: "ARC",  name: "Almeida Revista e Corrigida",  apiCode: "ARC"  },
+    { id: "ARA",  name: "Almeida Revista e Atualizada",  apiCode: "ARA"  },
+    { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", apiCode: "NTLH" },
+    { id: "NAA",  name: "Nova Almeida Atualizada",       apiCode: "NAA"  },
 ];
 
 interface BollsVerse {

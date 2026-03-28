@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CheckCircle, XCircle, ChevronRight, Trophy, Brain, Clock, Book, ArrowRight } from "lucide-react";
-import { useLanguage } from "@/components/LanguageProvider";
 import { prepareQuiz, getQuizBank, PreparedQuestion, BankQuestion } from "@/lib/quiz-data";
 
 /** Calculates time in seconds based on total character count of question + options */
@@ -34,6 +33,7 @@ const SAD_EMOJIS = ["😢", "💧", "😞", "📖", "🙈"];
 interface QuizModalProps {
     isOpen: boolean;
     bookId: string;
+    bookName: string;
     chapter: number;
     onComplete: (xpDelta: number, correctCount: number) => void;
     isTest?: boolean;
@@ -74,8 +74,7 @@ function SadParticles() {
     return <>{particles.map((p, i) => <Particle key={i} emoji={p.emoji} delay={p.delay} />)}</>;
 }
 
-export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQuestions }: QuizModalProps) {
-    const { t } = useLanguage();
+export function QuizModal({ isOpen, bookId, bookName, chapter, onComplete, isTest, customQuestions }: QuizModalProps) {
     const [questions, setQuestions] = useState<PreparedQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -145,13 +144,13 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                 <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center max-w-sm w-full">
                     <div className="text-4xl mb-4">📖</div>
-                    <h3 className="text-xl font-bold text-white mb-2">{t('quiz.no_questions_title' as any) || "Sem perguntas"}</h3>
-                    <p className="text-gray-400 mb-6">{t('quiz.no_questions_desc' as any) || "Este capítulo ainda não possui questões."}</p>
+                    <h3 className="text-xl font-bold text-white mb-2">Sem perguntas disponíveis</h3>
+                    <p className="text-gray-400 mb-6">Este capítulo ainda não possui questões no banco de dados.</p>
                     <button 
                         onClick={() => onComplete(0, 0)}
                         className="w-full py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200"
                     >
-                        {t('common.close' as any) || "Fechar"}
+                        Fechar
                     </button>
                 </div>
             </div>
@@ -223,7 +222,7 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                             <div className="flex items-center gap-2">
                                 <Brain className="w-4 h-4 text-white" />
                                 <span className="text-xs font-black text-white uppercase tracking-widest">
-                                    {t(`books.${bookId}` as any)} {chapter}
+                                    {bookName} {chapter}
                                 </span>
                             </div>
                             {/* Progress dots */}
@@ -342,24 +341,24 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                         className="space-y-3 pt-1"
                                     >
                                         <div className="flex items-center justify-between">
-                                             <div className={cn(
-                                                 "flex items-center gap-2 text-sm font-bold",
-                                                 answerState === "correct" ? "text-emerald-500" : "text-red-400"
-                                             )}>
-                                                 {answerState === "correct"
-                                                     ? <><CheckCircle className="w-4 h-4" /> {t('quiz.correct')} +{lastXpGained} XP{lastXpGained > XP_CORRECT && <span className="text-secondary text-xs">🔥 combo!</span>}</>
-                                                     : <><XCircle className="w-4 h-4" /> {selectedOption === null ? t('quiz.timeout' as any) || "Tempo esgotado!" : t('quiz.wrong')} {XP_WRONG} XP</>
-                                                 }
-                                             </div>
-                                             <motion.button
-                                                 whileTap={{ scale: 0.95 }}
-                                                 onClick={handleNext}
-                                                 className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold"
-                                                 style={{ background: "linear-gradient(135deg, #1A237E, #0D47A1)", color: "white" }}
-                                             >
-                                                 {currentIndex + 1 >= questions.length ? t('quiz.finish') : t('quiz.next')}
-                                                 <ChevronRight className="w-3 h-3" />
-                                             </motion.button>
+                                            <div className={cn(
+                                                "flex items-center gap-2 text-sm font-bold",
+                                                answerState === "correct" ? "text-accent" : "text-red-400"
+                                            )}>
+                                                {answerState === "correct"
+                                                    ? <><CheckCircle className="w-4 h-4" /> Correto! +{lastXpGained} XP{lastXpGained > XP_CORRECT && <span className="text-secondary text-xs">🔥 combo!</span>}</>
+                                                    : <><XCircle className="w-4 h-4" /> {selectedOption === null ? "Tempo esgotado!" : "Errado!"} {XP_WRONG} XP</>
+                                                }
+                                            </div>
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={handleNext}
+                                                className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold"
+                                                style={{ background: "linear-gradient(135deg, #1A237E, #0D47A1)", color: "white" }}
+                                            >
+                                                {currentIndex + 1 >= questions.length ? "Resultado" : "Próxima"}
+                                                <ChevronRight className="w-3 h-3" />
+                                            </motion.button>
                                         </div>
 
                                         {/* Biblical Reference Badge (Premium Redesign) */}
@@ -374,10 +373,10 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20 border border-secondary/50">
                                                             <Book className="h-6 w-6" />
                                                         </div>
-                                                         <div className="flex flex-col">
-                                                             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-secondary/90 mb-0.5">
-                                                                 {t('quiz.explanation')}
-                                                             </span>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-secondary/90 mb-0.5">
+                                                                Referência Bíblica
+                                                            </span>
                                                             <span className="text-base font-extrabold text-foreground leading-none">
                                                                 {currentQuestion.reference}
                                                             </span>
@@ -400,10 +399,10 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                                 style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)" }}
                                             >
                                                 <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                                                 <div>
-                                                      <p className="text-[11px] font-black text-accent uppercase tracking-wider mb-0.5">
-                                                          {t('quiz.correct')}
-                                                      </p>
+                                                <div>
+                                                     <p className="text-[11px] font-black text-accent uppercase tracking-wider mb-0.5">
+                                                         Resposta correta
+                                                     </p>
                                                      <p className="text-xs text-foreground leading-snug">
                                                          {currentQuestion.options[currentQuestion.correctIndex]}
                                                      </p>
@@ -443,17 +442,17 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                 "text-2xl font-black",
                                 isPerfect ? "text-yellow-500" : isZero ? "text-red-400" : "text-gray-900 dark:text-white"
                             )}>
-                                {isTest ? `${t('quiz.results')}: ${correctCount}/${questions.length}` : isPerfect ? `${t('quiz.perfect')} ${correctCount}/3` : `${correctCount}/3 ${t('quiz.correct').toLowerCase()}`}
+                                {isTest ? `Teste: ${correctCount}/${questions.length}` : isPerfect ? "Perfeito! 3/3" : `${correctCount}/3 corretas`}
                             </h3>
 
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 {isPerfect
-                                    ? t('quiz.perfect_msg' as any) || "Incrível! Você dominou o capítulo."
+                                    ? "Incrível! Você leu com total atenção e dominou o capítulo. Parabéns!"
                                     : correctCount === 2
-                                        ? t('quiz.good_msg' as any) || "Muito bem! Quase perfeito."
+                                        ? "Muito bem! Só faltou um pouquinho. Continue assim!"
                                         : correctCount === 1
-                                            ? t('quiz.keep_trying_msg' as any) || "Leia com mais atenção. Você consegue!"
-                                            : t('quiz.bad_msg' as any) || "Que tal reler o capítulo?"}
+                                            ? "Leia com mais atenção da próxima vez. Você consegue!"
+                                            : "Que tristeza... Que tal reler o capítulo antes de continuar?"}
                             </p>
                         </div>
 
@@ -491,15 +490,15 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                     "w-5 h-5",
                                     xpDelta > 0 ? "text-accent" : xpDelta < 0 ? "text-red-400" : "text-muted-foreground"
                                 )} />
-                                 <span className={cn(
-                                     "text-2xl font-black",
-                                     xpDelta > 0 ? "text-accent" : xpDelta < 0 ? "text-red-400" : "text-muted-foreground"
-                                 )}>
-                                     {xpDelta > 0 ? t('quiz.earned') : t('quiz.lost')} {Math.abs(xpDelta)} XP
-                                 </span>
+                                <span className={cn(
+                                    "text-2xl font-black",
+                                    xpDelta > 0 ? "text-accent" : xpDelta < 0 ? "text-red-400" : "text-muted-foreground"
+                                )}>
+                                    {xpDelta > 0 ? "+" : ""}{xpDelta} XP
+                                </span>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                                + 50 XP {t('quiz.for_reading' as any) || "pela leitura"} = <strong>{50 + xpDelta} XP</strong> {t('quiz.total_this_chapter' as any) || "total neste capítulo"}
+                                + 50 XP pela leitura = <strong>{50 + xpDelta} XP</strong> total neste capítulo
                             </p>
                         </div>
 
@@ -513,7 +512,7 @@ export function QuizModal({ isOpen, bookId, chapter, onComplete, isTest, customQ
                                     : "bg-accent text-accent-foreground hover:opacity-90"
                             )}
                         >
-                            {isPerfect ? `🎉 ${t('quiz.continue' as any) || "Continuar!"}` : t('quiz.continue' as any) || "Continuar"}
+                            {isPerfect ? "🎉 Continuar!" : "Continuar"}
                         </motion.button>
                     </motion.div>
                 )}

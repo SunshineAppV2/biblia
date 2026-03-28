@@ -33,12 +33,11 @@ import { StreakWeek } from "@/components/StreakWeek";
 import { VerseSearch } from "@/components/VerseSearch";
 import { checkAndSendReminder, checkStreakAtRisk, markReadToday, trackWeeklyChapter } from "@/lib/notifications";
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
+import { MobileNav } from "@/components/MobileNav";
 import WelcomePage from "@/components/WelcomePage";
-import { useLanguage } from "@/components/LanguageProvider";
 
 export default function Home() {
     const { user, profile, loading, loginWithGoogle, refreshProfile } = useAuth();
-    const { t, locale, setLocale } = useLanguage();
     const { isInstallable, installPWA } = usePWAInstall();
     const { showToast } = useToast();
 
@@ -59,7 +58,7 @@ export default function Home() {
     // Quiz States
     const [showQuizOffer, setShowQuizOffer] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
-    const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number } | null>(null);
+    const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number; bookName: string } | null>(null);
 
     // Version State — local so it updates immediately without waiting for Firebase
     const [currentVersion, setCurrentVersion] = useState("ARC");
@@ -148,7 +147,7 @@ export default function Home() {
             showToast("Marcador removido", "info");
         } else {
             next.add(verseIndex);
-            showToast(t('reading.verse_saved' as any) || "📖 Versículo salvo nos favoritos", "achievement");
+            showToast("📖 Versículo salvo nos favoritos", "achievement");
         }
         setBookmarks(next);
         localStorage.setItem(
@@ -193,8 +192,8 @@ export default function Home() {
     useEffect(() => {
         if (!user || !profile) return;
         checkAndProcessLeagueWeek(profile).then(result => {
-            if (result?.promoted) showToast(`${t('profile.promoted' as any) || "🎉 Promovido para a Liga"} ${result.newLeague}!`, "achievement");
-            else if (result?.demoted) showToast(`${t('profile.demoted' as any) || "📉 Rebaixado para a Liga"} ${result.newLeague}`, "info");
+            if (result?.promoted) showToast(`🎉 Promovido para a Liga ${result.newLeague}!`, "achievement");
+            else if (result?.demoted) showToast(`📉 Rebaixado para a Liga ${result.newLeague}`, "info");
         }).catch(() => {});
     }, [user?.uid]);
 
@@ -320,7 +319,7 @@ export default function Home() {
             if (!wasNew) {
                 setWasAlreadyRead(true);
                 setIsCompletedNow(true);
-                showToast(t('dashboard.already_read'), "info");
+                showToast("Capítulo já registrado anteriormente.", "info");
                 return;
             }
 
@@ -328,7 +327,7 @@ export default function Home() {
             await finishChapter(0);
         } catch (error) {
             console.error("Failed to complete chapter", error);
-            showToast(t('dashboard.save_error'), "error");
+            showToast("Erro ao salvar progresso. Tente novamente.", "error");
             setIsCompletedNow(true);
         }
     };
@@ -382,6 +381,7 @@ export default function Home() {
                 setQuizTarget({
                     bookId,
                     chapter,
+                    bookName: chapterContent?.bookName ?? "",
                 });
                 setShowQuizOffer(true);
                 return;
@@ -433,7 +433,7 @@ export default function Home() {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
                 <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-                <p className="text-sm font-bold text-muted-foreground animate-pulse">{t('dashboard.loading_journey')}</p>
+                <p className="text-sm font-bold text-muted-foreground animate-pulse">Carregando sua jornada...</p>
             </div>
         );
     }
@@ -459,10 +459,10 @@ export default function Home() {
                         <button
                             onClick={handleNextChapter}
                             className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 hover:border-secondary/50 text-muted-foreground hover:text-secondary transition-all text-xs font-bold"
-                            title={t('dashboard.next')}
+                            title="Pular para o próximo capítulo"
                         >
                             <SkipForward className="w-3 h-3" />
-                            <span className="hidden sm:inline">{t('dashboard.next')}</span>
+                            <span className="hidden sm:inline">Próximo</span>
                         </button>
                     )}
                 </div>
@@ -533,7 +533,7 @@ export default function Home() {
                                         {user.displayName?.[0]}
                                     </div>
                                 )}
-                                <span className="text-[10px] font-black uppercase tracking-tighter text-primary">{t('dashboard.profile_short')}</span>
+                                <span className="text-[10px] font-black uppercase tracking-tighter text-primary">Perfil</span>
                             </Link>
                         </>
                     ) : (
@@ -541,7 +541,7 @@ export default function Home() {
                             onClick={loginWithGoogle}
                             className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/20 transition-all text-xs uppercase tracking-wider"
                         >
-                            <LogIn className="w-4 h-4" /> {t('dashboard.login')}
+                            <LogIn className="w-4 h-4" /> Entrar
                         </button>
                     )}
                 </div>
@@ -571,8 +571,8 @@ export default function Home() {
                                             <Download className="w-5 h-5" />
                                         </div>
                                         <div className="text-left">
-                                            <p className="text-xs opacity-90 uppercase tracking-widest font-black">{t('dashboard.install_pwa')}</p>
-                                            <p className="text-sm">{t('dashboard.install_desc')}</p>
+                                            <p className="text-xs opacity-90 uppercase tracking-widest font-black">App Instalável</p>
+                                            <p className="text-sm">Instale para acesso rápido</p>
                                         </div>
                                     </div>
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -590,10 +590,10 @@ export default function Home() {
                                     {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
                                 </p>
                                 <h2 className="text-4xl font-black text-primary tracking-tight">
-                                    {user ? `${t('dashboard.greeting')}, ${user.displayName?.split(" ")[0]}` : t('dashboard.greeting_anonymous')}
+                                    {user ? `Olá, ${user.displayName?.split(" ")[0]}` : "Olá, Viajante"}
                                 </h2>
                                 <p className="text-muted-foreground text-sm">
-                                    {user ? t('dashboard.journey_continue') : t('dashboard.login_save')}
+                                    {user ? "Sua jornada continua. Que tal ler um pouco agora?" : "Faça login para salvar suas conquistas."}
                                 </p>
                             </div>
 
@@ -695,11 +695,10 @@ export default function Home() {
                                         <div className="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center">
                                             <Trophy className="w-3.5 h-3.5 text-secondary" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('dashboard.current_cycle')}</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ciclo Atual</span>
                                     </div>
-                                    <div className="font-black text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-1">{t('dashboard.global_plan')}</div>
                                     <div className="font-black text-xs text-primary leading-tight tracking-tight mt-1">
-                                        {t('dashboard.rpsp')}
+                                        REAVIVADOS POR SUA PALAVRA (RPSP)
                                     </div>
                                 </div>
 
@@ -708,7 +707,7 @@ export default function Home() {
                                         <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
                                             <BookOpen className="w-3.5 h-3.5 text-accent" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t('dashboard.progress')}</span>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Progresso</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
                                         {Math.round(((profile?.totalReadInCycle || 0) / 1189) * 100)}%
@@ -726,35 +725,23 @@ export default function Home() {
                                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ofensiva</span>
                                     </div>
                                     <div className="font-black text-xl text-primary tracking-tight">
-                                        {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">{t('dashboard.days')}</span>
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('dashboard.ofensiva')}</span>
+                                        {calculateStreak(localReadDates)} <span className="text-sm font-normal text-muted-foreground">dias</span>
                                     </div>
-                                    <div className="text-2xl font-black text-primary italic">{profile?.streak || 0}d</div>
                                 </div>
 
-                                <div className="glass-card p-6 flex flex-col justify-between border-l-4 border-accent relative overflow-hidden group">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Zap className="w-4 h-4 text-accent fill-current" />
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t('dashboard.xp_weekly')}</span>
+                                <div className="rounded-2xl border border-primary/20 bg-white/70 backdrop-blur p-4 space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                                            <Zap className="w-3.5 h-3.5 text-primary fill-current" />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">XP Semanal</span>
                                     </div>
-                                    <div className="text-2xl font-black text-primary italic">{profile?.weeklyXp || 0} XP</div>
+                                    <div className="font-black text-xl text-primary tracking-tight">
+                                        {profile?.weeklyXp || 0}
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Ranking Card */}
-                            <div className="glass-card overflow-hidden">
-                                <div className="p-6 border-b border-secondary/10 flex items-center justify-between">
-                                    <h3 className="text-lg font-black text-primary tracking-tight italic">{t('dashboard.ranking_week')}</h3>
-                                    <Trophy className="w-5 h-5 text-secondary" />
-                                </div>
-                                <Leaderboard />
-                            </div>
-
-                            {/* Other stuff using translations if needed... */}
-                            <div className="p-6 flex items-center justify-between">
-                                <h3 className="text-lg font-black text-primary tracking-tight italic">{t('dashboard.plans')}</h3>
-                                <BookOpen className="w-5 h-5 text-secondary" />
-                            </div>
                             {/* Reading Goal */}
                             {user && <ReadingGoal />}
 
@@ -769,6 +756,20 @@ export default function Home() {
 
                             {/* Daily Missions */}
                             {user && <DailyMissions />}
+
+                            {user && (
+                                <div>
+                                    <div className="flex items-center justify-between px-1 mb-3">
+                                        <h3 className="text-base font-black text-primary uppercase tracking-widest flex items-center gap-2">
+                                            <Trophy className="w-4 h-4 text-secondary" /> Ranking da Semana
+                                        </h3>
+                                        <Link href="/progresso" className="text-xs text-accent font-bold hover:underline flex items-center gap-1">
+                                            <BookOpen className="w-3 h-3" /> Meu Progresso
+                                        </Link>
+                                    </div>
+                                    <Leaderboard />
+                                </div>
+                            )}
 
                             {/* DISCRETE DASHBOARD AD (Bottom) */}
                             <motion.div 
@@ -796,16 +797,16 @@ export default function Home() {
                             {loadingContent ? (
                                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                                    <p className="text-muted-foreground">{t('reading.open_pergaminhos')}</p>
+                                    <p className="text-muted-foreground">Abrindo pergaminhos...</p>
                                 </div>
                             ) : chapterContent ? (
                                 <>
                                     <article className="reading-surface rounded-2xl shadow-2xl px-6 py-10 max-w-none mb-32 border border-[#C5A059]/20">
                                         <h2 className="text-center text-4xl font-serif mb-3 tracking-tight text-primary">
-                                            {t(`books.${chapterContent.bookId}` as any)} {chapterContent.chapter}
+                                            {chapterContent.bookName} {chapterContent.chapter}
                                         </h2>
                                         <p className="text-center text-xs mb-4 uppercase tracking-widest font-semibold text-muted-foreground">
-                                            {chapterContent.version} • {chapterContent.totalVerses} {t('reading.versiculos')} • ~{Math.round(chapterContent.estimatedSeconds / 60)} min
+                                            {chapterContent.version} • {chapterContent.totalVerses} versículos • ~{Math.round(chapterContent.estimatedSeconds / 60)} min
                                         </p>
 
                                         {/* Font size controls */}
@@ -846,12 +847,12 @@ export default function Home() {
                                             </p>
                                         ))}
                                         <p className="text-center text-[10px] text-muted-foreground/50 mt-6 uppercase tracking-widest">
-                                            {t('reading.hold_to_mark')}
+                                            Pressione e segure um versículo para marcar
                                         </p>
 
                                         {/* DISCRETE CHAPTER AD */}
                                         <div className="mt-12 mb-4 border-t border-primary/5 pt-8">
-                                            <p className="text-[9px] text-center font-black uppercase tracking-[0.4em] text-primary/30 mb-4">{t('reading.study_recommendation')}</p>
+                                            <p className="text-[9px] text-center font-black uppercase tracking-[0.4em] text-primary/30 mb-4">Recomendação de Estudo</p>
                                             <AdBanner 
                                                 adSlot="CHAPTER_END" 
                                                 adFormat="horizontal" 
@@ -873,13 +874,13 @@ export default function Home() {
                                                     <div className="flex flex-col">
                                                         {wasAlreadyRead ? (
                                                             <>
-                                                                <span className="text-lg text-muted-foreground">{t('reading.already_read_banner')}</span>
-                                                                <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">{t('reading.advance_next')}</span>
+                                                                <span className="text-lg text-muted-foreground">Capítulo já lido</span>
+                                                                <span className="text-xs text-muted-foreground/60 uppercase tracking-widest">Avance para o próximo</span>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <span className="text-lg text-accent">{t('reading.reading_complete')}</span>
-                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">{t('reading.xp_quiz_info')}</span>
+                                                                <span className="text-lg text-accent">Leitura Concluída!</span>
+                                                                <span className="text-xs text-accent/70 uppercase tracking-widest">+50 XP • Quiz Disponível ao Avançar</span>
                                                             </>
                                                         )}
                                                     </div>
@@ -888,28 +889,16 @@ export default function Home() {
                                                     onClick={handleNextChapter}
                                                     className="px-6 py-3 bg-accent text-accent-foreground font-bold rounded-full hover:opacity-90 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(66,165,245,0.4)]"
                                                 >
+                                                    Próximo Capítulo <ArrowRight className="w-4 h-4" />
                                                 </button>
-                                                {profile && (() => {
-                                                    const levelInfo = getLevelInfo(profile.xp);
-                                                    return (
-                                                        <LevelProgressBar 
-                                                            level={levelInfo.currentLevel}
-                                                            progressPercentage={levelInfo.progressPercentage}
-                                                            xpInCurrentLevel={levelInfo.xpInCurrentLevel}
-                                                            xpRequiredForNextLevel={levelInfo.xpRequiredForNextLevel}
-                                                            title={levelInfo.title}
-                                                            className="mt-6"
-                                                        />
-                                                    );
-                                                })()}
                                             </div>
                                         </div>
                                     )}
                                 </>
                             ) : (
                                 <div className="text-center py-20">
-                                    <p className="text-red-400">{t('reading.content_unavailable' as any) || "Conteúdo indisponível para este capítulo ainda."}</p>
-                                    <button onClick={handleBack} className="mt-4 underline text-sm">{t('common.back' as any) || "Voltar"}</button>
+                                    <p className="text-red-400">Conteúdo indisponível para este capítulo ainda.</p>
+                                    <button onClick={handleBack} className="mt-4 underline text-sm">Voltar</button>
                                 </div>
                             )}
                         </motion.div>
@@ -919,7 +908,7 @@ export default function Home() {
 
             <QuizOfferModal
                 isOpen={showQuizOffer}
-                bookId={quizTarget?.bookId ?? "genesis"}
+                bookName={quizTarget?.bookName ?? ""}
                 chapter={quizTarget?.chapter ?? 1}
                 onAccept={handleQuizAccept}
                 onDecline={handleQuizDecline}
@@ -928,6 +917,7 @@ export default function Home() {
             <QuizModal
                 isOpen={showQuiz}
                 bookId={quizTarget?.bookId ?? "genesis"}
+                bookName={quizTarget?.bookName ?? ""}
                 chapter={quizTarget?.chapter ?? 1}
                 onComplete={handleQuizComplete}
             />
@@ -955,6 +945,7 @@ export default function Home() {
                             Política de Privacidade
                         </Link>
                     </div>
+                    <MobileNav />
                 </>
             )}
         </div>

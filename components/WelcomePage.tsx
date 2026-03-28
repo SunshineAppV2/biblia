@@ -8,57 +8,54 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
-import { useLanguage } from "./LanguageProvider";
 
-export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
+const FEATURES = [
+    {
+        icon: Flame,
+        title: "Ofensiva (Streak)",
+        description: "Mantenha o hábito vivo. Cada dia de leitura conta para sua sequência ininterrupta.",
+        color: "text-orange-500",
+        bg: "bg-orange-500/10"
+    },
+    {
+        icon: Users,
+        title: "Tribos Bíblicas",
+        description: "Crie grupos com amigos para lerem juntos. Ranking exclusivo para tribos com 3+ membros.",
+        color: "text-blue-500",
+        bg: "bg-blue-500/10"
+    },
+    {
+        icon: RefreshCw,
+        title: "Reavivados Por Sua Palavra",
+        description: "Sincronize com o plano mundial RPSP e complete os 1.189 capítulos de forma contínua.",
+        color: "text-secondary",
+        bg: "bg-secondary/10"
+    },
+    {
+        icon: Trophy,
+        title: "Ligas Globais",
+        description: "Suba de liga, do Jaspe ao Diamante, competindo saudavelmente com outros leitores.",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10"
+    },
+    {
+        icon: Gem,
+        title: "Gemas e Recompensas",
+        description: "Ganhe gemas ao ler e usar em quizzes para desbloquear itens e proteções.",
+        color: "text-blue-400",
+        bg: "bg-blue-400/10"
+    },
+    {
+        icon: Target,
+        title: "Metas Diárias",
+        description: "Defina seus objetivos e acompanhe seu progresso com métricas precisas.",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10"
+    }
+];
+
+export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
     const { isInstallable, installPWA } = usePWAInstall();
-    const { t, locale, setLocale } = useLanguage();
-
-    const FEATURES = [
-        {
-            icon: Flame,
-            title: t('feature_streak_title'),
-            description: t('feature_streak_desc'),
-            color: "text-orange-500",
-            bg: "bg-orange-500/10"
-        },
-        {
-            icon: Users,
-            title: t('feature_tribes_title'),
-            description: t('feature_tribes_desc'),
-            color: "text-blue-500",
-            bg: "bg-blue-500/10"
-        },
-        {
-            icon: RefreshCw,
-            title: t('feature_rpsp_title'),
-            description: t('feature_rpsp_desc'),
-            color: "text-secondary",
-            bg: "bg-secondary/10"
-        },
-        {
-            icon: Trophy,
-            title: t('feature_leagues_title'),
-            description: t('feature_leagues_desc'),
-            color: "text-amber-500",
-            bg: "bg-amber-500/10"
-        },
-        {
-            icon: Gem,
-            title: t('feature_gems_title'),
-            description: t('feature_gems_desc'),
-            color: "text-blue-400",
-            bg: "bg-blue-400/10"
-        },
-        {
-            icon: Target,
-            title: t('feature_goals_title'),
-            description: t('feature_goals_desc'),
-            color: "text-emerald-500",
-            bg: "bg-emerald-500/10"
-        }
-    ];
-
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] text-[#0E1B5C] font-sans selection:bg-secondary/30 overflow-x-hidden">
@@ -76,40 +73,24 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             A
                         </div>
                         <span className="text-2xl font-black italic tracking-tighter text-primary">
-                            {t('welcome.title')}
+                            AnoBíblico<span className="text-secondary">+</span>
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
-                        {/* Language Selector */}
-                        <div className="flex items-center gap-2 bg-secondary/5 p-1 rounded-xl border border-secondary/10 shrink-0">
-                            <button 
-                                onClick={() => setLocale("pt")}
-                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${locale === "pt" ? "bg-secondary text-primary shadow-sm" : "text-primary/40 hover:text-primary"}`}
-                            >
-                                PT
-                            </button>
-                            <button 
-                                onClick={() => setLocale("en")}
-                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all ${locale === "en" ? "bg-secondary text-primary shadow-sm" : "text-primary/40 hover:text-primary"}`}
-                            >
-                                EN
-                            </button>
-                        </div>
-
                         {isInstallable && (
                             <button 
                                 onClick={installPWA}
                                 className="hidden md:flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-secondary/10 text-secondary text-[11px] font-black hover:bg-secondary/20 transition-all border border-secondary/20 tracking-widest uppercase"
                             >
                                 <Download className="w-4 h-4" />
-                                {t('welcome.install')}
+                                INSTALAR APP
                             </button>
                         )}
                         <button 
                             onClick={onLogin}
                             className="px-6 py-2.5 rounded-2xl bg-primary text-white text-[11px] font-black shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all outline outline-offset-2 outline-transparent hover:outline-primary/20 uppercase tracking-widest"
                         >
-                            {t('welcome.access')}
+                            ACESSAR
                         </button>
                     </div>
                 </div>
@@ -130,16 +111,17 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             className="inline-flex items-center gap-2 px-5 py-2 mb-8 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] font-black uppercase tracking-[0.2em]"
                         >
                             <Star className="w-3.5 h-3.5 fill-current" />
-                            {t('welcome.exp_title')}
+                            A Experiência Bíblica Definitiva
                         </motion.div>
                         
                         <h1 className="text-6xl sm:text-8xl font-black leading-[0.9] mb-10 tracking-tighter">
-                            {t('welcome.hero1')} <br />
-                            <span className="text-primary italic">{t('welcome.hero2')}</span>
+                            Toda a Bíblia. <br />
+                            <span className="text-primary italic">Todos os dias.</span>
                         </h1>
                         
                         <p className="text-xl sm:text-2xl text-[#455A80] font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
-                            {t('welcome.subtitle')}
+                            O <strong>AnoBíblico+</strong> sincroniza sua leitura com o plano global (RPSP) <br className="hidden sm:block" />
+                            e motiva sua caminhada com <span className="text-secondary font-bold">gamificação, tribos e recompensas.</span>
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -149,7 +131,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
                                 <Play className="w-6 h-6 fill-current" />
-                                {t('welcome.start')}
+                                INICIAR JORNADA
                                 <ChevronRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
                             </button>
                             
@@ -159,7 +141,7 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                                     className="w-full sm:w-auto px-12 py-6 rounded-[32px] bg-white border-2 border-primary/10 text-primary font-black text-lg flex items-center justify-center gap-3 hover:bg-primary/5 active:scale-95 transition-all"
                                 >
                                     <Download className="w-6 h-6" />
-                                    {t('welcome.download')}
+                                    BAIXAR APP
                                 </button>
                             )}
                         </div>
@@ -170,10 +152,10 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
             {/* Features Showcase */}
             <section className="py-32 px-6 bg-white shadow-[0_-40px_100px_rgba(184,130,10,0.05)] rounded-[60px] relative z-10">
                 <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16 space-y-4">
-                        <h2 className="text-4xl sm:text-6xl font-black mb-6 tracking-tighter italic">{t('welcome.vanguard_title')}</h2>
+                    <div className="text-center mb-24">
+                        <h2 className="text-4xl sm:text-6xl font-black mb-6 tracking-tighter italic">O que te espera na <span className="text-secondary">vanguarda</span>?</h2>
                         <div className="w-24 h-1.5 bg-secondary/30 mx-auto rounded-full mb-6" />
-                        <p className="text-[#455A80] font-bold text-sm uppercase tracking-widest">{t('welcome.vanguard_desc')}</p>
+                        <p className="text-[#455A80] font-bold text-sm uppercase tracking-widest">Ferramentas de elite para sua disciplina espiritual</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -200,13 +182,13 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
 
                     <div className="mt-16 text-center">
                         <a 
-                            href={`https://wa.me/5591983292005?text=${encodeURIComponent(locale === "pt" ? "DESEJO AJUDAR COM UMA DOAÇÃO! QUAL A CHAVE PIX?" : "I WANT TO HELP WITH A DONATION! WHAT IS THE PIX KEY?")}`}
+                            href="https://wa.me/5591983292005?text=DESEJO+AJUDAR+COM+UMA+DOAÇÃO!+QUAL+A+CHAVE+PIX%3F"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-3 px-12 py-5 rounded-[28px] bg-[#25D366] text-white font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-green-500/30 hover:scale-105 active:scale-95 transition-all"
                         >
                             <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.063 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                            {t('welcome.donation')}
+                            DOE AQUI
                         </a>
                     </div>
                 </div>
@@ -218,13 +200,13 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                     <div className="flex-1 space-y-10">
                         <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary text-white text-[10px] font-black uppercase tracking-widest italic shadow-xl shadow-primary/20">
                             <Users className="w-4 h-4" />
-                            {t('welcome.new_tribes')}
+                            Novo: Tribos e Ranking
                         </div>
                         <h2 className="text-5xl sm:text-7xl font-black leading-[1] italic bg-gradient-to-br from-[#0E1B5C] to-[#42A5F5] bg-clip-text text-transparent">
-                            {t('welcome.together_title')} <span className="text-secondary underline underline-offset-8 decoration-secondary/30">{t('welcome.together_light')}</span>
+                            Juntos no Caminho da <span className="text-secondary underline underline-offset-8 decoration-secondary/30">Luz.</span>
                         </h2>
                         <p className="text-xl text-[#455A80] font-medium leading-relaxed">
-                            {t('welcome.together_desc')}
+                            A leitura individual agora faz parte de um todo. Ganhe XP para sua **Tribo** e suba no ranking mundial. Após cada capítulo, um quiz flash solidifica seu aprendizado.
                         </p>
                         
                         <div className="grid grid-cols-2 gap-6 pt-4">
@@ -232,13 +214,13 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                                 <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
                                     <Crown className="w-5 h-5 text-secondary" />
                                 </div>
-                                <span className="font-black text-sm uppercase tracking-widest italic">{t('welcome.diamond_league')}</span>
+                                <span className="font-black text-sm uppercase tracking-widest italic">Liga Diamante</span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                                     <Zap className="w-5 h-5 text-primary" />
                                 </div>
-                                <span className="font-black text-sm uppercase tracking-widest italic">{t('welcome.real_accel')}</span>
+                                <span className="font-black text-sm uppercase tracking-widest italic">Aceleração Real</span>
                             </div>
                         </div>
                     </div>
@@ -294,38 +276,28 @@ export default function WelcomePage({ onLogin }: { onLogin: () => void }) {
                         whileInView={{ opacity: 1 }}
                         className="text-5xl sm:text-7xl font-black tracking-tighter italic"
                     >
-                        {t('welcome.rediscover')} <br /> {t('welcome.never_before')}
+                        Redescubra a Bíblia <br /> como <span className="text-secondary underline decoration-secondary/30 underline-offset-8">nunca</span> antes.
                     </motion.h2>
                     <button 
                         onClick={onLogin}
                         className="px-16 py-7 rounded-[32px] bg-secondary text-primary font-black text-2xl shadow-[0_20px_60px_rgba(184,130,10,0.4)] hover:scale-105 active:scale-95 transition-all group"
                     >
-                        {t('welcome.cta')}
+                        ACESSAR ANOBÍBLICO+
                     </button>
                     
                     <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 mb-12 border border-white/10 max-w-2xl mx-auto">
                         <p className="text-[11px] font-bold text-white/50 leading-relaxed uppercase tracking-widest">
                             <Info className="w-3.5 h-3.5 inline mr-2 opacity-40" />
-                            {t('welcome.ads_info')} <br />
-                            <span className="text-secondary opacity-80">{t('welcome.ads_mission')}</span>
+                            O AnoBíblico+ é mantido de forma gratuita através de anúncios e patrocínios. <br />
+                            <span className="text-secondary opacity-80">Seu apoio contribui para levar a Palavra ao mundo todo.</span>
                         </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-12 pt-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-                        <Link href="/politica-de-privacidade" className="hover:text-secondary transition-colors">{t('welcome.policy')}</Link>
+                        <Link href="/politica-de-privacidade" className="hover:text-secondary transition-colors">POLÍTICA DE PRIVACIDADE</Link>
                         <span className="hidden sm:block">|</span>
-                        <Link href="/termos-de-uso" className="hover:text-secondary transition-colors">{t('welcome.terms')}</Link>
-                        <span className="hidden sm:block">|</span>
-                        <a 
-                            href={`https://wa.me/5591983292005?text=${encodeURIComponent(locale === "pt" ? "PRECISO DE SUPORTE" : "I NEED SUPPORT")}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-secondary transition-colors"
-                        >
-                            {t('welcome.support')}
-                        </a>
+                        <p>© 2026 ANOBÍBLICO+. TODOS OS DIREITOS RESERVADOS.</p>
                     </div>
-                    <p>© 2026 {t('welcome.title')}. {t('welcome.rights')}</p>
                 </div>
             </footer>
         </div>

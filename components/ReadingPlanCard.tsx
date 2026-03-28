@@ -3,14 +3,12 @@
 import { useState, useEffect } from "react";
 import { BookOpen, ChevronRight, Flame } from "lucide-react";
 import { getTodaysPlanChapter, getPlanProgress, getUpcomingChapters, PlanChapter } from "@/lib/reading-plan";
-import { useLanguage } from "@/components/LanguageProvider";
 
 interface ReadingPlanCardProps {
   onNavigate: (bookId: string, chapter: number) => void;
 }
 
 export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
-  const { t } = useLanguage();
   const [today, setToday] = useState<PlanChapter | null>(null);
   const [progress, setProgress] = useState<{ dayNumber: number; totalDays: number; percent: number } | null>(null);
   const [upcoming, setUpcoming] = useState<PlanChapter[]>([]);
@@ -42,19 +40,19 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
           <Flame className="w-5 h-5 text-yellow-300" />
           <div>
             <p className="text-[10px] font-black text-white/60 uppercase tracking-widest leading-none mb-0.5">
-              {t('plan.title')}
+              Plano de Leitura
             </p>
             <p className="text-sm font-bold text-white leading-none">
-              {t('plan.rpsp')}
+              REAVIVADOS POR SUA PALAVRA (RPSP)
             </p>
           </div>
         </div>
         <div className="text-right">
           <p className="text-xs font-black text-yellow-300">
-            {t('plan.day')} {progress.dayNumber}
+            Dia {progress.dayNumber}
           </p>
           <p className="text-[10px] text-white/50">
-            {t('plan.of')} {progress.totalDays}
+            de {progress.totalDays}
           </p>
         </div>
       </div>
@@ -74,7 +72,7 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
       <div className="px-5 pt-4 pb-3">
         <p className="text-[10px] font-semibold uppercase tracking-widest mb-1"
           style={{ color: "var(--muted-foreground)" }}>
-          {t('plan.today')}
+          Leitura de hoje
         </p>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -86,10 +84,10 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
             </div>
             <div>
               <p className="font-black text-lg leading-tight" style={{ color: "var(--foreground)" }}>
-                {t(`books.${today.bookId}` as any)} {today.chapter}
+                {today.bookName} {today.chapter}
               </p>
               <p className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                {progress.percent}% {t('plan.completed')}
+                {progress.percent}% do plano concluído
               </p>
             </div>
           </div>
@@ -98,7 +96,7 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
             className="shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm text-white shadow-md hover:opacity-90 active:scale-95 transition-all"
             style={{ background: "linear-gradient(135deg, #B8820A, #D4A430)" }}
           >
-            {t('plan.read_now')}
+            Ler hoje
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -109,7 +107,7 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
         <div className="px-5 pb-4 pt-1 border-t" style={{ borderColor: "rgba(184,130,10,0.12)" }}>
           <p className="text-[10px] font-semibold uppercase tracking-widest mb-2"
             style={{ color: "var(--muted-foreground)" }}>
-            {t('plan.upcoming')}
+            Próximos dias
           </p>
           <div className="flex flex-col gap-1">
             {next3.map((ch, i) => (
@@ -120,9 +118,9 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
               >
                 <span>
                   <span className="font-semibold opacity-50 mr-2">+{i + 1}d</span>
-                  {t(`books.${ch.bookId}` as any)} {ch.chapter}
+                  {ch.bookName} {ch.chapter}
                 </span>
-                <span className="text-[10px] opacity-40">{t('plan.day')} {ch.dayNumber}</span>
+                <span className="text-[10px] opacity-40">Dia {ch.dayNumber}</span>
               </div>
             ))}
           </div>
@@ -138,7 +136,7 @@ export function ReadingPlanCard({ onNavigate }: ReadingPlanCardProps) {
           opacity: 0.6,
         }}
       >
-        {t('plan.footer')}
+        1 capítulo por dia · Bíblia completa em ~3 anos
       </div>
     </div>
   );

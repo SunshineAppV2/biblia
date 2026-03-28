@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Zap, CheckCircle2, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useLanguage } from "@/components/LanguageProvider";
 
 // ─── Storage helpers ────────────────────────────────────────────────────────
 
@@ -176,7 +175,6 @@ function getMissionsForToday(): Mission[] {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function DailyMissions() {
-    const { t } = useLanguage();
     const [missions, setMissions] = useState<MissionState>({ read1: false, read2: false, quiz1: false, quiz_perfect: false, early_bird: false, marathon: false, read_count: 0 });
     const [activeMissions, setActiveMissions] = useState<Mission[]>([]);
 
@@ -200,10 +198,10 @@ export function DailyMissions() {
             <div className="flex items-center justify-between px-1">
                 <h3 className="text-base font-black text-primary uppercase tracking-widest flex items-center gap-2">
                     <Zap className="w-4 h-4 text-secondary fill-current" />
-                    {t('dashboard.missions_title')}
+                    Missões Diárias
                 </h3>
                 <span className="text-xs font-bold text-muted-foreground">
-                    {t('dashboard.missions_completed', { count: completedCount, total: activeMissions.length })}
+                    {completedCount}/{activeMissions.length} completas
                 </span>
             </div>
 
@@ -215,8 +213,8 @@ export function DailyMissions() {
                 >
                     <span className="text-2xl">🎉</span>
                     <div>
-                        <p className="text-sm font-black text-primary">{t('dashboard.all_missions_done')}</p>
-                        <p className="text-xs text-muted-foreground">{t('dashboard.missions_back_tomorrow')}</p>
+                        <p className="text-sm font-black text-primary">Todas as missões concluídas!</p>
+                        <p className="text-xs text-muted-foreground">Volte amanhã para novas missões.</p>
                     </div>
                 </motion.div>
             )}
@@ -254,20 +252,20 @@ export function DailyMissions() {
 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-2">
-                                         <p className={cn(
-                                             "text-sm font-bold leading-tight",
-                                             done ? "text-secondary" : "text-primary"
-                                         )}>
-                                             {t(`dashboard.mission_${mission.id}_title` as any)}
-                                         </p>
-                                         <span className={cn(
-                                             "text-[10px] font-black shrink-0",
-                                             done ? "text-secondary" : "text-accent"
-                                         )}>
-                                             +{mission.xp} XP
-                                         </span>
-                                     </div>
-                                     <p className="text-xs text-muted-foreground mt-0.5">{t(`dashboard.mission_${mission.id}_desc` as any)}</p>
+                                        <p className={cn(
+                                            "text-sm font-bold leading-tight",
+                                            done ? "text-secondary" : "text-primary"
+                                        )}>
+                                            {mission.title}
+                                        </p>
+                                        <span className={cn(
+                                            "text-[10px] font-black shrink-0",
+                                            done ? "text-secondary" : "text-accent"
+                                        )}>
+                                            +{mission.xp} XP
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{mission.description}</p>
 
                                     {/* Progress bar */}
                                     <div className="mt-2 h-1 bg-primary/10 rounded-full overflow-hidden">
