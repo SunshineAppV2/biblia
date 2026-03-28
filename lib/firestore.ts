@@ -147,7 +147,11 @@ export async function createGroup(uid: string, name: string, description: string
     if (userData.groupId) throw new Error("User already in a group");
 
     const groupsRef = collection(db, "groups");
+    const newGroupRef = doc(groupsRef); // Gera um ID único localmente
+    const groupId = newGroupRef.id;
+
     const newGroup = {
+        id: groupId,
         name,
         description: description || "Sem descrição",
         leaderUid: uid,
@@ -157,11 +161,10 @@ export async function createGroup(uid: string, name: string, description: string
         members: [uid]
     };
 
-    const docRef = await addDoc(groupsRef, newGroup);
-    await updateDoc(docRef, { id: docRef.id }); // Mantenha o ID interno para consistência
-    await updateDoc(userRef, { groupId: docRef.id });
+    await setDoc(newGroupRef, newGroup);
+    await updateDoc(userRef, { groupId });
 
-    return docRef.id;
+    return groupId;
 }
 
 export async function joinGroup(uid: string, groupId: string): Promise<void> {
