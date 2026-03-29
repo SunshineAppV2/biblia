@@ -254,11 +254,12 @@ export default function ArenaPage() {
 
                                 {searchingTimeout && (
                                     <motion.p 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="text-red-400 text-[10px] font-black uppercase tracking-widest mt-4"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="text-secondary/70 text-[10px] font-black uppercase tracking-[0.2em] mt-6 bg-white/5 py-3 px-6 rounded-2xl border border-white/5"
                                     >
-                                        Ninguém no seu nível online agora. Tente novamente em instantes!
+                                        Ainda não encontramos um companheiro disponível para aprender junto agora. <br />
+                                        <span className="opacity-40">Tente novamente em instantes!</span>
                                     </motion.p>
                                 )}
                             </div>
