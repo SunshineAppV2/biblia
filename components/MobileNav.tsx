@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Book, Trophy, User, LogOut, Zap } from "lucide-react";
+import { Home, Book, Trophy, User, LogOut, Zap, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useAuth } from "./AuthProvider";
 
 const NAV_ITEMS = [
     { label: "Home", icon: Home, href: "/" },
-    { label: "Ranking", icon: Trophy, href: "/ranking" },
+    { label: "Plano", icon: Book, href: "/planos" },
     { label: "Jornada", icon: Zap, href: "/arena" },
-    { label: "Tribos", icon: Trophy, href: "/tribos" },
+    { label: "Ranking", icon: Trophy, href: "/ranking" },
+    { label: "Tribos", icon: Users, href: "/tribos" },
     { label: "Perfil", icon: User, href: "/profile" },
 ];
 

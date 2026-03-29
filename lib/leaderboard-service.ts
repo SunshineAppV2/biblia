@@ -7,13 +7,14 @@ export interface LeaderboardEntry {
     displayName: string;
     photoURL: string | null;
     value: number;
+    xp?: number;
     level?: number;
     totalChapters?: number;
 }
 
 /** Rankings por Nível (Global ou por Liga) - Esconde Admins */
 export async function getGlobalLevelRanking(league?: string, lastWeek: boolean = false): Promise<LeaderboardEntry[]> {
-    const field = lastWeek ? "lastWeekXp" : "xp";
+    const field = lastWeek ? "lastWeekXp" : "weeklyXp";
     let q;
     
     const baseQuery = [
@@ -44,6 +45,7 @@ export async function getGlobalLevelRanking(league?: string, lastWeek: boolean =
             displayName: data.displayName || "Leitor Anônimo",
             photoURL: data.photoURL,
             value: (data as any)[field] || 0,
+            xp: data.xp || 0,
             totalChapters: data.totalChapters || 0,
         };
     });

@@ -5,7 +5,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Trophy, Gem, ArrowLeft, Check, X, Timer, Users, Scroll, Sword, PenTool, BookOpen, Mail, Eye, Star, Lock } from "lucide-react";
 import Link from "next/link";
-import { addUserXp } from "@/lib/firestore";
+import { awardXp } from "@/lib/firestore";
 import { trackArenaWin } from "@/components/DailyMissions";
 import { completeMissionXP } from "@/lib/progress";
 import { useToast } from "@/components/Toast";
@@ -91,7 +91,7 @@ export default function MestreDoSaberPage() {
         if (isCorrect) {
             setScore(prev => prev + 1);
             showToast("CORRETÍSSIMO! +20 XP", "achievement");
-            if (profile) await addUserXp(profile.uid, 20);
+            await awardXp({ type: "QUIZ", correctCount: 2 }); // Emulated quiz gain
             
             if (!characters.includes(selectedCategory.id)) {
                 setCharacters(prev => [...prev, selectedCategory.id]);

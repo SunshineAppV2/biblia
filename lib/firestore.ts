@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy, writeBatch, deleteDoc, limit, onSnapshot } from "firebase/firestore";
 import { User } from "firebase/auth";
 
@@ -121,22 +121,45 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
     return null;
 }
 
+/** 
+ * Envia uma ação de XP para o servidor validar e processar.
+ * Única forma segura de ganhar XP após o hardening das regras.
+ */
+export async function awardXp(payload: { type: "CHAPTER" | "QUIZ" | "MISSION" | "ENCOUNTER_WIN", bookId?: string, chapter?: number, correctCount?: number, bonus?: number, missionId?: string }): Promise<void> {
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    try {
+        const token = await user.getIdToken(true); // Forçar refresh para garantir token novo
+        const res = await fetch("/api/xp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "Erro ao processar XP");
+        }
+    } catch (error) {
+        console.error("awardXp error:", error);
+        throw error;
+    }
+}
+
+/** Deprecated: use awardXp para ações específicas. 
+ * Mantido por compatibilidade, redireciona para tipo MISSION com bônus.
+ */
 export async function addUserXp(uid: string, amount: number): Promise<void> {
-    const userRef = doc(db, "users", uid);
-    await updateDoc(userRef, {
-        xp: increment(amount),
-        weeklyXp: increment(amount),
-        lastActive: serverTimestamp(),
-    });
+    return awardXp({ type: "MISSION", bonus: amount, missionId: "legacy_add_user_xp" });
 }
 
 export async function applyXpDelta(uid: string, delta: number): Promise<void> {
-    if (delta === 0) return;
-    const userRef = doc(db, "users", uid);
-    await updateDoc(userRef, {
-        xp: increment(delta),
-        weeklyXp: increment(delta),
-    });
+    if (delta <= 0) return;
+    return awardXp({ type: "MISSION", bonus: delta, missionId: "legacy_delta" });
 }
 
 export async function updateUserVersion(uid: string, version: string): Promise<void> {

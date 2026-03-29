@@ -13,8 +13,12 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if request.auth != null;
       allow write: if request.auth != null && (
-        request.auth.uid == userId || 
         isAdmin() ||
+        (request.auth.uid == userId && 
+          // Bloqueia edição direta de campos de pontuação e economia por usuários comuns
+          !request.resource.data.diff(resource.data).affectedKeys()
+            .hasAny(['xp', 'weeklyXp', 'gems', 'streak', 'weeklyEncounterWins', 'currentLeague', 'lastWeekXp', 'lastWeekEncounterWins'])
+        ) ||
         (
           // Permite que o líder do grupo remova o groupId de um membro
           resource != null && resource.data.groupId != null && 

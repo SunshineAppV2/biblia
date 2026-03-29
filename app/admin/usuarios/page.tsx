@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Fragment } from "react";
 import {
     collection,
     getDocs,
@@ -30,6 +30,7 @@ export default function UsuariosPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
     const [xpInput, setXpInput] = useState<Record<string, string>>({});
+    const [weeklyXpInput, setWeeklyXpInput] = useState<Record<string, string>>({});
     const [streakInput, setStreakInput] = useState<Record<string, string>>({});
     const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
@@ -125,9 +126,14 @@ export default function UsuariosPage() {
 
     async function handleSaveAdjustment(uid: string) {
         const newXp = xpInput[uid] !== undefined ? parseInt(xpInput[uid], 10) : undefined;
+        const newWeeklyXp = weeklyXpInput[uid] !== undefined ? parseInt(weeklyXpInput[uid], 10) : undefined;
         const newStreak = streakInput[uid] !== undefined ? parseInt(streakInput[uid], 10) : undefined;
 
-        if ((newXp !== undefined && isNaN(newXp)) || (newStreak !== undefined && isNaN(newStreak))) {
+        if (
+            (newXp !== undefined && isNaN(newXp)) || 
+            (newWeeklyXp !== undefined && isNaN(newWeeklyXp)) ||
+            (newStreak !== undefined && isNaN(newStreak))
+        ) {
             alert("Valores inválidos.");
             return;
         }
@@ -136,6 +142,7 @@ export default function UsuariosPage() {
         try {
             const updates: Record<string, number> = {};
             if (newXp !== undefined && !isNaN(newXp)) updates.xp = newXp;
+            if (newWeeklyXp !== undefined && !isNaN(newWeeklyXp)) updates.weeklyXp = newWeeklyXp;
             if (newStreak !== undefined && !isNaN(newStreak)) updates.streak = newStreak;
 
             if (Object.keys(updates).length === 0) return;
@@ -229,7 +236,7 @@ export default function UsuariosPage() {
                                     const isExpanded = expandedRow === u.uid;
 
                                     return (
-                                        <>
+                                        <Fragment key={u.uid}>
                                         <tr
                                             key={u.uid}
                                             className={`border-b ${isExpanded ? "" : "border-gray-800"} hover:bg-gray-900/50 transition-colors ${u.suspended ? "opacity-60" : ""}`}
@@ -318,6 +325,7 @@ export default function UsuariosPage() {
                                                             setExpandedRow(isExpanded ? null : u.uid);
                                                             if (!isExpanded) {
                                                                 setXpInput((p) => ({ ...p, [u.uid]: String(u.xp) }));
+                                                                setWeeklyXpInput((p) => ({ ...p, [u.uid]: String(u.weeklyXp || 0) }));
                                                                 setStreakInput((p) => ({ ...p, [u.uid]: String(u.streak) }));
                                                             }
                                                         }}
@@ -384,6 +392,15 @@ export default function UsuariosPage() {
                                                             />
                                                         </div>
                                                         <div>
+                                                            <label className="block text-xs text-gray-400 mb-1">XP da Semana</label>
+                                                            <input
+                                                                type="number"
+                                                                value={weeklyXpInput[u.uid] ?? String(u.weeklyXp || 0)}
+                                                                onChange={(e) => setWeeklyXpInput((p) => ({ ...p, [u.uid]: e.target.value }))}
+                                                                className="w-32 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-white text-sm focus:border-gray-500 focus:outline-none"
+                                                            />
+                                                        </div>
+                                                        <div>
                                                             <label className="block text-xs text-gray-400 mb-1">Streak (dias)</label>
                                                             <input
                                                                 type="number"
@@ -414,7 +431,7 @@ export default function UsuariosPage() {
                                                 </td>
                                             </tr>
                                         )}
-                                        </>
+                                        </Fragment>
                                     );
                                 })}
 

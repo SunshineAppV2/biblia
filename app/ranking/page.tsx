@@ -177,7 +177,7 @@ export default function RankingPage() {
                     ranking.map((entry, index) => {
                         const isFirst = index === 0;
                         const isMe = entry.uid === user?.uid;
-                        const level = activeTab === "level" ? calculateLevel(entry.value) : null;
+                        const level = activeTab === "level" ? calculateLevel(entry.xp ?? entry.value) : null;
 
                         return (
                             <motion.div

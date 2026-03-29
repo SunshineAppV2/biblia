@@ -5,7 +5,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Trophy, Gem, ArrowLeft, Check, X, Timer, Users, BookOpen, Lock } from "lucide-react";
 import Link from "next/link";
-import { joinArenaQueue, leaveArenaQueue, findRivalInQueue, createArenaMatch, updateMatchScore, finishArenaMatch, ArenaMatch, addUserXp } from "@/lib/firestore";
+import { joinArenaQueue, leaveArenaQueue, findRivalInQueue, createArenaMatch, updateMatchScore, finishArenaMatch, ArenaMatch, awardXp } from "@/lib/firestore";
 import { trackArenaWin } from "@/components/DailyMissions";
 import { completeMissionXP } from "@/lib/progress";
 import { useToast } from "@/components/Toast";
@@ -156,9 +156,9 @@ export default function ArenaPage() {
         if (matchId) await finishArenaMatch(matchId);
         
         if (finalScore >= opponentScore && profile) {
-            await addUserXp(profile.uid, 40);
+            await awardXp({ type: "ENCOUNTER_WIN" });
             const bonus = trackArenaWin();
-            if (bonus > 0) await completeMissionXP(profile.uid, bonus);
+            if (bonus > 0) await awardXp({ type: "MISSION", bonus, missionId: "arena_streak_bonus" });
             showToast("CONQUISTA NO BOM DE BÍBLIA!", "achievement");
             await refreshProfile();
         }

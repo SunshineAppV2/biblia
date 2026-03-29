@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const TOTAL_SECONDS = 10;
+const TOTAL_SECONDS = 4;
 const PAGE_FLIP_INTERVAL = 1600;
 
 const VERSIONS = [
