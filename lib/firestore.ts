@@ -100,6 +100,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             isAdmin: user.email === "aseabra2005@gmail.com",
             groupId: data.groupId !== undefined ? data.groupId : null,
             weeklyEncounterWins: data.weeklyEncounterWins !== undefined ? data.weeklyEncounterWins : 0,
+            currentLeague: (data.currentLeague && ["AGATA", "JASPE", "ONIX", "AMETISTA", "CALCEDONIA", "SARDIO", "LAPIS", "CRISOLITO", "AMBAR", "JACINTO", "TURQUESA", "BERILO", "SARDONICA", "TOPAZIO", "CRISOPRASO", "PEROLA", "SAFIRA", "ESMERALDA", "RUBI", "DIAMANTE"].includes(data.currentLeague)) ? data.currentLeague : "AGATA",
         };
 
         // Migração: adicionar referralCode para usuários antigos

@@ -257,22 +257,13 @@ export async function getLeagueLeaderboard(user: UserProfile): Promise<LeaguePar
 }
 
 /** Converte ligas do sistema antigo para o novo (compatibilidade com dados existentes). */
+/** 
+ * Garante que todos iniciem no começo da jornada (Ágata).
+ * Caso o usuário já tenha avançado no novo sistema, mantém.
+ */
 export function migrateLegacyLeague(tier: string): LeagueTier {
-    const legacy: Record<string, LeagueTier> = {
-        BRONZE: "AGATA",
-        PRATA: "CALCEDONIA",
-        OURO: "TOPAZIO",
-        OBSIDIANA: "LAPIS",
-        // As abaixo existem nos dois sistemas com o mesmo nome
-        SAFIRA: "SAFIRA",
-        RUBI: "RUBI",
-        ESMERALDA: "ESMERALDA",
-        AMETISTA: "AMETISTA",
-        PEROLA: "PEROLA",
-        DIAMANTE: "DIAMANTE",
-    };
     if (LEAGUE_ORDER.includes(tier as LeagueTier)) return tier as LeagueTier;
-    return legacy[tier] ?? "AGATA";
+    return "AGATA";
 }
 
 export function getPromotionZone(tier: LeagueTier): number {
