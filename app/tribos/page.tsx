@@ -14,12 +14,13 @@ import {
     UserGroup,
     UserProfile
 } from "@/lib/firestore";
-import { Trophy, Users, Plus, Shield, LogOut, ChevronRight, Crown, Info, BookOpen, Flame, Zap, Target, Star, Gem, Play, Download, Trash2, UserPlus, ShieldCheck, Copy } from "lucide-react";
+import { Trophy, Users, Plus, Shield, LogOut, ChevronRight, Crown, Info, BookOpen, Flame, Zap, Target, Star, Gem, Play, Download, Trash2, UserPlus, ShieldCheck, Copy, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/Toast";
 import { AdBanner } from "@/components/AdBanner";
 import Link from "next/link";
 import { MobileNav } from "@/components/MobileNav";
+import { TribeMural } from "@/components/TribeMural";
 
 export default function TribesPage() {
     const { user, profile, refreshProfile } = useAuth();
@@ -47,6 +48,24 @@ export default function TribesPage() {
                 } else {
                     setGroup(null);
                     setMembers([]);
+
+                    // Check for join param in URL if not in a group
+                    const params = new URLSearchParams(window.location.search);
+                    const joinTarget = params.get("join");
+                    if (joinTarget && !profile?.groupId) {
+                        const confirmJoin = confirm(`Deseja entrar na tribo ID: ${joinTarget}?`);
+                        if (confirmJoin) {
+                            try {
+                                await joinGroup(user.uid, joinTarget);
+                                showToast("Você entrou na tribo!", "success");
+                                refreshProfile();
+                                // Limpa a URL
+                                window.history.replaceState({}, document.title, "/tribos");
+                            } catch (e: any) {
+                                showToast(e.message, "error");
+                            }
+                        }
+                    }
                 }
                 const r = await getGroupsRanking(3); // Min 3 members
                 setRanking(r);
@@ -108,9 +127,10 @@ export default function TribesPage() {
 
     const copyInvite = () => {
         if (!group) return;
-        const id = group.id.split('_')[1] || group.id;
-        navigator.clipboard.writeText(id);
-        showToast("ID da Tribo copiado!", "success");
+        const id = group.id;
+        const url = `${window.location.origin}/tribos?join=${id}`;
+        navigator.clipboard.writeText(url);
+        showToast("Link de convite copiado!", "success");
     };
 
     if (loading) {
@@ -211,13 +231,13 @@ export default function TribesPage() {
                                         </button>
                                     )}
                                 </div>
-                                <button 
-                                    onClick={copyInvite}
-                                    className="flex items-center gap-2 text-[10px] font-black text-secondary hover:text-white transition-all uppercase tracking-[0.2em]"
-                                >
-                                    <Copy className="w-3.5 h-3.5" />
-                                    ID: {group.id.split('_')[1] || "—"}
-                                </button>
+                                 <button 
+                                     onClick={copyInvite}
+                                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary/10 border border-secondary/20 text-[10px] font-black text-secondary hover:bg-secondary hover:text-white transition-all uppercase tracking-[0.15em] shadow-sm active:scale-95"
+                                 >
+                                     <Share2 className="w-3.5 h-3.5 focus:scale-110" />
+                                     Convidar Amigos
+                                 </button>
                              </div>
                         </div>
 
@@ -274,6 +294,11 @@ export default function TribesPage() {
                                     );
                                 })}
                             </div>
+                        </div>
+
+                        {/* Mural da Tribo */}
+                        <div className="mt-8">
+                            <TribeMural groupId={group.id} user={user!} />
                         </div>
                     </motion.div>
                 ) : (

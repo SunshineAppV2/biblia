@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy, writeBatch } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, addDoc, increment, serverTimestamp, Timestamp, collection, getDocs, query, where, orderBy, writeBatch, deleteDoc, limit, onSnapshot } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 export interface UserProfile {
@@ -43,6 +43,13 @@ export interface UserGroup {
     totalXpWeek: number;
     createdAt: Timestamp;
     members: string[]; // array de uids
+}export interface TribeMessage {
+    id?: string;
+    senderUid: string;
+    senderName: string;
+    senderPhoto?: string | null;
+    content: string;
+    createdAt: Timestamp | any;
 }
 
 export async function createOrUpdateUser(user: User): Promise<UserProfile> {
@@ -372,4 +379,112 @@ export async function getGroupMembers(memberUids: string[]): Promise<UserProfile
     const snap = await getDocs(q);
     
     return snap.docs.map(d => d.data() as UserProfile);
+}
+
+export async function sendTribeMessage(groupId: string, user: User, content: string): Promise<void> {
+    if (!content.trim()) return;
+    
+    const messagesRef = collection(db, "groups", groupId, "messages");
+    await addDoc(messagesRef, {
+        senderUid: user.uid,
+        senderName: user.displayName || "Usuário",
+        senderPhoto: user.photoURL,
+        content: content.trim(),
+        createdAt: serverTimestamp()
+    });
+}
+
+// --- ARENA / DUEL FUNCTIONS ---
+
+export interface ArenaPlayer {
+    uid: string;
+    name: string;
+    level: number;
+    status: "searching" | "playing";
+    createdAt: any;
+}
+
+export interface ArenaMatch {
+    id?: string;
+    players: string[];
+    playerNames: Record<string, string>;
+    scores: Record<string, number>;
+    status: "playing" | "finished";
+    createdAt: any;
+}
+
+/** Entra na fila da Arena */
+export async function joinArenaQueue(user: User, level: number) {
+    const queueRef = doc(db, "arena_queue", user.uid);
+    await setDoc(queueRef, {
+        uid: user.uid,
+        name: user.displayName || "Guerreiro",
+        level: level,
+        status: "searching",
+        createdAt: serverTimestamp()
+    });
+}
+
+/** Sai da fila da Arena */
+export async function leaveArenaQueue(uid: string) {
+    await deleteDoc(doc(db, "arena_queue", uid));
+}
+
+/** Busca um oponente na fila que não seja ele mesmo e no mesmo nível/próximo */
+export async function findRivalInQueue(uid: string, level: number): Promise<ArenaPlayer | null> {
+    const q = query(
+        collection(db, "arena_queue"),
+        where("status", "==", "searching"),
+        where("level", ">=", level - 2), // Margem de 2 níveis
+        where("level", "<=", level + 2),
+        limit(5)
+    );
+    
+    const snapshot = await getDocs(q);
+    const rivals = snapshot.docs
+        .map(d => d.data() as ArenaPlayer)
+        .filter(r => r.uid !== uid);
+    
+    return rivals.length > 0 ? rivals[0] : null;
+}
+
+/** Inicializa uma partida entre dois jogadores */
+export async function createArenaMatch(player1: { uid: string, name: string }, player2: { uid: string, name: string }): Promise<string> {
+    const matchId = [player1.uid, player2.uid].sort().join("_");
+    const matchRef = doc(db, "arena_matches", matchId);
+    await setDoc(matchRef, {
+        players: [player1.uid, player2.uid],
+        playerNames: {
+            [player1.uid]: player1.name,
+            [player2.uid]: player2.name
+        },
+        scores: {
+            [player1.uid]: 0,
+            [player2.uid]: 0
+        },
+        status: "playing",
+        createdAt: serverTimestamp()
+    });
+    
+    // Atualiza status na fila (para que outros não os achem)
+    await deleteDoc(doc(db, "arena_queue", player1.uid));
+    await deleteDoc(doc(db, "arena_queue", player2.uid));
+    
+    return matchId;
+}
+
+/** Atualiza a pontuação na partida */
+export async function updateMatchScore(matchId: string, uid: string, score: number) {
+    const matchRef = doc(db, "arena_matches", matchId);
+    await updateDoc(matchRef, {
+        [`scores.${uid}`]: score
+    });
+}
+
+/** Finaliza a partida */
+export async function finishArenaMatch(matchId: string) {
+    const matchRef = doc(db, "arena_matches", matchId);
+    await updateDoc(matchRef, {
+        status: "finished"
+    });
 }

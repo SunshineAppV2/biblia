@@ -49,6 +49,14 @@ service cloud.firestore {
         request.auth.uid == resource.data.leaderUid || 
         isAdmin()
       );
+
+      // Regras para o Mural da Tribo
+      match /messages/{messageId} {
+        allow read: if request.auth != null && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.groupId == groupId;
+        allow create: if request.auth != null && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.groupId == groupId;
+      }
     }
 
     // Ranking e Ligas
