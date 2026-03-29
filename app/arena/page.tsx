@@ -100,7 +100,7 @@ export default function ArenaPage() {
             const opponentUid = data.players.find(p => p !== profile.uid);
             if (opponentUid) {
                 setOpponentScore(data.scores[opponentUid] || 0);
-                setOpponentName(data.playerNames[opponentUid] || "Companheiro");
+                setOpponentName(data.playerNames[opponentUid] || "Leitor");
             }
 
             if (gameState === "searching") {
@@ -248,7 +248,7 @@ export default function ArenaPage() {
                                     <div className="absolute inset-0 bg-gradient-to-r from-secondary to-yellow-600 transition-all group-hover/btn:scale-110" />
                                     <div className="relative py-6 px-8 flex items-center justify-center gap-4 text-primary font-black text-xl italic tracking-tighter uppercase">
                                         <Zap className="w-7 h-7 fill-current" />
-                                        {isLocked ? "ACESSO BLOQUEADO" : "BUSCAR COMPANHEIRO"}
+                                        {isLocked ? "ACESSO BLOQUEADO" : "BUSCAR LEITOR"}
                                     </div>
                                 </button>
 
@@ -258,7 +258,7 @@ export default function ArenaPage() {
                                         animate={{ opacity: 1, scale: 1 }}
                                         className="text-secondary/70 text-[10px] font-black uppercase tracking-[0.2em] mt-6 bg-white/5 py-3 px-6 rounded-2xl border border-white/5"
                                     >
-                                        Ainda não encontramos um companheiro disponível para aprender junto agora. <br />
+                                        Ainda não encontramos um leitor disponível para aprender junto agora. <br />
                                         <span className="opacity-40">Tente novamente em instantes!</span>
                                     </motion.p>
                                 )}
@@ -308,7 +308,7 @@ export default function ArenaPage() {
                             </div>
                             <div className="text-center space-y-3">
                                 <h3 className="text-3xl font-black italic tracking-tight uppercase bg-gradient-to-r from-white via-white to-white/40 bg-clip-text text-transparent animate-pulse">
-                                    Aguardando Amigo...
+                                    Aguardando Leitor...
                                 </h3>
                                 <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">{activePlan?.name}</p>
                             </div>
