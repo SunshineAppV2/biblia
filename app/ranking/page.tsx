@@ -10,10 +10,14 @@ import { calculateLevel } from "@/lib/levels";
 import { cn } from "@/lib/utils";
 
 type Tab = "level" | "encounter";
+type View = "current" | "last";
+type Scope = "league" | "global";
 
 export default function RankingPage() {
     const { user, profile } = useAuth();
     const [activeTab, setActiveTab] = useState<Tab>("level");
+    const [view, setView] = useState<View>("current");
+    const [scope, setScope] = useState<Scope>("league");
     const [ranking, setRanking] = useState<LeaderboardEntry[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -21,11 +25,14 @@ export default function RankingPage() {
         const fetchRanking = async () => {
             setLoading(true);
             try {
+                const leagueFilter = scope === "league" ? profile?.currentLeague : undefined;
+                const isLastWeek = view === "last";
+
                 if (activeTab === "level") {
-                    const data = await getGlobalLevelRanking();
+                    const data = await getGlobalLevelRanking(leagueFilter, isLastWeek);
                     setRanking(data);
                 } else {
-                    const data = await getWeeklyEncounterRanking();
+                    const data = await getWeeklyEncounterRanking(leagueFilter, isLastWeek);
                     setRanking(data);
                 }
             } catch (error) {
@@ -35,7 +42,7 @@ export default function RankingPage() {
             }
         };
         fetchRanking();
-    }, [activeTab]);
+    }, [activeTab, view, scope, profile?.currentLeague]);
 
     return (
         <div className="min-h-screen bg-background pb-32 pt-12 px-6 font-sans max-w-2xl mx-auto">
@@ -50,10 +57,55 @@ export default function RankingPage() {
                 <p className="text-sm text-muted-foreground mt-3 font-medium leading-relaxed">
                    Os maiores leitores e estudiosos da Palavra. <br />
                    <span className="text-secondary font-bold underline underline-offset-4 decoration-secondary/30">
-                       {activeTab === "level" ? "Ranking global por nível de sabedoria." : "Ranking semanal da Jornada do Saber."}
+                       {activeTab === "level" ? "Ranking por nível de sabedoria." : "Ranking da Jornada do Saber."}
                    </span>
                 </p>
             </header>
+
+            {/* View & Scope Selector */}
+            <div className="flex flex-col gap-4 mb-8">
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setView("current")}
+                        className={cn(
+                            "flex-1 py-3 px-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                            view === "current" ? "bg-primary text-white border-primary" : "bg-white/50 text-muted-foreground border-secondary/10"
+                        )}
+                    >
+                        Esta Semana
+                    </button>
+                    <button
+                        onClick={() => setView("last")}
+                        className={cn(
+                            "flex-1 py-3 px-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                            view === "last" ? "bg-primary text-white border-primary" : "bg-white/50 text-muted-foreground border-secondary/10"
+                        )}
+                    >
+                        Semana Passada
+                    </button>
+                </div>
+                
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setScope("league")}
+                        className={cn(
+                            "flex-1 py-3 px-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                            scope === "league" ? "bg-secondary/10 text-secondary border-secondary/20" : "bg-white/50 text-muted-foreground border-secondary/10"
+                        )}
+                    >
+                        Minha Liga ({profile?.currentLeague})
+                    </button>
+                    <button
+                        onClick={() => setScope("global")}
+                        className={cn(
+                            "flex-1 py-3 px-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                            scope === "global" ? "bg-secondary/10 text-secondary border-secondary/20" : "bg-white/50 text-muted-foreground border-secondary/10"
+                        )}
+                    >
+                        Global
+                    </button>
+                </div>
+            </div>
 
             {/* Tabs */}
             <div className="flex p-1.5 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-secondary/10 rounded-[30px] mb-8 shadow-sm">
@@ -102,7 +154,7 @@ export default function RankingPage() {
                             <h3 className="text-xl font-black italic tracking-tighter">
                                 {activeTab === "level" ? "Conquiste Gemas subindo de nível!" : "1º Lugar ganha 50 Gemas!"}
                             </h3>
-                            <p className="text-[10px] opacity-60 font-medium mt-1">Sorteio acontece todo Domingo às 19:00.</p>
+                            <p className="text-[10px] opacity-60 font-medium mt-1">Sorteio acontece todo Domingo às 21:00.</p>
                         </div>
                     </div>
                 </motion.div>

@@ -191,12 +191,12 @@ export function getCurrentWeekId(): string {
     const day = now.getDay(); // 0 = Sunday
     const hour = now.getHours();
 
-    // How many days back to the last "week start" (Sunday 19:00)
+    // How many days back to the last "week start" (Sunday 21:00)
     let daysBack: number;
-    if (day === 0 && hour >= 19) {
-        daysBack = 0; // Today is Sunday after 19:00 — new week just started
+    if (day === 0 && hour >= 21) {
+        daysBack = 0; // Today is Sunday after 21:00 — new week just started
     } else if (day === 0) {
-        daysBack = 7; // Today is Sunday before 19:00 — still in previous week
+        daysBack = 7; // Today is Sunday before 21:00 — still in previous week
     } else {
         daysBack = day; // Mon(1)–Sat(6) → go back to last Sunday
     }
@@ -215,9 +215,9 @@ export function getNextLeagueReset(): Date {
     const day = now.getDay();
     const hour = now.getHours();
 
-    // Days until next Sunday 19:00
+    // Days until next Sunday 21:00
     let daysAhead: number;
-    if (day === 0 && hour < 19) {
+    if (day === 0 && hour < 21) {
         daysAhead = 0; // Today is Sunday, reset hasn't happened yet
     } else if (day === 0) {
         daysAhead = 7; // Today is Sunday after 19:00, next reset is next Sunday
@@ -227,7 +227,7 @@ export function getNextLeagueReset(): Date {
 
     const reset = new Date(now);
     reset.setDate(now.getDate() + daysAhead);
-    reset.setHours(19, 0, 0, 0);
+    reset.setHours(21, 0, 0, 0);
     return reset;
 }
 
@@ -333,6 +333,8 @@ export async function checkAndProcessLeagueWeek(user: UserProfile): Promise<{
         currentLeague: newLeague,
         weeklyXp: 0,
         weeklyEncounterWins: 0,
+        lastWeekXp: user.weeklyXp,
+        lastWeekEncounterWins: user.weeklyEncounterWins || 0,
         leagueWeekId: weekId,
     };
 

@@ -19,22 +19,22 @@ const FEATURES = [
     },
     {
         icon: Zap,
-        title: "BOM DE BÍBLIA+",
-        description: "Duelos baseados no seu plano semanal. Disponível a partir do Nível 10.",
+        title: "ENCONTROS BÍBLICOS",
+        description: "Encontros baseados no seu plano semanal. Disponível a partir do Nível 10.",
         color: "text-secondary",
         bg: "bg-secondary/10"
     },
     {
         icon: Star,
-        title: "BIBLIAQUIZ+",
-        description: "Arena global estilo trivia com roleta e coleção de selos. (Nível 20+)",
+        title: "JORNADA DO SABER",
+        description: "Jornada estilo trivia com roleta e coleção de selos. (Nível 20+)",
         color: "text-primary",
         bg: "bg-primary/10"
     },
     {
         icon: Users,
         title: "Tribos e Convites",
-        description: "Convide amigos e ganhe 100 Gemas! Forme tribos e suba no ranking mundial.",
+        description: "Convide amigos e ganhe 100 Gemas! Forme tribos e vença no Hall da Fama semanal.",
         color: "text-blue-500",
         bg: "bg-blue-500/10"
     },
@@ -200,13 +200,13 @@ export default function WelcomePage({ onLogin }: { onLogin?: () => void }) {
                     <div className="flex-1 space-y-10">
                         <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary text-white text-[10px] font-black uppercase tracking-widest italic shadow-xl shadow-primary/20">
                             <Users className="w-4 h-4" />
-                            Novo: Tribos e Ranking
+                            Novo: Tribos e Hall da Fama
                         </div>
                         <h2 className="text-5xl sm:text-7xl font-black leading-[1] italic bg-gradient-to-br from-[#0E1B5C] to-[#42A5F5] bg-clip-text text-transparent">
                             Juntos no Caminho da <span className="text-secondary underline underline-offset-8 decoration-secondary/30">Luz.</span>
                         </h2>
                         <p className="text-xl text-[#455A80] font-medium leading-relaxed">
-                            A leitura individual agora faz parte de um todo. Ganhe XP para sua **Tribo** e suba no ranking mundial. Após cada capítulo, um quiz flash solidifica seu aprendizado.
+                            A leitura individual agora faz parte de um todo. Ganhe XP para sua **Tribo** e conquiste seu lugar no Hall da Fama. Após cada capítulo, um quiz flash solidifica seu aprendizado.
                         </p>
                         
                         <div className="grid grid-cols-2 gap-6 pt-4">

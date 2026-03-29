@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore";
 import { UserProfile } from "./firestore";
 
 export interface LeaderboardEntry {
@@ -10,13 +10,31 @@ export interface LeaderboardEntry {
     level?: number;
 }
 
-/** Rankings por Nível (Global) */
-export async function getGlobalLevelRanking(): Promise<LeaderboardEntry[]> {
-    const q = query(
-        collection(db, "users"),
-        orderBy("xp", "desc"),
+/** Rankings por Nível (Global ou por Liga) - Esconde Admins */
+export async function getGlobalLevelRanking(league?: string, lastWeek: boolean = false): Promise<LeaderboardEntry[]> {
+    const field = lastWeek ? "lastWeekXp" : "xp";
+    let q;
+    
+    const baseQuery = [
+        where("isAdmin", "!=", true),
+        orderBy("isAdmin"), // Firestore requirement for != operator
+        orderBy(field, "desc"),
         limit(50)
-    );
+    ];
+
+    if (league) {
+        q = query(
+            collection(db, "users"),
+            where("currentLeague", "==", league),
+            ...baseQuery
+        );
+    } else {
+        q = query(
+            collection(db, "users"),
+            ...baseQuery
+        );
+    }
+    
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => {
         const data = doc.data() as UserProfile;
@@ -24,18 +42,36 @@ export async function getGlobalLevelRanking(): Promise<LeaderboardEntry[]> {
             uid: data.uid,
             displayName: data.displayName || "Leitor Anônimo",
             photoURL: data.photoURL,
-            value: data.xp,
+            value: (data as any)[field] || 0,
         };
     });
 }
 
-/** Rankings da Jornada do Saber (Semanal) */
-export async function getWeeklyEncounterRanking(): Promise<LeaderboardEntry[]> {
-    const q = query(
-        collection(db, "users"),
-        orderBy("weeklyEncounterWins", "desc"),
+/** Rankings da Jornada do Saber (Semanal ou da Semana Passada, filtrado por liga) - Esconde Admins */
+export async function getWeeklyEncounterRanking(league?: string, lastWeek: boolean = false): Promise<LeaderboardEntry[]> {
+    const field = lastWeek ? "lastWeekEncounterWins" : "weeklyEncounterWins";
+    let q;
+
+    const baseQuery = [
+        where("isAdmin", "!=", true),
+        orderBy("isAdmin"),
+        orderBy(field, "desc"),
         limit(50)
-    );
+    ];
+
+    if (league) {
+        q = query(
+            collection(db, "users"),
+            where("currentLeague", "==", league),
+            ...baseQuery
+        );
+    } else {
+        q = query(
+            collection(db, "users"),
+            ...baseQuery
+        );
+    }
+
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => {
         const data = doc.data() as UserProfile;
@@ -43,7 +79,7 @@ export async function getWeeklyEncounterRanking(): Promise<LeaderboardEntry[]> {
             uid: data.uid,
             displayName: data.displayName || "Leitor Anônimo",
             photoURL: data.photoURL,
-            value: data.weeklyEncounterWins || 0,
+            value: (data as any)[field] || 0,
         };
     });
 }

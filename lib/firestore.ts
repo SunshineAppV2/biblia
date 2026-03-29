@@ -32,6 +32,8 @@ export interface UserProfile {
     referredBy?: string | null;
     referralsCount: number;
     weeklyEncounterWins: number; // Vitórias na Jornada do Saber na semana atual
+    lastWeekXp?: number; // XP da semana passada (para conferência)
+    lastWeekEncounterWins?: number; // Vitórias da semana passada (para conferência)
     lastRankingRewardWeek?: string; // Última semana em que recebeu prêmio de ranking
 }
 
