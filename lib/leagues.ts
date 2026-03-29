@@ -300,10 +300,15 @@ export async function checkAndProcessLeagueWeek(user: UserProfile): Promise<{
     const currentTier = migrateLegacyLeague(user.currentLeague || "AGATA");
     const currentIdx = LEAGUE_ORDER.indexOf(currentTier);
 
-    // Get user's rank in their league
+    // Get user's rank in their league (XP)
     const leaderboard = await getLeagueLeaderboard(user);
     const rank = leaderboard.findIndex(p => p.uid === user.uid) + 1;
     const total = leaderboard.length;
+
+    // Get user's rank in Jornada (Encounter Wins)
+    const { getWeeklyEncounterRanking } = await import("./leaderboard-service");
+    const encounterLeaderboard = await getWeeklyEncounterRanking();
+    const encounterRank = encounterLeaderboard.findIndex(p => p.uid === user.uid) + 1;
 
     let newIdx = currentIdx;
     let promoted = false;
@@ -323,11 +328,20 @@ export async function checkAndProcessLeagueWeek(user: UserProfile): Promise<{
 
     const newLeague = LEAGUE_ORDER[newIdx];
     const userRef = doc(db, "users", user.uid);
-    await updateDoc(userRef, {
+    
+    const updateData: any = {
         currentLeague: newLeague,
         weeklyXp: 0,
+        weeklyEncounterWins: 0,
         leagueWeekId: weekId,
-    });
+    };
+
+    // Reward for 1st place in League (XP) or 1st place in Jornada (Wins)
+    if ((rank === 1 && user.weeklyXp > 0) || (encounterRank === 1 && (user.weeklyEncounterWins || 0) > 0)) {
+        updateData.gems = (user.gems || 0) + 50;
+    }
+
+    await updateDoc(userRef, updateData);
 
     return { promoted, demoted, newLeague };
 }

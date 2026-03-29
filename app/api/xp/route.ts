@@ -37,19 +37,32 @@ export async function POST(req: NextRequest) {
             auditData.bookId = bookId;
             auditData.chapter = chapter;
         } else if (type === "MISSION") {
-            // Missions bonus (e.g. read 10 chapters)
+            // Missions bonus
             xpDelta = body.bonus || 0;
             auditData.action = "MISSION_BONUS";
             auditData.missionId = body.missionId;
+        } else if (type === "ENCOUNTER_WIN") {
+            // Jornada do Saber win
+            xpDelta = 40;
+            auditData.action = "ENCOUNTER_WIN";
         }
 
+        let updateData: any = {
+            lastActive: FieldValue.serverTimestamp(),
+        };
+
         if (xpDelta > 0) {
+            updateData.xp = FieldValue.increment(xpDelta);
+            updateData.weeklyXp = FieldValue.increment(xpDelta);
+        }
+
+        if (type === "ENCOUNTER_WIN") {
+            updateData.weeklyEncounterWins = FieldValue.increment(1);
+        }
+
+        if (xpDelta > 0 || type === "ENCOUNTER_WIN") {
             const userRef = adminDb.collection("users").doc(uid);
-            await userRef.update({
-                xp: FieldValue.increment(xpDelta),
-                weeklyXp: FieldValue.increment(xpDelta),
-                lastActive: FieldValue.serverTimestamp(),
-            });
+            await userRef.update(updateData);
 
             // Log the action for later auditing if needed
             await adminDb.collection("xp_audit").add({

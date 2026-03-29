@@ -31,6 +31,8 @@ export interface UserProfile {
     referralCode: string;
     referredBy?: string | null;
     referralsCount: number;
+    weeklyEncounterWins: number; // Vitórias na Jornada do Saber na semana atual
+    lastRankingRewardWeek?: string; // Última semana em que recebeu prêmio de ranking
 }
 
 export interface UserGroup {
@@ -80,6 +82,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             referralCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
             referralsCount: 0,
             groupId: null,
+            weeklyEncounterWins: 0,
         };
         await setDoc(userRef, newProfile);
         return newProfile;
@@ -94,6 +97,7 @@ export async function createOrUpdateUser(user: User): Promise<UserProfile> {
             gems: data.gems !== undefined ? data.gems : 100,
             isAdmin: user.email === "aseabra2005@gmail.com",
             groupId: data.groupId !== undefined ? data.groupId : null,
+            weeklyEncounterWins: data.weeklyEncounterWins !== undefined ? data.weeklyEncounterWins : 0,
         };
 
         // Migração: adicionar referralCode para usuários antigos
