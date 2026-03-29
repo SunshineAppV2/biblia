@@ -394,7 +394,7 @@ export async function sendTribeMessage(groupId: string, user: User, content: str
     });
 }
 
-// --- ARENA / DUEL FUNCTIONS ---
+// --- ENCONTRO BÍBLICO / JORNADA DO SABER ---
 
 export interface ArenaPlayer {
     uid: string;
@@ -413,19 +413,19 @@ export interface ArenaMatch {
     createdAt: any;
 }
 
-/** Entra na fila da Arena */
+/** Inicia jornada do saber */
 export async function joinArenaQueue(user: User, level: number) {
     const queueRef = doc(db, "arena_queue", user.uid);
     await setDoc(queueRef, {
         uid: user.uid,
-        name: user.displayName || "Guerreiro",
+        name: user.displayName || "Leitor",
         level: level,
         status: "searching",
         createdAt: serverTimestamp()
     });
 }
 
-/** Sai da fila da Arena */
+/** Finaliza busca */
 export async function leaveArenaQueue(uid: string) {
     await deleteDoc(doc(db, "arena_queue", uid));
 }

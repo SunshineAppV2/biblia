@@ -88,7 +88,7 @@ export function TribeMural({ groupId, user }: TribeMuralProps) {
                             <Send className="w-6 h-6 text-secondary" />
                         </div>
                         <p className="text-xs font-bold uppercase tracking-widest">Nada por aqui ainda...</p>
-                        <p className="text-[10px]">Seja o primeiro a enviar um grito de guerra!</p>
+                        <p className="text-[10px]">Seja o primeiro a enviar uma mensagem de fé!</p>
                     </div>
                 ) : (
                     <AnimatePresence initial={false}>

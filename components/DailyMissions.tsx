@@ -110,7 +110,7 @@ export function trackDailyShare(): number {
     return bonus;
 }
 
-/** Call this when user wins an arena duel. */
+/** Call this when user completes an encounter. */
 export function trackArenaWin(): number {
     const state = loadMissions();
     let bonus = 0;
@@ -195,8 +195,8 @@ const MISSIONS: Mission[] = [
     {
         id: "arena_win",
         icon: Zap,
-        title: "Guerreiro da Arena",
-        description: "Vença 1 duelo na Arena",
+        title: "Irmão de Jornada",
+        description: "Complete 1 Encontro Bíblico",
         xp: 40,
         color: "text-amber-500",
     },

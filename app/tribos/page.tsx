@@ -153,7 +153,7 @@ export default function TribesPage() {
                 </h1>
                 <p className="text-sm text-muted-foreground mt-3 font-medium leading-relaxed">
                    Unam-se para conquistar o objetivo de ler a Bíblia toda em um ano. <br />
-                   <span className="text-secondary font-bold underline underline-offset-4 decoration-secondary/30">Guerreiem juntos, cresçam juntos.</span>
+                   <span className="text-secondary font-bold underline underline-offset-4 decoration-secondary/30">Caminhem juntos, cresçam juntos.</span>
                 </p>
             </header>
 
@@ -206,7 +206,7 @@ export default function TribesPage() {
                                                 <Shield className="w-3.5 h-3.5 fill-current" />
                                                 Elegível
                                             </p>
-                                            <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">Sua tribo está pronta para lutar pela glória!</p>
+                                            <p className="text-[9px] font-medium opacity-80 mt-1 leading-relaxed">Sua tribo está pronta para brilhar no ranking!</p>
                                         </div>
                                     )}
                                 </div>
@@ -245,7 +245,7 @@ export default function TribesPage() {
                         <div className="bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-secondary/10 rounded-[32px] p-8 shadow-sm">
                             <h3 className="text-sm font-black text-primary uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
                                 <Users className="w-5 h-5 text-secondary" />
-                                Guerreiros Ativos
+                                Membros Ativos
                             </h3>
                             <div className="grid gap-3">
                                 {members.map((m, i) => {
@@ -267,10 +267,10 @@ export default function TribesPage() {
                                                     <span className="text-sm font-black text-primary block truncate max-w-[140px]">
                                                         {isLeader && <Crown className="w-3.5 h-3.5 inline mr-1.5 text-secondary fill-current" />}
                                                         {!isLeader && isAdmin && <ShieldCheck className="w-3.5 h-3.5 inline mr-1.5 text-blue-500 fill-current" />}
-                                                        {m.displayName || "Guerreiro"}
+                                                        {m.displayName || "Leitor"}
                                                     </span>
                                                     <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                                        {isLeader ? "Líder Supremo" : isAdmin ? "Cunhado / Admin" : "Guerreiro"}
+                                                        {isLeader ? "Líder" : isAdmin ? "Admin / Auxiliar" : "Leitor"}
                                                     </span>
                                                 </div>
                                             </div>

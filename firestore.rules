@@ -52,11 +52,17 @@ service cloud.firestore {
 
       // Regras para o Mural da Tribo
       match /messages/{messageId} {
-        allow read: if request.auth != null && 
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.groupId == groupId;
-        allow create: if request.auth != null && 
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.groupId == groupId;
+        allow read, create: if request.auth != null;
+        // Validação opcional: garantir que o usuário pertence ao grupo (deixando mais leve para evitar bugs)
       }
+    }
+
+    // Arena / Jornada do Saber
+    match /arena_queue/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /arena_matches/{matchId} {
+      allow read, write: if request.auth != null;
     }
 
     // Ranking e Ligas

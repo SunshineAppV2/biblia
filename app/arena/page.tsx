@@ -100,7 +100,7 @@ export default function ArenaPage() {
             const opponentUid = data.players.find(p => p !== profile.uid);
             if (opponentUid) {
                 setOpponentScore(data.scores[opponentUid] || 0);
-                setOpponentName(data.playerNames[opponentUid] || "Rival");
+                setOpponentName(data.playerNames[opponentUid] || "Companheiro");
             }
 
             if (gameState === "searching") {
@@ -159,7 +159,7 @@ export default function ArenaPage() {
             await addUserXp(profile.uid, 40);
             const bonus = trackArenaWin();
             if (bonus > 0) await completeMissionXP(profile.uid, bonus);
-            showToast("VITÓRIA NO BOM DE BÍBLIA!", "achievement");
+            showToast("CONQUISTA NO BOM DE BÍBLIA!", "achievement");
             await refreshProfile();
         }
     };
@@ -178,7 +178,7 @@ export default function ArenaPage() {
                     </h1>
                     <div className="flex items-center justify-center gap-2 mt-1 mx-auto overflow-hidden">
                         <div className="h-[1px] w-4 bg-gradient-to-r from-transparent to-white/40" />
-                        <p className="text-[10px] uppercase font-black text-white/40 tracking-[0.3em] italic">Duelos do Plano</p>
+                        <p className="text-[10px] uppercase font-black text-white/40 tracking-[0.3em] italic">Jornada do Saber</p>
                         <div className="h-[1px] w-4 bg-gradient-to-l from-transparent to-white/40" />
                     </div>
                 </div>
@@ -206,9 +206,9 @@ export default function ArenaPage() {
                                         <div className="w-24 h-24 bg-white/5 rounded-[40px] flex items-center justify-center mb-6 border border-white/10 shadow-2xl">
                                             <Lock className="w-10 h-10 text-secondary" />
                                         </div>
-                                        <h2 className="text-3xl font-black italic uppercase tracking-tighter">Arena Trancada</h2>
+                                        <h2 className="text-3xl font-black italic uppercase tracking-tighter">Portal Fechado</h2>
                                         <p className="text-white/40 text-sm mt-3 font-bold uppercase tracking-widest max-w-[200px] leading-relaxed">
-                                            Alcance o <span className="text-secondary">Nível 10</span> para liberar duelos.
+                                            Alcance o <span className="text-secondary">Nível 10</span> para participar dos encontros.
                                         </p>
                                     </div>
                                 )}
@@ -230,7 +230,7 @@ export default function ArenaPage() {
 
                                 <div className="space-y-4 relative z-10">
                                     <h2 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
-                                        Duelo da <br/><span className="text-secondary">Semana</span>
+                                        Encontro da <br/><span className="text-secondary">Semana</span>
                                     </h2>
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
@@ -248,7 +248,7 @@ export default function ArenaPage() {
                                     <div className="absolute inset-0 bg-gradient-to-r from-secondary to-yellow-600 transition-all group-hover/btn:scale-110" />
                                     <div className="relative py-6 px-8 flex items-center justify-center gap-4 text-primary font-black text-xl italic tracking-tighter uppercase">
                                         <Zap className="w-7 h-7 fill-current" />
-                                        {isLocked ? "ARENA BLOQUEADA" : "ENCONTRAR RIVAL"}
+                                        {isLocked ? "ACESSO BLOQUEADO" : "BUSCAR COMPANHEIRO"}
                                     </div>
                                 </button>
 
@@ -265,11 +265,11 @@ export default function ArenaPage() {
 
                             <div className="grid grid-cols-2 gap-6 pb-10">
                                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[40px] text-center shadow-2xl relative group">
-                                    <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-[0.3em]">Duelos Hoje</p>
+                                    <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-[0.3em]">Encontros Hoje</p>
                                     <p className="text-4xl font-black italic tracking-tighter text-white">5</p>
                                 </div>
                                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-[40px] text-center shadow-2xl relative group">
-                                    <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-[0.3em]">Vitórias</p>
+                                    <p className="text-[10px] font-black uppercase text-white/30 mb-2 tracking-[0.3em]">Conquistas</p>
                                     <p className="text-4xl font-black italic tracking-tighter text-emerald-400">80%</p>
                                 </div>
                             </div>
@@ -307,7 +307,7 @@ export default function ArenaPage() {
                             </div>
                             <div className="text-center space-y-3">
                                 <h3 className="text-3xl font-black italic tracking-tight uppercase bg-gradient-to-r from-white via-white to-white/40 bg-clip-text text-transparent animate-pulse">
-                                    Buscando Rival...
+                                    Aguardando Amigo...
                                 </h3>
                                 <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">{activePlan?.name}</p>
                             </div>
@@ -348,10 +348,10 @@ export default function ArenaPage() {
                             
                             <div className="space-y-3">
                                 <h2 className="text-5xl font-black italic uppercase tracking-tighter leading-none mb-2">
-                                    {score >= opponentScore ? "VITÓRIA!" : "DERROTA"}
+                                    {score >= opponentScore ? "CONQUISTA!" : "TENTE DE NOVO"}
                                 </h2>
                                 <p className="text-white/40 font-black uppercase tracking-[0.3em] text-[10px] bg-white/5 inline-block px-4 py-1 rounded-full border border-white/5">
-                                    {score >= opponentScore ? `Você dominou ${opponentName}` : `${opponentName} foi superior`}
+                                    {score >= opponentScore ? `Você superou ${opponentName}` : `${opponentName} se destacou`}
                                 </p>
                             </div>
 
@@ -372,7 +372,7 @@ export default function ArenaPage() {
                                     <div className="pt-6 border-t border-white/5">
                                         <div className="flex items-center justify-center gap-3 text-secondary">
                                             <Zap className="w-5 h-5 fill-current" />
-                                            <span className="text-sm font-black uppercase tracking-widest">+40 XP de Glória conquistados</span>
+                                            <span className="text-sm font-black uppercase tracking-widest">+40 XP de Sabedoria conquistados</span>
                                         </div>
                                     </div>
                                 )}
@@ -383,13 +383,13 @@ export default function ArenaPage() {
                                     onClick={() => setGameState("lobby")}
                                     className="flex-1 bg-white/5 hover:bg-white/10 text-white font-black py-6 rounded-[32px] border border-white/10 transition-all uppercase tracking-widest active:scale-95 text-xs shadow-xl"
                                 >
-                                    SAIR DA ARENA
+                                    VOLTAR AO INÍCIO
                                 </button>
                                 <button 
                                     onClick={startSearch}
                                     className="flex-1 bg-secondary text-primary font-black py-6 rounded-[32px] shadow-[0_20px_40px_rgba(184,130,10,0.3)] hover:scale-[1.02] transition-all uppercase tracking-widest active:scale-95 text-xs italic"
                                 >
-                                    NOVO DUELO
+                                    NOVO ENCONTRO
                                 </button>
                             </div>
                         </motion.div>

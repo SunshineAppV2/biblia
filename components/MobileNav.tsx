@@ -10,7 +10,7 @@ import { useAuth } from "./AuthProvider";
 const NAV_ITEMS = [
     { label: "Home", icon: Home, href: "/" },
     { label: "Plano", icon: Book, href: "/planos" },
-    { label: "Arena", icon: Zap, href: "/arena" },
+    { label: "Jornada", icon: Zap, href: "/arena" },
     { label: "Tribos", icon: Trophy, href: "/tribos" },
     { label: "Perfil", icon: User, href: "/profile" },
 ];
