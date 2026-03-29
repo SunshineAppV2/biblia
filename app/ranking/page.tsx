@@ -227,6 +227,14 @@ export default function RankingPage() {
                                             {entry.displayName} {isMe && "(Você)"}
                                         </p>
                                         <div className="flex items-center gap-2 mt-1">
+                                            {entry.totalChapters !== undefined && entry.totalChapters > 0 && (
+                                                <span className={cn(
+                                                    "text-[8px] font-bold uppercase px-1.5 py-0.5 rounded bg-white/10 border border-white/5",
+                                                    isFirst ? "text-white" : "text-primary/40"
+                                                )}>
+                                                    📖 {entry.totalChapters} caps
+                                                </span>
+                                            )}
                                             {level !== null && (
                                                 <span className={cn(
                                                     "text-[9px] font-black uppercase px-2 py-0.5 rounded-full",

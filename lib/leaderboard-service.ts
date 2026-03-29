@@ -8,6 +8,7 @@ export interface LeaderboardEntry {
     photoURL: string | null;
     value: number;
     level?: number;
+    totalChapters?: number;
 }
 
 /** Rankings por Nível (Global ou por Liga) - Esconde Admins */
@@ -43,6 +44,7 @@ export async function getGlobalLevelRanking(league?: string, lastWeek: boolean =
             displayName: data.displayName || "Leitor Anônimo",
             photoURL: data.photoURL,
             value: (data as any)[field] || 0,
+            totalChapters: data.totalChapters || 0,
         };
     });
 }
@@ -80,6 +82,7 @@ export async function getWeeklyEncounterRanking(league?: string, lastWeek: boole
             displayName: data.displayName || "Leitor Anônimo",
             photoURL: data.photoURL,
             value: (data as any)[field] || 0,
+            totalChapters: data.totalChapters || 0,
         };
     });
 }

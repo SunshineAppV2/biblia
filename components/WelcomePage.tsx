@@ -19,8 +19,8 @@ const FEATURES = [
     },
     {
         icon: Zap,
-        title: "ENCONTROS BÍBLICOS",
-        description: "Encontros baseados no seu plano semanal. Disponível a partir do Nível 10.",
+        title: "BOM DE BÍBLIA+",
+        description: "Teste seu conhecimento no seu plano semanal. Disponível a partir do Nível 10.",
         color: "text-secondary",
         bg: "bg-secondary/10"
     },

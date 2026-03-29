@@ -116,6 +116,17 @@ export default function AdminDashboardPage() {
                         </div>
                         <span className="ml-auto text-gray-600">→</span>
                     </Link>
+                    <Link
+                        href="/admin/tribos"
+                        className="flex items-center gap-4 rounded-xl border border-gray-800 bg-gray-900 px-5 py-4 hover:border-gray-600 transition-colors"
+                    >
+                        <span className="text-2xl">🛡️</span>
+                        <div>
+                            <div className="font-semibold text-white">Gerenciar Tribos</div>
+                            <div className="text-xs text-gray-500">Visualizar e excluir tribos do sistema</div>
+                        </div>
+                        <span className="ml-auto text-gray-600">→</span>
+                    </Link>
                 </div>
             </div>
         </div>

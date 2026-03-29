@@ -293,9 +293,19 @@ export async function redeemReferralCode(uid: string, code: string): Promise<voi
 }
 
 export async function getGroupById(groupId: string): Promise<UserGroup | null> {
-    const groupRef = doc(db, "groups", groupId);
-    const snap = await getDoc(groupRef);
-    return snap.exists() ? (snap.data() as UserGroup) : null;
+    const docSnap = await getDoc(doc(db, "groups", groupId));
+    if (docSnap.exists()) {
+        const data = docSnap.data() as UserGroup;
+        return { ...data, id: docSnap.id };
+    }
+    return null;
+}
+
+/** Retorna todas as tribos (Função Administrativa) */
+export async function getAllGroups(): Promise<UserGroup[]> {
+    const q = query(collection(db, "groups"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    return snap.docs.map(d => ({ ...d.data() as UserGroup, id: d.id }));
 }
 
 export async function adminSetUserXp(uid: string, xp: number): Promise<void> {
@@ -350,6 +360,23 @@ export async function deleteGroup(groupId: string, leaderUid: string): Promise<v
     // Deletar o documento do grupo
     batch.delete(groupRef);
     
+    await batch.commit();
+}
+
+/** Exclui qualquer tribo (Função Administrativa) */
+export async function adminDeleteGroup(groupId: string): Promise<void> {
+    const groupRef = doc(db, "groups", groupId);
+    const groupSnap = await getDoc(groupRef);
+    if (!groupSnap.exists()) throw new Error("Tribo não encontrada");
+    
+    const groupData = groupSnap.data() as UserGroup;
+    const batch = writeBatch(db);
+    
+    for (const memberUid of groupData.members) {
+        batch.update(doc(db, "users", memberUid), { groupId: null });
+    }
+    
+    batch.delete(groupRef);
     await batch.commit();
 }
 
