@@ -274,7 +274,7 @@ export default function Home() {
             if (addedXp) {
                 // Tracking
                 markReadToday();
-                await trackWeeklyChapter(user.uid);
+                trackWeeklyChapter();
                 
                 const missionBonus = trackDailyRead();
                 if (missionBonus) {
