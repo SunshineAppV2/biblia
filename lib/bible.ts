@@ -1,10 +1,5 @@
 import { getBookById } from "./bible-books";
-import { GENESIS_ARC } from "./genesis-local";
-
-// Local data takes priority for ARC — guaranteed availability offline
-const LOCAL_DATA: Record<string, Record<number, string[]>> = {
-    genesis: GENESIS_ARC,
-};
+import { LOCAL_BIBLE } from "./bible-local-index";
 
 export interface ChapterContent {
     bookId: string;
@@ -19,10 +14,11 @@ export interface ChapterContent {
 // Version mapping to bolls.life API codes
 // bolls.life Portuguese translations: ARC, ARA, NTPT
 export const VERSIONS = [
-    { id: "ARC",  name: "Almeida Revista e Corrigida",  apiCode: "ARC"  },
     { id: "ARA",  name: "Almeida Revista e Atualizada",  apiCode: "ARA"  },
+    { id: "NVI",  name: "Nova Versão Internacional",      apiCode: "NVI"  },
     { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", apiCode: "NTLH" },
     { id: "NAA",  name: "Nova Almeida Atualizada",       apiCode: "NAA"  },
+    { id: "TB",   name: "Tradução Brasileira",            apiCode: "TB"   },
 ];
 
 interface BollsVerse {
@@ -40,29 +36,57 @@ function getApiCode(versionId: string): string {
     return VERSIONS.find(v => v.id === versionId)?.apiCode || "ARC";
 }
 
-async function fetchFromBolls(bookNum: number, chapter: number, apiCode: string): Promise<string[] | null> {
-    try {
-        const url = `https://bolls.life/get-chapter/${apiCode}/${bookNum}/${chapter}/`;
-        const response = await fetch(url);
+async function fetchFromBolls(
+    bookNum: number, 
+    chapter: number, 
+    apiCode: string, 
+    retries: number = 2
+): Promise<string[] | null> {
+    const url = `https://bolls.life/get-chapter/${apiCode}/${bookNum}/${chapter}/`;
+    
+    for (let i = 0; i <= retries; i++) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
 
-        const verses: BollsVerse[] = await response.json();
-        if (!verses || verses.length === 0) return null;
+            if (!response.ok) {
+                if (response.status === 404) return null; // Chapter truly doesn't exist
+                throw new Error(`HTTP ${response.status}`);
+            }
 
-        return verses
-            .sort((a, b) => a.verse - b.verse)
-            .map(v => v.text.replace(/<[^>]*>/g, '').trim());
-    } catch (error) {
-        console.error(`bolls.life fetch failed [${apiCode} ${bookNum}:${chapter}]`, error);
-        return null;
+            const verses: BollsVerse[] = await response.json();
+            if (!verses || verses.length === 0) return null;
+
+            return verses
+                .sort((a, b) => a.verse - b.verse)
+                .map(v => v.text.replace(/<[^>]*>/g, '').trim());
+        } catch (error: any) {
+            const isLast = i === retries;
+            const errorMsg = error.name === 'AbortError' ? 'Timeout' : error.message;
+            
+            console.warn(
+                `bolls.life fetch attempt ${i + 1} failed [${apiCode} ${bookNum}:${chapter}]: ${errorMsg}`
+            );
+
+            if (isLast) {
+                console.error(`Final failure fetching from bolls.life:`, error);
+                return null;
+            }
+            
+            // Wait before retry: 500ms, 1200ms
+            await new Promise(resolve => setTimeout(resolve, 500 * (i + 1) * (i + 1)));
+        }
     }
+    return null;
 }
 
 export async function getChapterContent(
     bookId: string,
     chapter: number,
-    version: string = "ARC"
+    version: string = "ARA"
 ): Promise<ChapterContent | null> {
     const cacheKey = `${bookId}_${chapter}_${version}`;
     if (chapterCache.has(cacheKey)) return chapterCache.get(cacheKey)!;
@@ -72,25 +96,18 @@ export async function getChapterContent(
 
     const apiCode = getApiCode(version);
 
-    // 1. Use local data for ARC (instant, offline-safe)
-    let verses: string[] | null = null;
-    if (version === "ARC" && LOCAL_DATA[bookId]?.[chapter]) {
-        verses = LOCAL_DATA[bookId][chapter];
-    }
+    // 1. Use local data for the requested version (offline-safe)
+    const localVersion = LOCAL_BIBLE[version] ?? LOCAL_BIBLE['ARA'];
+    let verses: string[] | null = localVersion?.[bookId]?.[chapter] ?? null;
 
-    // 2. Try API for other versions or chapters not in local data
+    // 2. If not found locally, try the API
     if (!verses) {
         verses = await fetchFromBolls(book.bookNum, chapter, apiCode);
     }
 
-    // 3. Fallback: try ARC via API
-    if (!verses && apiCode !== "ARC") {
-        verses = await fetchFromBolls(book.bookNum, chapter, "ARC");
-    }
-
-    // 4. Last resort: use local ARC data regardless of requested version
-    if (!verses && LOCAL_DATA[bookId]?.[chapter]) {
-        verses = LOCAL_DATA[bookId][chapter];
+    // 3. Fallback: use local ARA if API also failed
+    if (!verses) {
+        verses = LOCAL_BIBLE['ARA']?.[bookId]?.[chapter] ?? null;
     }
 
     if (!verses || verses.length === 0) return null;

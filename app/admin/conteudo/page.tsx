@@ -44,7 +44,7 @@ const OT_BOOKS: BookDef[] = [
     { id: "oseias", name: "Oséias", chapters: 14 },
     { id: "joel", name: "Joel", chapters: 3 },
     { id: "amos", name: "Amós", chapters: 9 },
-    { id: "abadias", name: "Abdias", chapters: 1 },
+    { id: "obadias", name: "Obadias", chapters: 1 },
     { id: "jonas", name: "Jonas", chapters: 4 },
     { id: "miqueias", name: "Miquéias", chapters: 7 },
     { id: "naum", name: "Naum", chapters: 3 },

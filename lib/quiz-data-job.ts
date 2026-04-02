@@ -1,7 +1,7 @@
 import { BankQuestion } from "./quiz-data";
 
 export const QUIZ_BANK_JOB: Record<string, Record<number, BankQuestion[]>> = {
-    job: {
+    jo: {
         1: [
             { question: "Onde vivia o homem chamado Jó?", answer: "Na terra de Uz", distractors: ["Em Ur dos Caldeus", "No deserto de Zur"], reference: "Jó 1:1" },
             { question: "O que Deus disse a Satanás sobre o caráter de Jó?", answer: "Homem íntegro, reto, temente a Deus", distractors: ["O homem mais rico", "Aquele que nunca pecou"], reference: "Jó 1:8" },

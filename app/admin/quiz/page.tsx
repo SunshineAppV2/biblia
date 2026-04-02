@@ -47,7 +47,7 @@ const BOOKS = [
     { id: "oseias", label: "Oséias", chapters: 14 },
     { id: "joel", label: "Joel", chapters: 3 },
     { id: "amos", label: "Amós", chapters: 9 },
-    { id: "abadias", label: "Obadias", chapters: 1 },
+    { id: "obadias", label: "Obadias", chapters: 1 },
     { id: "jonas", label: "Jonas", chapters: 4 },
     { id: "miqueias", label: "Miquéias", chapters: 7 },
     { id: "naum", label: "Naum", chapters: 3 },

@@ -45,7 +45,7 @@ const ALL_BOOKS: { bookId: string; name: string; chapters: number }[] = [
   { bookId: "oseias", name: "Oséias", chapters: 14 },
   { bookId: "joel", name: "Joel", chapters: 3 },
   { bookId: "amos", name: "Amós", chapters: 9 },
-  { bookId: "abadias", name: "Abdias", chapters: 1 },
+  { bookId: "obadias", name: "Obadias", chapters: 1 },
   { bookId: "jonas", name: "Jonas", chapters: 4 },
   { bookId: "miqueias", name: "Miquéias", chapters: 7 },
   { bookId: "naum", name: "Naum", chapters: 3 },

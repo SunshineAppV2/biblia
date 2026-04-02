@@ -11,16 +11,19 @@ service cloud.firestore {
     // Users: usuários podem ler todos os perfis. 
     // Podem escrever no próprio, ser editados por admins ou ter seu groupId removido pelo líder da tribo.
     match /users/{userId} {
+      // Usuários autenticados podem ler perfis (necessário para rankings/social).
+      // Recomendado: mover 'email' e 'gems' para uma subcoleção /private futuramente.
       allow read: if request.auth != null;
+
       allow write: if request.auth != null && (
         isAdmin() ||
         (request.auth.uid == userId && 
-          // Bloqueia edição direta de campos de pontuação e economia por usuários comuns
+          // Bloqueia edição direta de campos críticos por usuários comuns
           !request.resource.data.diff(resource.data).affectedKeys()
-            .hasAny(['xp', 'weeklyXp', 'gems', 'streak', 'weeklyEncounterWins', 'currentLeague', 'lastWeekXp', 'lastWeekEncounterWins'])
+            .hasAny(['xp', 'weeklyXp', 'gems', 'streak', 'weeklyEncounterWins', 'currentLeague', 'lastWeekXp', 'lastWeekEncounterWins', 'isAdmin'])
         ) ||
         (
-          // Permite que o líder do grupo remova o groupId de um membro
+          // Permite que o líder do grupo remova o groupId de um membro (expulsão)
           resource != null && resource.data.groupId != null && 
           request.resource.data.groupId == null && 
           get(/databases/$(database)/documents/groups/$(resource.data.groupId)).data.leaderUid == request.auth.uid
@@ -69,8 +72,14 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
-    // Ranking e Ligas
-    match /leaderboards/{docId} {
+    // Perguntas de Quiz (para o Admin e carregamento de extras)
+    match /quiz_questions/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Configurações Globais do App
+    match /app_config/{docId} {
       allow read: if request.auth != null;
       allow write: if isAdmin();
     }
