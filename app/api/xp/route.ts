@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         const uid = decodedToken.uid;
 
         const body = await req.json();
-        const { type, bookId, chapter, correctCount, bonus, missionId } = body;
+        const { type, bookId, chapter, correctCount, bonus, missionId, planLate } = body;
 
         const userRef = adminDb.collection("users").doc(uid);
         const userSnap = await userRef.get();
@@ -41,7 +41,15 @@ export async function POST(req: NextRequest) {
             lastXpDate: todayStr,
         };
 
-        if (type === "CHAPTER") {
+        if (type === "PLAN365_LATE") {
+            // Late catch-up chapter: reduced XP, no progress tracking (chapter already tracked separately)
+            xpDelta = 10;
+
+        } else if (type === "PLAN365_BONUS") {
+            // Bonus for completing all of today's plan chapters
+            xpDelta = 30;
+
+        } else if (type === "CHAPTER") {
             const currentCycle = userData.cycle || 1;
             const progressId = `${bookId}_${chapter}_cycle${currentCycle}`;
             const progressRef = userRef.collection("reading_progress").doc(progressId);
@@ -51,7 +59,7 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ success: true, alreadyRead: true });
             }
 
-            xpDelta = CHAPTER_XP;
+            xpDelta = planLate === true ? 10 : CHAPTER_XP;
             gemsDelta = CHAPTER_GEMS;
             
             // Write progress

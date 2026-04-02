@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Download, ArrowRight, BookOpen, Trophy, Flame, Zap, Lock, Bookmark } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +15,8 @@ import { DailyVerse } from "@/components/DailyVerse";
 import { StreakWeek } from "@/components/StreakWeek";
 import { DailyMissions } from "@/components/DailyMissions";
 import { Leaderboard } from "@/components/Leaderboard";
+import { Plan365Card } from "@/components/Plan365Card";
+import { getPlan365Config } from "@/lib/reading-plan-365";
 import { User } from "firebase/auth";
 import { UserProfile } from "@/lib/firestore";
 import { calculateStreak } from "@/lib/utils";
@@ -223,6 +226,8 @@ export function HomeDashboard({
 
             {user && <ReadingGoal />}
 
+            {user && <Plan365CardWrapper onNavigate={onNavigate} />}
+
             <ReadingPlanCard 
                 onNavigate={onNavigate} 
                 planId={profile?.activePlanId || "rpsp"}
@@ -312,6 +317,16 @@ export function HomeDashboard({
             </motion.div>
         </motion.div>
     );
+}
+
+// Wrapper to avoid SSR mismatch — only renders Plan365Card when localStorage is available
+function Plan365CardWrapper({ onNavigate }: { onNavigate: (bookId: string, chapter: number) => void }) {
+    const [hasConfig, setHasConfig] = useState(false);
+    useEffect(() => {
+        setHasConfig(!!getPlan365Config());
+    }, []);
+    if (!hasConfig) return null;
+    return <Plan365Card onNavigate={onNavigate} />;
 }
 
 function WhatsAppIcon({ className }: { className?: string }) {

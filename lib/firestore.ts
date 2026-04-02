@@ -126,7 +126,7 @@ export async function getUserProfile(uid: string): Promise<UserProfile | null> {
  * Envia uma ação de XP para o servidor validar e processar.
  * Única forma segura de ganhar XP após o hardening das regras.
  */
-export async function awardXp(payload: { type: "CHAPTER" | "QUIZ" | "MISSION" | "ENCOUNTER_WIN", bookId?: string, chapter?: number, correctCount?: number, bonus?: number, missionId?: string }): Promise<void> {
+export async function awardXp(payload: { type: "CHAPTER" | "QUIZ" | "MISSION" | "ENCOUNTER_WIN" | "PLAN365_LATE" | "PLAN365_BONUS", bookId?: string, chapter?: number, correctCount?: number, bonus?: number, missionId?: string, planLate?: boolean }): Promise<void> {
     const user = auth.currentUser;
     if (!user) return;
     
