@@ -27,6 +27,13 @@ import { checkAndSendReminder, checkStreakAtRisk, trackWeeklyChapter, markReadTo
 import { checkAndProcessLeagueWeek } from "@/lib/leagues";
 import { MobileNav } from "@/components/MobileNav";
 import WelcomePage from "@/components/WelcomePage";
+import { DayCompletedModal } from "@/components/DayCompletedModal";
+import {
+    getTodaySessionChapters,
+    getNextSessionChapter,
+    isSessionComplete,
+    SessionChapter,
+} from "@/lib/plan-session";
 
 // New Refactored Components
 import { HomeHeader } from "@/components/home/HomeHeader";
@@ -56,6 +63,12 @@ export default function Home() {
     const [showQuizOffer, setShowQuizOffer] = useState(false);
     const [showQuiz, setShowQuiz] = useState(false);
     const [quizTarget, setQuizTarget] = useState<{ bookId: string; chapter: number; bookName: string } | null>(null);
+
+    // Plan Session States
+    const [daySession, setDaySession] = useState<SessionChapter[]>([]);
+    const [sessionCompleted, setSessionCompleted] = useState<Set<string>>(new Set());
+    const [showDayCompleted, setShowDayCompleted] = useState(false);
+    const [dayCompletedChapters, setDayCompletedChapters] = useState<SessionChapter[]>([]);
 
     // Version State — local so it updates immediately without waiting for Firebase
     const [currentVersion, setCurrentVersion] = useState("ARC");
@@ -218,6 +231,17 @@ export default function Home() {
     useEffect(() => {
         if (user) loadProgression();
     }, [user]);
+
+    // Rebuild the day session whenever profile loads/changes
+    useEffect(() => {
+        if (profile) {
+            const session = getTodaySessionChapters(
+                profile.activePlanId,
+                profile.planStartDate?.toDate?.() ?? null
+            );
+            setDaySession(session);
+        }
+    }, [profile?.activePlanId, profile?.planStartDate]);
 
     const loadProgression = async () => {
         if (!user) return;
@@ -407,12 +431,41 @@ export default function Home() {
     };
 
     const handleNextChapter = async () => {
-        // If chapter was completed (not already read), offer quiz before navigating
+        const justCompleted = { bookId: nextChapter.bookId, chapter: nextChapter.chapter };
+
+        // ── Plan session: check if this chapter belongs to today's plan ──────────
+        const inSession = daySession.some(
+            c => c.bookId === justCompleted.bookId && c.chapter === justCompleted.chapter
+        );
+
+        if (inSession && isCompletedNow && !wasAlreadyRead) {
+            // Mark as completed in session tracking
+            const updatedCompleted = new Set(sessionCompleted);
+            updatedCompleted.add(`${justCompleted.bookId}_${justCompleted.chapter}`);
+            setSessionCompleted(updatedCompleted);
+
+            // Check if all session chapters are now done
+            if (isSessionComplete(daySession, updatedCompleted)) {
+                // 🎉 All done for today! Show celebration modal
+                setDayCompletedChapters([...daySession]);
+                setShowDayCompleted(true);
+                return;
+            }
+
+            // Advance to next unread chapter in the session
+            const next = getNextSessionChapter(justCompleted, daySession, updatedCompleted);
+            if (next) {
+                await handleNavigate(next.bookId, next.chapter);
+                return;
+            }
+        }
+
+        // ── Default flow: offer quiz then navigate ────────────────────────────────
         if (isCompletedNow && !wasAlreadyRead && user) {
             const bookId = nextChapter.bookId;
             const chapter = nextChapter.chapter;
             
-            // Re-ensure banks are loaded just in case (should be mostly immediate if already loaded)
+            // Re-ensure banks are loaded just in case
             await ensureBanksLoaded();
             
             const hasBank = !!getQuizBank(bookId, chapter);
@@ -574,6 +627,18 @@ export default function Home() {
                 isOpen={showSearch}
                 onClose={() => setShowSearch(false)}
                 onNavigate={handleNavigate}
+            />
+            <DayCompletedModal
+                isOpen={showDayCompleted}
+                chapters={dayCompletedChapters}
+                bonusXp={30}
+                onContinue={() => {
+                    setShowDayCompleted(false);
+                    setIsReading(false);
+                    setIsCompletedNow(false);
+                    setChapterContent(null);
+                    loadProgression();
+                }}
             />
 
             <MobileNav />

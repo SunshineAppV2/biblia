@@ -14,11 +14,17 @@ export interface ChapterContent {
 // Version mapping to bolls.life API codes
 // bolls.life Portuguese translations: ARC, ARA, NTPT
 export const VERSIONS = [
-    { id: "ARA",  name: "Almeida Revista e Atualizada",  apiCode: "ARA"  },
-    { id: "NVI",  name: "Nova Versão Internacional",      apiCode: "NVI"  },
-    { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", apiCode: "NTLH" },
-    { id: "NAA",  name: "Nova Almeida Atualizada",       apiCode: "NAA"  },
-    { id: "TB",   name: "Tradução Brasileira",            apiCode: "TB"   },
+    // Português
+    { id: "ARC",   name: "Almeida Revista e Corrigida",    apiCode: "ARC"    },
+    { id: "ARA",   name: "Almeida Revista e Atualizada",   apiCode: "ARA"    },
+    { id: "NVI",   name: "Nova Versão Internacional",       apiCode: "NVI"    },
+    { id: "NTLH",  name: "Nova Trad. Linguagem de Hoje",  apiCode: "NTLH"   },
+    { id: "NAA",   name: "Nova Almeida Atualizada",        apiCode: "NAA"    },
+    // English
+    { id: "KJV",   name: "King James Version",             apiCode: "KJV"    },
+    { id: "YLT",   name: "Young's Literal Translation",    apiCode: "YLT"    },
+    // Español
+    { id: "RV1960", name: "Reina Valera 1960",             apiCode: "RV1960" },
 ];
 
 interface BollsVerse {

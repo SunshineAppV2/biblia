@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { READING_PLANS } from "@/lib/reading-plan";
 import { getPlan365Config, setPlan365Config, clearPlan365Config, todayISO, PLAN_365 } from "@/lib/reading-plan-365";
 import { useAuth } from "@/components/AuthProvider";
@@ -9,7 +9,7 @@ import { db } from "@/lib/firebase";
 import { useToast } from "@/components/Toast";
 import { MobileNav } from "@/components/MobileNav";
 import { motion, AnimatePresence } from "framer-motion";
-import { Book, Check, Clock, Calendar, ArrowLeft, BookOpen, Star, X, ChevronRight } from "lucide-react";
+import { Book, Check, Clock, Calendar, ArrowLeft, BookOpen, Star, X, ChevronRight, Sparkles, Play, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -134,6 +134,77 @@ function Plan365Modal({ onClose }: { onClose: () => void }) {
     );
 }
 
+// ─── Active Plan Hero Card ────────────────────────────────────────────────────
+function ActivePlanHero({
+    icon,
+    title,
+    subtitle,
+    badge,
+    accentColor,
+    bgGradient,
+    glowColor,
+    children,
+}: {
+    icon: React.ReactNode;
+    title: string;
+    subtitle: string;
+    badge?: string;
+    accentColor: string;
+    bgGradient: string;
+    glowColor: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`relative overflow-hidden rounded-[28px] p-6 shadow-xl ${glowColor}`}
+            style={{ background: bgGradient }}
+        >
+            {/* Animated glow orb */}
+            <motion.div
+                animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.5, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl"
+                style={{ backgroundColor: accentColor, opacity: 0.25 }}
+            />
+
+            {/* Active badge */}
+            <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2 bg-white/20 backdrop-blur px-3 py-1.5 rounded-full border border-white/30">
+                    <motion.div
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-1.5 h-1.5 rounded-full bg-white"
+                    />
+                    <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                        Plano Ativo
+                    </span>
+                    {badge && (
+                        <span className="text-[10px] font-black text-white/70 ml-1">· {badge}</span>
+                    )}
+                </div>
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 border border-white/30">
+                    <Sparkles className="w-4 h-4 text-white" />
+                </div>
+            </div>
+
+            {/* Title */}
+            <div className="flex items-start gap-4 mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shrink-0 shadow-lg">
+                    {icon}
+                </div>
+                <div className="flex-1">
+                    <h3 className="text-2xl font-black text-white tracking-tight leading-tight">{title}</h3>
+                    <p className="text-sm text-white/70 font-medium mt-1 leading-snug">{subtitle}</p>
+                </div>
+            </div>
+
+            {children}
+        </motion.div>
+    );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function PlansPage() {
     const { profile, refreshProfile } = useAuth();
@@ -141,8 +212,11 @@ export default function PlansPage() {
     const router = useRouter();
     const [switching, setSwitching] = useState<string | null>(null);
     const [show365Modal, setShow365Modal] = useState(false);
+    const [active365Config, setActive365Config] = useState<ReturnType<typeof getPlan365Config>>(null);
 
-    const active365Config = typeof window !== "undefined" ? getPlan365Config() : null;
+    useEffect(() => {
+        setActive365Config(getPlan365Config());
+    }, []);
 
     const handleSelectPlan = async (planId: string) => {
         if (!profile) return;
@@ -166,9 +240,15 @@ export default function PlansPage() {
 
     function handleDeactivate365() {
         clearPlan365Config();
+        setActive365Config(null);
         showToast("Plano 365 desativado", "success");
-        router.refresh();
     }
+
+    const activePlanId = profile?.activePlanId || "rpsp";
+    const activePlan = READING_PLANS.find(p => p.id === activePlanId);
+    const otherPlans = READING_PLANS.filter(p => p.id !== "bib1y" && p.id !== activePlanId);
+    const has365Active = !!active365Config;
+    const hasAnyActive = has365Active || !!activePlan;
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] pb-32">
@@ -177,108 +257,172 @@ export default function PlansPage() {
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <h1 className="text-2xl font-black italic tracking-tighter">
-                    Escolha seu <span className="text-secondary">Plano</span>
+                    Planos de <span className="text-secondary">Leitura</span>
                 </h1>
             </header>
 
-            <main className="px-6 space-y-6 max-w-2xl mx-auto">
-                <p className="text-sm text-[#455A80] font-medium leading-relaxed">
-                    Selecione o plano que melhor se adapta ao seu ritmo. O progresso será reiniciado para o novo plano.
-                </p>
+            <main className="px-6 space-y-8 max-w-2xl mx-auto">
 
-                {/* ─── Bíblia em 1 Ano (365) ─── */}
-                <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    className={`p-6 rounded-[32px] border-2 transition-all relative overflow-hidden ${
-                        active365Config
-                            ? "border-amber-400 bg-white shadow-xl shadow-amber-400/10"
-                            : "border-amber-200/60 bg-amber-50/40 hover:border-amber-300"
-                    }`}
-                >
-                    {active365Config && (
-                        <div className="absolute top-0 right-0 bg-amber-500 text-white px-4 py-1 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest">
-                            ATIVO
+                {/* ─── ACTIVE PLANS SECTION ─── */}
+                {hasAnyActive && (
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <motion.div
+                                animate={{ scale: [1, 1.2, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="w-2 h-2 rounded-full bg-emerald-500"
+                            />
+                            <h2 className="text-xs font-black text-primary uppercase tracking-[0.25em]">
+                                Seus Planos Ativos
+                            </h2>
                         </div>
-                    )}
 
-                    <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                            active365Config ? "bg-amber-100" : "bg-amber-100/60"
-                        }`}>
-                            <BookOpen className="w-6 h-6 text-amber-600" />
-                        </div>
-                        <div className="flex-1 space-y-1">
-                            <h3 className="text-xl font-black italic tracking-tight">Bíblia em 1 Ano</h3>
-                            <p className="text-sm text-[#455A80] font-medium leading-tight">
-                                Toda a Bíblia em 365 dias — 3 a 5 capítulos diários, Gênesis ao Apocalipse.
-                            </p>
+                        {/* Active 365 Plan */}
+                        {has365Active && (
+                            <ActivePlanHero
+                                icon={<BookOpen className="w-7 h-7 text-white" />}
+                                title="Bíblia em 1 Ano"
+                                subtitle="Toda a Bíblia em 365 dias — 3 a 5 capítulos diários."
+                                badge={active365Config!.mode === "calendar" ? "Calendário" : `Desde ${active365Config!.startDate}`}
+                                accentColor="#f59e0b"
+                                bgGradient="linear-gradient(135deg, #92400e 0%, #b45309 50%, #d97706 100%)"
+                                glowColor="shadow-2xl shadow-amber-500/30"
+                            >
+                                <div className="flex items-center gap-3 pt-1 text-[10px] font-black text-white/60 uppercase tracking-widest mb-5">
+                                    <div className="flex items-center gap-1.5">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        365 Dias
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Star className="w-3.5 h-3.5 text-amber-300" />
+                                        +30 XP bônus/dia
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => router.push("/")}
+                                        className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white text-amber-800 font-black text-xs uppercase tracking-widest hover:bg-amber-50 transition-all active:scale-95 shadow-md"
+                                    >
+                                        <Play className="w-3.5 h-3.5 fill-current" />
+                                        Continuar Leitura
+                                    </button>
+                                    <button
+                                        onClick={() => setShow365Modal(true)}
+                                        className="px-4 py-3.5 rounded-2xl bg-white/20 border border-white/30 text-white font-black text-xs hover:bg-white/30 transition-all active:scale-95"
+                                    >
+                                        <Settings className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={handleDeactivate365}
+                                        className="px-4 py-3.5 rounded-2xl bg-white/10 border border-white/20 text-white/70 font-black text-xs hover:bg-red-500/30 hover:text-white hover:border-red-300/40 transition-all active:scale-95"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </ActivePlanHero>
+                        )}
 
-                            {active365Config && (
-                                <p className="text-xs text-amber-700 font-bold mt-1">
-                                    Modo: {active365Config.mode === "calendar" ? "Calendário anual" : `Início em ${active365Config.startDate}`}
+                        {/* Active Regular Plan */}
+                        {activePlan && (
+                            <ActivePlanHero
+                                icon={<Book className="w-7 h-7 text-white" />}
+                                title={activePlan.name}
+                                subtitle={activePlan.description}
+                                accentColor="#1e3a8a"
+                                bgGradient="linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #3b82f6 100%)"
+                                glowColor="shadow-2xl shadow-blue-500/30"
+                            >
+                                <div className="flex items-center gap-3 pt-1 text-[10px] font-black text-white/60 uppercase tracking-widest mb-5">
+                                    <div className="flex items-center gap-1.5">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        {activePlan.durationDays} Dias
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        {activePlan.type === "global" ? "Início Fixo" : "Livre Escolha"}
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => router.push("/")}
+                                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-white text-blue-800 font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-all active:scale-95 shadow-md"
+                                >
+                                    <Play className="w-3.5 h-3.5 fill-current" />
+                                    Continuar Leitura
+                                </button>
+                            </ActivePlanHero>
+                        )}
+                    </section>
+                )}
+
+                {/* ─── DIVIDER ─── */}
+                <div className="flex items-center gap-3 px-1">
+                    <div className="flex-1 h-px bg-black/8" />
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                        {hasAnyActive ? "Outros Planos" : "Escolha um Plano"}
+                    </span>
+                    <div className="flex-1 h-px bg-black/8" />
+                </div>
+
+                {!hasAnyActive && (
+                    <p className="text-sm text-[#455A80] font-medium leading-relaxed -mt-4">
+                        Selecione o plano que melhor se adapta ao seu ritmo.
+                    </p>
+                )}
+
+                {/* ─── Bíblia em 1 Ano (365) — if NOT active ─── */}
+                {!has365Active && (
+                    <motion.div
+                        whileHover={{ scale: 1.01 }}
+                        className="p-6 rounded-[28px] border-2 border-amber-200/60 bg-amber-50/40 hover:border-amber-300 transition-all relative overflow-hidden"
+                    >
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-amber-100/60 flex items-center justify-center">
+                                <BookOpen className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <div className="flex-1 space-y-1">
+                                <h3 className="text-xl font-black italic tracking-tight">Bíblia em 1 Ano</h3>
+                                <p className="text-sm text-[#455A80] font-medium leading-tight">
+                                    Toda a Bíblia em 365 dias — 3 a 5 capítulos diários, Gênesis ao Apocalipse.
                                 </p>
-                            )}
 
-                            <div className="flex items-center gap-4 pt-4 text-[10px] font-black uppercase tracking-widest text-[#455A80]/60">
-                                <div className="flex items-center gap-1.5">
-                                    <Clock className="w-3.5 h-3.5" />
-                                    365 Dias
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <Calendar className="w-3.5 h-3.5" />
-                                    Livre Escolha
-                                </div>
-                                <div className="flex items-center gap-1.5 text-amber-600">
-                                    <Star className="w-3.5 h-3.5" />
-                                    +30 XP bônus/dia
+                                <div className="flex items-center gap-4 pt-4 text-[10px] font-black uppercase tracking-widest text-[#455A80]/60">
+                                    <div className="flex items-center gap-1.5">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        365 Dias
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        Livre Escolha
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-amber-600">
+                                        <Star className="w-3.5 h-3.5" />
+                                        +30 XP bônus/dia
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="flex gap-2 mt-5">
                         <button
                             onClick={() => setShow365Modal(true)}
-                            className="flex-1 py-4 rounded-2xl bg-amber-500 text-white font-black text-xs uppercase tracking-widest hover:bg-amber-600 transition-all active:scale-95"
+                            className="w-full mt-5 py-4 rounded-2xl bg-amber-500 text-white font-black text-xs uppercase tracking-widest hover:bg-amber-600 transition-all active:scale-95"
                         >
-                            {active365Config ? "Reconfigurar" : "Ativar Plano"}
+                            Ativar Plano
                         </button>
-                        {active365Config && (
-                            <button
-                                onClick={handleDeactivate365}
-                                className="px-5 py-4 rounded-2xl border-2 border-black/10 text-xs font-black uppercase tracking-widest hover:bg-black/5 transition-all active:scale-95"
-                            >
-                                Pausar
-                            </button>
-                        )}
-                    </div>
-                </motion.div>
+                    </motion.div>
+                )}
 
                 {/* ─── Other plans ─── */}
                 <div className="grid gap-4">
-                    {READING_PLANS.filter(p => p.id !== "bib1y").map((plan) => {
-                        const isActive = profile?.activePlanId === plan.id;
+                    {READING_PLANS.filter(p => p.id !== "bib1y" && p.id !== activePlanId).map((plan) => {
                         return (
                             <motion.div
                                 key={plan.id}
                                 whileHover={{ scale: 1.01 }}
-                                className={`p-6 rounded-[32px] border-2 transition-all relative overflow-hidden ${
-                                    isActive
-                                        ? "border-secondary bg-white shadow-xl shadow-secondary/10"
-                                        : "border-black/5 bg-white/50 hover:border-black/10"
-                                }`}
+                                className="p-6 rounded-[28px] border-2 border-black/5 bg-white/50 hover:border-black/10 transition-all relative overflow-hidden"
                             >
-                                {isActive && (
-                                    <div className="absolute top-0 right-0 bg-secondary text-white px-4 py-1 rounded-bl-2xl text-[10px] font-black uppercase tracking-widest">
-                                        ATIVO
-                                    </div>
-                                )}
-
                                 <div className="flex items-start gap-4">
-                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                                        isActive ? "bg-secondary/20" : "bg-black/5"
-                                    }`}>
-                                        <Book className={`w-6 h-6 ${isActive ? "text-secondary" : "text-black/40"}`} />
+                                    <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center">
+                                        <Book className="w-6 h-6 text-black/40" />
                                     </div>
                                     <div className="flex-1 space-y-1">
                                         <h3 className="text-xl font-black italic tracking-tight">{plan.name}</h3>
@@ -297,15 +441,13 @@ export default function PlansPage() {
                                     </div>
                                 </div>
 
-                                {!isActive && (
-                                    <button
-                                        onClick={() => handleSelectPlan(plan.id)}
-                                        disabled={switching !== null}
-                                        className="w-full mt-6 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-50 active:scale-95"
-                                    >
-                                        {switching === plan.id ? "Ativando..." : "ATIVAR ESTE PLANO"}
-                                    </button>
-                                )}
+                                <button
+                                    onClick={() => handleSelectPlan(plan.id)}
+                                    disabled={switching !== null}
+                                    className="w-full mt-6 py-4 rounded-2xl bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all disabled:opacity-50 active:scale-95"
+                                >
+                                    {switching === plan.id ? "Ativando..." : "ATIVAR ESTE PLANO"}
+                                </button>
                             </motion.div>
                         );
                     })}
@@ -315,7 +457,7 @@ export default function PlansPage() {
             <MobileNav />
 
             <AnimatePresence>
-                {show365Modal && <Plan365Modal onClose={() => setShow365Modal(false)} />}
+                {show365Modal && <Plan365Modal onClose={() => { setShow365Modal(false); setActive365Config(getPlan365Config()); }} />}
             </AnimatePresence>
         </div>
     );

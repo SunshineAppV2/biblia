@@ -7,10 +7,14 @@ const TOTAL_SECONDS = 4;
 const PAGE_FLIP_INTERVAL = 1600;
 
 const VERSIONS = [
-    { id: "ARC",  name: "Almeida Revista e Corrigida",  abbr: "ARC"  },
-    { id: "ARA",  name: "Almeida Revista e Atualizada",  abbr: "ARA"  },
-    { id: "NTLH", name: "Nova Trad. Linguagem de Hoje", abbr: "NTLH" },
-    { id: "NAA",  name: "Nova Almeida Atualizada",       abbr: "NAA"  },
+    { id: "ARC",   name: "Almeida Revista e Corrigida",   abbr: "ARC"    },
+    { id: "ARA",   name: "Almeida Revista e Atualizada",  abbr: "ARA"    },
+    { id: "NVI",    name: "Nova Versão Internacional",     abbr: "NVI"    },
+    { id: "NTLH",  name: "Nova Trad. Linguagem de Hoje", abbr: "NTLH"   },
+    { id: "NAA",   name: "Nova Almeida Atualizada",       abbr: "NAA"    },
+    { id: "KJV",   name: "King James Version",            abbr: "KJV"    },
+    { id: "YLT",   name: "Young's Literal Translation",   abbr: "YLT"    },
+    { id: "RV1960", name: "Reina Valera 1960",            abbr: "RV1960" },
 ];
 
 function OpenBook() {
